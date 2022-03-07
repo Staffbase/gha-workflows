@@ -14,7 +14,7 @@ on:
 
 jobs:
   <action name>:
-    uses: Staffbase/workflows/.github/workflows/template_*.yml@main
+    uses: Staffbase/workflows/.github/workflows/template_*.yml@v1.0.0
     with:
       ...
 ```
