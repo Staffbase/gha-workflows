@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: gha-workflows
+  description: Repository to manage all reusable workflows
+  annotations:
+    github.com/project-slug: Staffbase/gha-workflows
+    github.com/team-slug: Staffbase/workflow-enthusiasts
+    backstage.io/source-location: github:https://github.com/Staffbase/gha-workflows
+  tags:
+    - github-actions
+spec:
+  type: other
+  owner: workflow-enthusiasts
+  lifecycle: production
