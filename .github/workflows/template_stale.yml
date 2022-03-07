@@ -1,0 +1,45 @@
+name: Stale PRs
+
+on:
+  workflow_call:
+    inputs:
+      close-pr-message:
+        default: 'This stale PR was closed because there was no activity.'
+        required: false
+        type: string
+      days-before-stale:
+        default: 60
+        required: false
+        type: number
+      delete-branch:
+        default: 'true'
+        required: false
+        type: boolean
+      exempt-pr-labels:
+        default: ''
+        required: false
+        type: string
+      stale-pr-message:
+        default: 'This PR has been automatically marked as stale because there has been no recent activity in the last 60 days. It will be closed in 7 days if no further activity occurs such as removing the label.'
+        required: false
+        type: string
+      stale-pr-label:
+        default: 'stale'
+        required: false
+        type: string
+
+jobs:
+  stale:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Stale old PRs
+        uses: actions/stale@v4
+        with:
+          close-pr-message: ${{ inputs.close-pr-message }}
+          days-before-stale: ${{ inputs.days-before-stale }}
+          delete-branch: ${{ inputs.delete-branch }}
+          exempt-pr-labels: ${{ inputs.exempt-pr-labels }}
+          stale-pr-label: ${{ inputs.stale-pr-label }}
+          stale-pr-message: ${{ inputs.stale-pr-message }}

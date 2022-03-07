@@ -21,7 +21,21 @@ jobs:
 
 ## Example Configurations
 
-In the next sections you can find examples for the template workflows.
+In the next sections you can find examples for the template workflows. For more information, please take a look at the templates.
+
+### Stale
+
+```yml
+name: Stale PRs
+
+on:
+  schedule:
+    - cron: "0 0 * * 1-5"
+
+jobs:
+  stale:
+    uses: Staffbase/workflows/.github/workflows/template_stale.yml@v1.0.0
+```
 
 ### Yamllint
 
