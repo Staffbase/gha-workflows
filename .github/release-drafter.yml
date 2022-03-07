@@ -8,9 +8,9 @@ categories:
     labels:
       - 'bug'
   - title: '📝 Documentation'
-    label: 'chore'
+    label: 'documentation'
   - title: '🚨 Dependencies'
-    label: ''
+    label: 'dependencies'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
