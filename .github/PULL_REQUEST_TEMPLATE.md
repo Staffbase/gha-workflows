@@ -1,6 +1,6 @@
 ### Type of Change
 
-<!-- Select the type of your PR -->
+<!-- Select the type of your PR and add the corresponding label -->
 
 - [ ] Bugfix
 - [ ] Enhancement / new feature
@@ -15,6 +15,7 @@
 
 <!-- Please go through this checklist and make sure all applicable tasks have been done -->
 
+- [ ] Add relevant labels (for example type of change or patch/minor/major)
 - [ ] Write tests
 - [ ] Make sure all tests pass
 - [ ] Update documentation
