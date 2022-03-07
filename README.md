@@ -25,6 +25,8 @@ In the next sections you can find examples for the template workflows.
 
 ### Yamllint
 
+The action can be used to check yaml files for formatting.
+
 ```yml
 name: YAMLlint
 
