@@ -25,6 +25,8 @@ In the next sections you can find examples for the template workflows. For more 
 
 ### Stale
 
+The action can be used to close old pull requests or issues automatically after a few days.
+
 ```yml
 name: Stale PRs
 
