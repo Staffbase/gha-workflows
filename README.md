@@ -19,4 +19,16 @@ jobs:
       ...
 ```
 
+## Release
+
+To create a release, the draft release in the releases tab can be used.
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
 [1]: https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
