@@ -18,6 +18,6 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.OSS_CONTRIBUTOR_LICENSE_AGREEMENT }}
         with: 
           path-to-signatures: 'signatures/version1/cla.json'
-          path-to-document: 'https://github.com/Staffbase/template-oss-repository/blob/master/CLA.md'
+          path-to-document: 'https://github.com/Staffbase/template-oss-repository/blob/main/CLA.md'
           branch: 'signatures'
           allowlist: 0x46616c6b,axdotl,flaxel
