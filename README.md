@@ -19,7 +19,27 @@ jobs:
       ...
 ```
 
-<<<<<<< HEAD
+## Example Configurations
+
+In the next sections you can find examples for the template workflows.
+
+### Yamllint
+
+```yml
+name: YAMLlint
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+jobs:
+  yamllint:
+    uses: Staffbase/workflows/.github/workflows/template_yaml.yml@v1.0.0
+```
+
 ## Release
 
 To create a new release just use [this page][2] and publish the draft release.

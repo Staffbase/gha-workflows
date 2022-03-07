@@ -1,0 +1,14 @@
+name: YAMLlint
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+jobs:
+  yamllint:
+    uses: Staffbase/workflows/.github/workflows/template_yaml.yml@main
+    with:
+      target-path: '.github/workflows'
