@@ -39,7 +39,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/workflows/.github/workflows/template_yaml.yml@v1.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v1.0.0
 ```
 
 ## Release
