@@ -36,7 +36,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/workflows/.github/workflows/template_stale.yml@v1.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v1.0.0
 ```
 
 ### Yamllint
