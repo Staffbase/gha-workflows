@@ -3,8 +3,8 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
-      time: "07:00"
+      interval: "weekly"
+      time: "09:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 5
     labels:
