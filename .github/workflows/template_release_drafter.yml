@@ -2,6 +2,20 @@ name: Release Drafter
 
 on:
   workflow_call:
+    inputs:
+      name:
+        required: false
+        type: string
+      publish:
+        default: 'false'
+        required: false
+        type: string
+      tag:
+        required: false
+        type: string
+      version:
+        required: false
+        type: string
 
 jobs:
   update_release_draft:
@@ -12,5 +26,10 @@ jobs:
     steps:
       - name: Update Release
         uses: release-drafter/release-drafter@v5
+        with:
+          name: ${{ inputs.name }}
+          publish: ${{ inputs.publish }}
+          tag: ${{ inputs.tag }}
+          version: ${{ inputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
