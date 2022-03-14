@@ -19,7 +19,7 @@ jobs:
       ...
 ```
 
-## Example Configurations
+## Example Configurations 🔧
 
 In the next sections you can find examples for the template workflows. For more information, please take a look at the templates.
 
@@ -75,15 +75,15 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v1.0.0
 ```
 
-## Release
+## Release 🔖
 
 To create a new release just use [this page][2] and publish the draft release.
 
-## Contributing
+## Contributing 👥
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## License
+## License 📄
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
