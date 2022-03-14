@@ -15,7 +15,8 @@ on:
 jobs:
   yamllint:
 
-    runs-on: ubuntu-latest
+    name: yamllint
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout
