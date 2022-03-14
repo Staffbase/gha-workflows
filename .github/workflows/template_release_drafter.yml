@@ -1,0 +1,16 @@
+name: Release Drafter
+
+on:
+  workflow_call:
+
+jobs:
+  update_release_draft:
+
+    name: update release draft
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Update Release
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

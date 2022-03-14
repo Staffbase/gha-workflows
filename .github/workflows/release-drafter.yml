@@ -7,11 +7,4 @@ on:
 
 jobs:
   update_release_draft:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "Update Release"
-        uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@main
