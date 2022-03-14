@@ -31,7 +31,8 @@ on:
 jobs:
   stale:
 
-    runs-on: ubuntu-latest
+    name: stale
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Stale old PRs
