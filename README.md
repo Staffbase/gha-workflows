@@ -19,13 +19,14 @@ jobs:
       ...
 ```
 
-## Example Configurations
+## Example Configurations 🔧
 
 In the next sections you can find examples for the template workflows. For more information, please take a look at the templates.
 
 ### Release Drafter
 
-The action can be used to draft automatically a new release.
+<details>
+<summary>The action can be used to draft automatically a new release.</summary>
 
 ```yml
 name: Release Drafter
@@ -39,10 +40,12 @@ jobs:
   update_release_draft:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v1.0.0
 ```
+</details>
 
 ### Stale
 
-The action can be used to close old pull requests or issues automatically after a few days.
+<details>
+<summary>The action can be used to close old pull requests or issues automatically after a few days.</summary>
 
 ```yml
 name: Stale PRs
@@ -55,10 +58,12 @@ jobs:
   stale:
     uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v1.0.0
 ```
+</details>
 
 ### Yamllint
 
-The action can be used to check yaml files for formatting.
+<details>
+<summary>The action can be used to check yaml files for formatting.</summary>
 
 ```yml
 name: YAMLlint
@@ -74,16 +79,17 @@ jobs:
   yamllint:
     uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v1.0.0
 ```
+</details>
 
-## Release
+## Release 🔖
 
 To create a new release just use [this page][2] and publish the draft release.
 
-## Contributing
+## Contributing 👥
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## License
+## License 📄
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
