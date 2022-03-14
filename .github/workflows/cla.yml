@@ -1,8 +1,5 @@
-# This version of the CLA Assistant uses a GitHub action and local
-# storage of the signatures.
-# https://github.com/cla-assistant/github-action/
-
 name: "CLA Assistant"
+
 on:
   issue_comment:
     types: [created]
@@ -21,8 +18,6 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.OSS_CONTRIBUTOR_LICENSE_AGREEMENT }}
         with: 
           path-to-signatures: 'signatures/version1/cla.json'
-          path-to-document: 'https://github.com/Staffbase/template-oss-repository/blob/master/CLA.md'
-          # branch should not be protected
+          path-to-document: 'https://github.com/Staffbase/template-oss-repository/blob/main/CLA.md'
           branch: 'signatures'
-          # no allowlist currently
-          # allowlist: user1,user2,bot*
+          allowlist: 0x46616c6b,axdotl,flaxel,bot*
