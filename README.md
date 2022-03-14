@@ -23,6 +23,23 @@ jobs:
 
 In the next sections you can find examples for the template workflows. For more information, please take a look at the templates.
 
+### Release Drafter
+
+The action can be used to draft automatically a new release.
+
+```yml
+name: Release Drafter
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_release_draft:
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v1.0.0
+```
+
 ### Stale
 
 The action can be used to close old pull requests or issues automatically after a few days.
