@@ -1,0 +1,19 @@
+---
+extends: default
+
+rules:
+  comments:
+    level: error
+    require-starting-space: true
+  comments-indentation: disable
+  ## Disabled because it doesn't work with yq: https://github.com/mikefarah/yq/issues/351
+  # document-start:
+  #   level: error
+  document-start: disable
+  indentation:
+    level: error
+    spaces: 2
+    indent-sequences: true
+  line-length: disable
+  truthy:
+      allowed-values: ['true', 'false', 'on']

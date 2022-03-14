@@ -1,0 +1,30 @@
+name: YAMLlint
+
+on:
+  workflow_call:
+    inputs:
+      action-name:
+        default: 'yamllint / yamllint'
+        required: false
+        type: string
+      target-path:
+        default: '.'
+        required: false
+        type: string
+
+jobs:
+  yamllint:
+
+    name: yamllint
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Lint and Annotate
+        uses: staffbase/yamllint-action@v1.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          action-name: ${{ inputs.action-name }}
+          target-path: ${{ inputs.target-path }}
