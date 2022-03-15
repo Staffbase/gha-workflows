@@ -11,5 +11,4 @@ metadata:
     - github-actions
 spec:
   type: other
-  owner: workflow-enthusiasts
   lifecycle: production
