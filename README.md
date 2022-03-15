@@ -14,7 +14,7 @@ on:
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v1.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@<version>
     with:
       ...
 ```
@@ -38,7 +38,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v1.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@<version>
 ```
 </details>
 
@@ -56,7 +56,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v1.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@<version>
 ```
 </details>
 
@@ -77,7 +77,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v1.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@<version>
 ```
 </details>
 
