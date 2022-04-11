@@ -23,12 +23,11 @@ on:
         default: 'Deploy to Dev Failed'
         required: false
         type: string
+    secrets:
       token:
         required: true
-        type: string
       user:
         required: true
-        type: string
 
 jobs:
   autodev:

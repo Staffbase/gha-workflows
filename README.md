@@ -58,9 +58,9 @@ on:
     types: [labeled, unlabeled, opened, closed]
 
 jobs:
-  update_release_draft:
+  autodev:
     uses: Staffbase/gha-workflows/.github/workflows/template_autodev_script.yml@<version>
-    with:
+    secrets:
       token: ${{ secrets.DEV_PUSH_TOKEN }}
       user: ${{ secrets.DEV_PUSH_USER }}
 ```
