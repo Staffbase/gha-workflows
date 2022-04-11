@@ -45,6 +45,26 @@ jobs:
 ```
 </details>
 
+<details>
+<summary>You can also use the manual script to merge labeled pull requests into a branch.</summary>
+
+```yml
+name: Autodev
+on:
+  push:
+    branches-ignore:
+      - dev
+  pull_request:
+    types: [labeled, unlabeled, opened, closed]
+
+jobs:
+  update_release_draft:
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev_script.yml@<version>
+    with:
+      token: ${{ secrets.DEV_PUSH_TOKEN }}
+```
+</details>
+
 ### Release Drafter
 
 <details>

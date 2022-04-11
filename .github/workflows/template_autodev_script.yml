@@ -1,0 +1,114 @@
+# Deprecated: Please use the autodev action.
+name: Autodev Script
+on:
+  workflow_call:
+    inputs:
+      base:
+        default: 'master'
+        required: false
+        type: string
+      branch:
+        default: 'dev'
+        required: false
+        type: string
+      label:
+        default: 'Deploy to Dev'
+        required: false
+        type: string
+      label_success:
+        default: 'Deploy to Dev Successful'
+        required: false
+        type: string
+      label_failed:
+        default: 'Deploy to Dev Failed'
+        required: false
+        type: string
+      token:
+        required: true
+        type: string
+      user:
+        required: true
+        type: string
+
+jobs:
+  autodev:
+    env:
+      GITHUB_TOKEN: ${{ inputs.token }}
+      GITHUB_USER: ${{ inputs.user }}
+      DEV_BRANCH: ${{ inputs.branch }}
+      LABEL: ${{ inputs.label }}
+      LABEL_SUCCESS: ${{ inputs.label_success }}
+      LABEL_FAILED: ${{ inputs.label_failed }}
+
+    name: Build Dev Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: do-checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.base }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: build dev
+        id: build_dev
+        run: |
+          touch successful_merges failed_merges
+          git checkout -B new-dev
+          git config --global user.email "staffbot@staffbase.com"
+          git config --global user.name "Merge Bot"
+          # with both dates set to the last master commit, we get reproducible builds: Whenever the CI Job would produce
+          # the exact same result as the existing dev (as in, nothing on the dev'ed branches or master changed)
+          # the new dev ref will have the same commit sha than the old one.
+          export GIT_COMMITTER_DATE=$(git show -s --format='%ci' HEAD)
+          export GIT_AUTHOR_DATE=$GIT_COMMITTER_DATE
+          ghcurl() {  curl -s -H "Authorization: token ${GITHUB_TOKEN}"  "$@"; }
+          ghcurl "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues?labels=${LABEL// /%20}" |
+          jq -r '.[] | (.url + " " + .pull_request.url)' |
+          while read -r iss pr; do
+            ref=$(ghcurl "$pr" | jq -r '.head.ref')
+            echo "merge: $ref"
+            if git merge -q --no-ff origin/$ref -m "$ref"; then
+              echo "$iss" >> successful_merges
+            else
+              echo "$ref could not be merged. Ignoring"
+              git merge --abort
+              echo "$iss" >> failed_merges
+            fi
+          done
+          dev_old=$(git rev-parse origin/${DEV_BRANCH} || echo "NONE")
+          dev_new=$(git rev-parse new-dev)
+          echo "dev_old: $dev_old"
+          echo "dev_new: $dev_new"
+          if [[ $dev_old != $dev_new ]]; then
+            echo "::set-output name=dopush,::true"
+          else
+            echo "dev unchanged. Nothing to push"
+          fi
+      - name: push dev
+        id: push_dev
+        if: steps.build_dev.outputs.dopush
+        # push may fail if multiple invocations of the autodev workflow run in parallel.
+        # Github may work on preventing parallel runs of workflows in some future
+        # (see https://github.community/t5/GitHub-Actions/Prevent-parallel-workflows/td-p/32889)
+        # however until then we have to do it this way to not mark PRs as failed or something
+        continue-on-error: true
+        run: |
+          : ${GITHUB_USER:=$GITHUB_ACTOR}
+          remote_repo="https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "$remote_repo" HEAD:${DEV_BRANCH} -f &&
+          echo "::set-output name=success,::true"
+      - name: label PRs
+        if: steps.push_dev.outputs.success
+        run: |
+          ghcurl() {  curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "$@"; }
+          cat failed_merges | while read iss; do
+             ghcurl -d '{"labels":["${LABEL_FAILED}"]}' -X POST "$iss/labels"
+             ghcurl -X DELETE "$iss/labels/${LABEL_SUCCESS// /%20}"
+             echo "label $iss as failed..."
+          done
+          echo --
+          cat successful_merges | while read iss; do
+             echo "label $iss as successful..."
+             ghcurl -d '{"labels":["${LABEL_SUCCESS}"]}' -X POST "$iss/labels"
+             ghcurl -X DELETE "$iss/labels/${LABEL_FAILED// /%20}"
+          done
