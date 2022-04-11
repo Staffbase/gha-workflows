@@ -40,7 +40,7 @@ on:
 jobs:
   update_release_draft:
     uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@<version>
-    with:
+    secrets:
       token: ${{ secrets.DEV_PUSH_TOKEN }}
 ```
 </details>

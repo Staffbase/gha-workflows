@@ -40,11 +40,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ inputs.token }}
+          token: ${{ secrets.token }}
           fetch-depth: 0
 
       - name: Autodev
-        uses: staffbase/autodev-action@v1
+        uses: staffbase/autodev-action@v1.3.0
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
@@ -52,5 +52,5 @@ jobs:
           email: ${{ inputs.email }}
           label: ${{ inputs.label }}
           optimistic: true
-          token: ${{ inputs.token }}
+          token: ${{ secrets.token }}
           user: ${{ inputs.user }}
