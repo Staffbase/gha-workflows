@@ -11,7 +11,7 @@ on:
         required: false
         type: string
       comments:
-        default: 'false'
+        default: false
         required: false
         type: boolean
       email:
@@ -22,13 +22,13 @@ on:
         default: 'dev'
         required: false
         type: string
-      token:
-        required: true
-        type: string
       user:
         default: 'AutoDev Action'
         required: false
         type: string
+    secrets:
+      token:
+        required: true
 
 jobs:
   autodev:
