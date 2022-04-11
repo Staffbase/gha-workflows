@@ -42,7 +42,6 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@<version>
     with:
       token: ${{ secrets.DEV_PUSH_TOKEN }}
-      user: ${{ secrets.DEV_PUSH_USER }}
 ```
 </details>
 
@@ -63,6 +62,7 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_autodev_script.yml@<version>
     with:
       token: ${{ secrets.DEV_PUSH_TOKEN }}
+      user: ${{ secrets.DEV_PUSH_USER }}
 ```
 </details>
 
