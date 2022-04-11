@@ -32,8 +32,8 @@ on:
 jobs:
   autodev:
     env:
-      GITHUB_TOKEN: ${{ inputs.token }}
-      GITHUB_USER: ${{ inputs.user }}
+      GITHUB_TOKEN: ${{ secrets.token }}
+      GITHUB_USER: ${{ secrets.user }}
       DEV_BRANCH: ${{ inputs.branch }}
       LABEL: ${{ inputs.label }}
       LABEL_SUCCESS: ${{ inputs.label_success }}
