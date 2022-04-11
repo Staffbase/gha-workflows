@@ -1,0 +1,56 @@
+name: Autodev
+on:
+  workflow_call:
+    inputs:
+      base:
+        default: 'master'
+        required: false
+        type: string
+      branch:
+        default: 'dev'
+        required: false
+        type: string
+      comments:
+        default: 'false'
+        required: false
+        type: boolean
+      email:
+        default: 'staffbot@staffbase.com'
+        required: false
+        type: string
+      label:
+        default: 'dev'
+        required: false
+        type: string
+      token:
+        required: true
+        type: string
+      user:
+        default: 'AutoDev Action'
+        required: false
+        type: string
+
+jobs:
+  autodev:
+
+    name: Build Dev Branch
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ inputs.token }}
+          fetch-depth: 0
+
+      - name: Autodev
+        uses: staffbase/autodev-action@v1
+        with:
+          base: ${{ inputs.base }}
+          branch: ${{ inputs.branch }}
+          comments: ${{ inputs.comments }}
+          email: ${{ inputs.email }}
+          label: ${{ inputs.label }}
+          optimistic: true
+          token: ${{ inputs.token }}
+          user: ${{ inputs.user }}
