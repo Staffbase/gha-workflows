@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       base:
-        default: 'master'
+        default: 'main'
         required: false
         type: string
       branch:
