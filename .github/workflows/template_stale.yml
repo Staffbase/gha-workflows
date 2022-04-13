@@ -12,7 +12,7 @@ on:
         required: false
         type: number
       delete-branch:
-        default: 'true'
+        default: true
         required: false
         type: boolean
       exempt-pr-labels:
