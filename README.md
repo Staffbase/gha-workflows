@@ -23,6 +23,28 @@ jobs:
 
 In the next sections you can find examples for the template workflows. For more information, please take a look at the templates.
 
+### AutoDev
+
+<details>
+<summary>The action can be used to merge labeled pull requests into a branch.</summary>
+
+```yml
+name: Autodev
+on:
+  push:
+    branches-ignore:
+      - dev
+  pull_request:
+    types: [labeled, unlabeled, opened, closed]
+
+jobs:
+  autodev:
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@<version>
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+```
+</details>
+
 ### Release Drafter
 
 <details>
