@@ -7,9 +7,9 @@ on:
         required: false
         type: string
       publish:
-        default: 'false'
+        default: false
         required: false
-        type: string
+        type: boolean
       tag:
         required: false
         type: string
