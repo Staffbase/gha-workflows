@@ -1,6 +1,10 @@
 name: SonarCloud
 on:
   workflow_call:
+    inputs:
+      path:
+        type: string
+        required: true
     secrets:
       token:
         required: true
@@ -19,6 +23,12 @@ jobs:
         with:
           token: ${{ secrets.token }}
           fetch-depth: 0
+
+      - name: Cache Coverage Data
+        uses: actions/cache@v3.0.2
+        with:
+          path: ${{ inputs.path }}
+          key: ${{ runner.os }}-coverage-data
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v1.6
