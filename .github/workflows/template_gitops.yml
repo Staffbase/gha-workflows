@@ -6,6 +6,7 @@ on:
       image:
         required: true
         type: string
+        default: private/${{ github.event.repository.name }}
       gitopsdev:
         required: false
         default: |-
