@@ -3,10 +3,10 @@ name: GitOps
 on:
   workflow_call:
     inputs:
-      image:
+      dockerbuildargs:
         required: false
+        default: ""
         type: string
-        default: private/${{ github.event.repository.name }}
       gitopsdev:
         required: false
         default: |-
@@ -23,12 +23,16 @@ on:
           kubernetes/namespaces/${{ github.event.repository.name }}/prod/main-de1/${{ github.event.repository.name }}-deploy.yaml spec.template.spec.containers.${{ github.event.repository.name }}.image
           kubernetes/namespaces/${{ github.event.repository.name }}/prod/main-us1/${{ github.event.repository.name }}-deploy.yaml spec.template.spec.containers.${{ github.event.repository.name }}.image
         type: string
+      image:
+        required: false
+        type: string
+        default: private/${{ github.event.repository.name }}
     secrets:
-      gitops_token:
-        required: true
       docker_username:
         required: true
       docker_password:
+        required: true
+      gitops_token:
         required: true
 
 jobs:
