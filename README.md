@@ -64,6 +64,43 @@ jobs:
 ```
 </details>
 
+### Sonarcloud
+
+<details>
+<summary>The action can be used to analyze a project with sonarcloud.</summary>
+
+```yml
+name: Sonarcloud
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+jobs:
+  stale:
+    uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@<version>
+    with:
+      path: <path-to-cached-coverage-file>
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      sonar_token: <your_token>
+```
+
+It is necessary that the coverage file is cached with the following code:
+
+```yml
+- name: Cache Coverage Data
+  uses: actions/cache@v3.0.2
+  with:
+    path: <path-to-cached-coverage-file>
+    key: ${{ runner.os }}-coverage-data
+```
+
+</details>
+
 ### Stale
 
 <details>
