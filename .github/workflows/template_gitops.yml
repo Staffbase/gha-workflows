@@ -3,25 +3,14 @@ name: GitOps
 on:
   workflow_call:
     inputs:
-      dockerbuildargs:
-        required: false
-        default: ""
-        type: string
       gitopsdev:
         required: false
-        default: |-
-          kubernetes/namespaces/${{ github.event.repository.name }}/dev/de1/${{ github.event.repository.name }}-deploy.yaml spec.template.spec.containers.${{ github.event.repository.name }}.image
         type: string
       gitopsstage:
         required: false
-        default: |-
-          kubernetes/namespaces/${{ github.event.repository.name }}/stage/de1/${{ github.event.repository.name }}-deploy.yaml spec.template.spec.containers.${{ github.event.repository.name }}.image
         type: string
       gitopsprod:
         required: false
-        default: |-
-          kubernetes/namespaces/${{ github.event.repository.name }}/prod/main-de1/${{ github.event.repository.name }}-deploy.yaml spec.template.spec.containers.${{ github.event.repository.name }}.image
-          kubernetes/namespaces/${{ github.event.repository.name }}/prod/main-us1/${{ github.event.repository.name }}-deploy.yaml spec.template.spec.containers.${{ github.event.repository.name }}.image
         type: string
       image:
         required: false
