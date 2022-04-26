@@ -86,7 +86,7 @@ jobs:
       path: <path-to-cached-coverage-file>
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
-      sonar_token: <your_token>
+      sonar_token: ${{ <your_token> }}
 ```
 
 It is necessary that the coverage file is cached with the following code:
