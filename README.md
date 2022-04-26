@@ -41,7 +41,7 @@ jobs:
   autodev:
     uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@<version>
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ <your-token> }}
 ```
 </details>
 
@@ -93,7 +93,7 @@ It is necessary that the coverage file is cached with the following code:
 
 ```yml
 - name: Cache Coverage Data
-  uses: actions/cache@v3.0.2
+  uses: actions/cache@<version>
   with:
     path: <path-to-cached-coverage-file>
     key: ${{ runner.os }}-coverage-data
