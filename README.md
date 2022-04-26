@@ -80,7 +80,7 @@ on:
       - '**'
 
 jobs:
-  stale:
+  sonarcloud:
     uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@<version>
     with:
       path: <path-to-cached-coverage-file>
