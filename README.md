@@ -41,7 +41,7 @@ jobs:
   autodev:
     uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@<version>
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ <your-token> }}
 ```
 </details>
 
@@ -62,6 +62,43 @@ jobs:
   update_release_draft:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@<version>
 ```
+</details>
+
+### Sonarcloud
+
+<details>
+<summary>The action can be used to analyze a project with sonarcloud.</summary>
+
+```yml
+name: Sonarcloud
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+jobs:
+  sonarcloud:
+    uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@<version>
+    with:
+      path: <path-to-cached-coverage-file>
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      sonar_token: ${{ <your_token> }}
+```
+
+It is necessary that the coverage file is cached with the following code:
+
+```yml
+- name: Cache Coverage Data
+  uses: actions/cache@<version>
+  with:
+    path: <path-to-cached-coverage-file>
+    key: ${{ runner.os }}-coverage-data
+```
+
 </details>
 
 ### Stale
