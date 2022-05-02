@@ -59,8 +59,14 @@ on:
 jobs:
   jira_annotate:
     uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@<version>
+    with:
+      name: 'component name'
     secrets:
-      token: ${{ <your-token> }}
+      collector_key: ${{ <your-token> }}
+      tagging_key: ${{ <your-token> }}
+      jira_url: ${{ <your-token> }}
+      jira_token: ${{ <your-token> }}
+      jira_email: ${{ <your-token> }}
 ```
 </details>
 
