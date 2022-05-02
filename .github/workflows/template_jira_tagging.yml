@@ -1,0 +1,67 @@
+name: Annotate Jira Issues
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      tag_matcher:
+        required: false
+        type: string
+    secrets:
+      collector_key:
+        required: true
+      tagging_key:
+        required: true
+      jira_url:
+        required: true
+      jira_token:
+        required: true
+      jira_email:
+        required: true
+
+jobs:
+  jira-annotate:
+
+    name: Annotate all occurring tickets since last release-tag
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Checkout Staffbase/github-action-issue-id-collection
+        uses: actions/checkout@v3
+        with:
+          repository: Staffbase/github-action-issue-id-collection
+          ssh-key: ${{ secrets.collector_key }}
+          ref: master
+          path: github-action-issue-id-collection
+
+      - name: Checkout Staffbase/github-action-jira-release-tagging
+        uses: actions/checkout@v3
+        with:
+          repository: Staffbase/github-action-jira-release-tagging
+          ssh-key: ${{ secrets.tagging_key }}
+          ref: master
+          path: github-action-jira-release-tagging
+
+      - name: fetchTicketIds
+        id: fetchTicketIds
+        uses: ./github-action-issue-id-collection
+        env:
+          TAG_MATCHER: ${{ inputs.tag_matcher }}
+
+      - name: Add release notes to JIRA tickets
+        uses: ./github-action-jira-release-tagging
+        env:
+          JIRA_BASEURL: ${{ secrets.jira_url }}
+          JIRA_TOKEN: ${{ secrets.jira_token }}
+          JIRA_EMAIL: ${{ secrets.jira_email }}
+        with:
+          issueIds: ${{ steps.fetchTicketIds.outputs.tIDs }}
+          componentName: ${{ inputs.name }}
+          tagName: ${{ steps.fetchTicketIds.outputs.tagName }}

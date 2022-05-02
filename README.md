@@ -45,6 +45,25 @@ jobs:
 ```
 </details>
 
+### Jira Ticket Tagging
+
+<details>
+<summary>The action can be used to tag jira issues.</summary>
+
+```yml
+name: Annotate Jira Issues
+on:
+  push:
+    tags: ['**']
+
+jobs:
+  jira_annotate:
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@<version>
+    secrets:
+      token: ${{ <your-token> }}
+```
+</details>
+
 ### Release Drafter
 
 <details>
