@@ -48,7 +48,10 @@ jobs:
 ### Jira Ticket Tagging
 
 <details>
-<summary>The action can be used to tag jira issues.</summary>
+<summary>
+The action can be used to collect all jira issues between the last two tags created.
+Then the jira issues will be updated with a release date and the labels will be tagged with the current tag name.
+</summary>
 
 ```yml
 name: Annotate Jira Issues
