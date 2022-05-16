@@ -73,6 +73,25 @@ jobs:
 ```
 </details>
 
+### GitOps
+
+<details>
+<summary>The action can be used to build and publish a docker image.</summary>
+
+```yml
+name: GitOps
+on: [push]
+
+jobs:
+  gitops:
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@<version>
+    secrets:
+      gitops_token: ${{ <your-gitops-token> }}
+      docker_username: ${{ <your-docker-username> }}
+      docker_password: ${{ <your-docker-password> }}
+```
+</details>
+
 ### Release Drafter
 
 <details>
