@@ -5,6 +5,9 @@ on:
       path:
         type: string
         required: true
+      args:
+        type: string
+        required: false
     secrets:
       token:
         required: true
@@ -35,3 +38,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
           SONAR_TOKEN: ${{ secrets.sonar_token }}
+        with:
+          args: ${{ inputs.args }}
