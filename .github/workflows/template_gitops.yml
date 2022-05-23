@@ -3,6 +3,12 @@ name: GitOps
 on:
   workflow_call:
     inputs:
+      dockerbuildargs:
+        required: false
+        type: string
+      dockerbuildtarget:
+        required: false
+        type: string
       gitopsdev:
         required: false
         type: string
@@ -36,18 +42,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: actions/checkout@v3
-        with:
-          repository: Staffbase/gitops-github-action
-          ref: v3
-          token: ${{ secrets.gitops_token }}
-          path: .github/gitops
-
       - name: GitOps (build, push and deploy a new Docker image)
-        uses: ./.github/gitops
+        uses: Staffbase/gitops-github-action@v3
         with:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
+          dockerbuildargs: ${{ inputs.dockerbuildargs }}
+          dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
           gitopstoken: ${{ secrets.gitops_token }}
           gitopsdev: ${{ inputs.gitopsdev }}
