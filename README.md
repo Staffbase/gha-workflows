@@ -44,14 +44,14 @@ jobs:
       token: ${{ <your-token> }}
 ```
 
-| Property | Required | Default | Type |
-|----------|--------|--------|-----|
-| base | false | main | string |
-| branch | false | dev | string |
-| comments | false | false | boolean |
-| email | false | staffbot@staffbase.com | string |
-| label | false | dev | string |
-| user | false | AutoDev Action |string |
+| Property | Required | Type | Default |
+|---|---|---|---|
+| base | false | string | `main` |
+| branch | false | string | `dev` |
+| comments | false | boolean | `false` |
+| email | false | string | `bot@example.com` |
+| label | false | string | `dev` |
+| user | false | string | `AutoDev Action` |
 
 </details>
 
