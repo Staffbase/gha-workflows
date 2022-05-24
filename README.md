@@ -161,6 +161,8 @@ jobs:
 <details>
 <summary>The action can be used to analyze a project with sonarcloud.</summary>
 
+If you want to use this action you need to add the project metadata in the file `sonar-project.properties` in the base directory.
+
 ```yml
 name: Sonarcloud
 
@@ -173,11 +175,17 @@ on:
 
 jobs:
   sonarcloud:
-    uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@v1.3.0
     with:
+      # path to the cached coverage file
       path: <path-to-cached-coverage-file>
+      # optional: additional arguments for action
+      args: >
+        your commands
     secrets:
+      # token to access pull request
       token: ${{ secrets.GITHUB_TOKEN }}
+      # token to access sonarcloud
       sonar_token: ${{ <your_token> }}
 ```
 
@@ -185,7 +193,7 @@ It is necessary that the coverage file is cached with the following code:
 
 ```yml
 - name: Cache Coverage Data
-  uses: actions/cache@<version>
+  uses: actions/cache@v3.0.2
   with:
     path: <path-to-cached-coverage-file>
     key: ${{ runner.os }}-coverage-data
