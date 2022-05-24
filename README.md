@@ -96,10 +96,30 @@ on: [push]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.3.0
+    with:
+      # list of build-time variables, default: nothing
+      dockerbuildargs: |
+        "any important args"
+      # set the target stage to build, default: nothing
+      dockerbuildtarget: "any target"
+      # name of the docker image, default: private/<repository_name>
+      dockerimage: ${{ inputs.image }}
+      # files whoch should be updated for dev
+      gitopsdev: |-
+        your files
+      # files whoch should be updated for stage
+      gitopsstage: |-
+        your files
+      # files whoch should be updated for prod
+      gitopsprod: |-
+        your files
     secrets:
+      # token to access the repository
       gitops_token: ${{ <your-gitops-token> }}
+      # username for the docker registry
       docker_username: ${{ <your-docker-username> }}
+      # password for the docker registry
       docker_password: ${{ <your-docker-password> }}
 ```
 </details>
