@@ -49,7 +49,7 @@ jobs:
 | base | false | string | `main` |
 | branch | false | string | `dev` |
 | comments | false | boolean | `false` |
-| email | false | string | `bot@example.com` |
+| email | false | string | `staffbot@staffbase.com` |
 | label | false | string | `dev` |
 | user | false | string | `AutoDev Action` |
 
