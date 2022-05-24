@@ -39,20 +39,19 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v1.3.0
+    with:
+      # base branch from which the history originates, default: main
+      base: master
+      # update status comment, default: false
+      # if you want to change the message, please adapt 'success_comment' and/or 'failure_comment'
+      comments: true
+      # update status label, default: false
+      # if you want to change the labels, please adapt 'success_label' and/or 'failure_label'
+      labels: true
     secrets:
       token: ${{ <your-token> }}
 ```
-
-| Property | Required | Type | Default |
-|---|---|---|---|
-| base | false | string | `main` |
-| branch | false | string | `dev` |
-| comments | false | boolean | `false` |
-| email | false | string | `staffbot@staffbase.com` |
-| label | false | string | `dev` |
-| user | false | string | `AutoDev Action` |
-
 </details>
 
 ### Jira Ticket Tagging
