@@ -50,6 +50,7 @@ jobs:
       # if you want to change the labels, please adapt 'success_label' and/or 'failure_label'
       labels: true
     secrets:
+      # token to fetch the pull requests
       token: ${{ <your-token> }}
 ```
 </details>
@@ -70,12 +71,16 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v1.3.0
     with:
+      # name of the service to add as label
       name: 'component name'
     secrets:
+      # basic url for jira api
       jira_url: ${{ <your-url> }}
+      # api token for usage of jira
       jira_token: ${{ <your-token> }}
+      # email of the api token owner
       jira_email: ${{ <your-email> }}
 ```
 </details>
