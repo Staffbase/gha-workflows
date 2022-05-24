@@ -43,6 +43,16 @@ jobs:
     secrets:
       token: ${{ <your-token> }}
 ```
+
+| Property | Required | Type | Default |
+|---|---|---|---|
+| base | false | string | `main` |
+| branch | false | string | `dev` |
+| comments | false | boolean | `false` |
+| email | false | string | `bot@example.com` |
+| label | false | string | `dev` |
+| user | false | string | `AutoDev Action` |
+
 </details>
 
 ### Jira Ticket Tagging
