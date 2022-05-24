@@ -215,7 +215,20 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v1.3.0
+    with:
+      # optional: comment on the stale pull request while closed, default: This stale PR was closed because there was no activity.
+      close-pr-message: your message
+      # optional: idle number of days before marking pull requests stale, default: 60
+      days-before-stale: 30
+      # optional: delete branch after closing the pull request, default: true
+      delete-branch: false
+      # optional: labels on pull requests exempted from stale
+      exempt-pr-labels: your labels
+      # optional: label to apply on staled pull requests, default: stale
+      stale-pr-label: staling
+      # optional: comment on the staled pull request, default: This PR has been automatically marked as stale because there has been no recent activity in the last 60 days. It will be closed in 7 days if no further activity occurs such as removing the label.
+      stale-pr-message: your message
 ```
 </details>
 
