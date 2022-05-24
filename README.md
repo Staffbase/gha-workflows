@@ -249,7 +249,12 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v1.3.0
+    with:
+      # optional: name of the running action, default: yamllint / yamllint
+      action-name: your name
+      # path which files should be checked recursively, default: .
+      target-path: your path
 ```
 </details>
 
