@@ -43,47 +43,23 @@ jobs:
     with:
       # optional: base branch from which the history originates, default: main
       base: master
+      # optional: name of the dev branch, default: dev
+      branch: your dev branch
       # optional: update status comment, default: false
       # if you want to change the message, please adapt 'success_comment' and/or 'failure_comment'
       comments: true
       # optional: update status label, default: false
       # if you want to change the labels, please adapt 'success_label' and/or 'failure_label'
       labels: true
+      # optional: label which should trigger the action, default: dev
+      label: deploy
+      # optional: name of the user which does the commit, default: AutoDev Action
+      user: your name
+      # optional: mail of the user which doe the commit, default: staffbot@staffbase.com
+      email: your mail
     secrets:
       # token to fetch the pull requests
       token: ${{ <your-token> }}
-```
-</details>
-
-### Jira Ticket Tagging
-
-<details>
-<summary>
-The action can be used to collect all jira issues between the last two tags created.
-Then the jira issues will be updated with a release date and the labels will be tagged with the current tag name.
-</summary>
-
-```yml
-name: Annotate Jira Issues
-on:
-  push:
-    tags: ['**']
-
-jobs:
-  jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v1.3.0
-    with:
-      # name of the service to add as label
-      name: 'component name'
-      # optional: regex to match the tags
-      tag_matcher: your regex
-    secrets:
-      # basic url for jira api
-      jira_url: ${{ <your-url> }}
-      # api token for usage of jira
-      jira_token: ${{ <your-token> }}
-      # email of the api token owner
-      jira_email: ${{ <your-email> }}
 ```
 </details>
 
@@ -123,6 +99,38 @@ jobs:
       docker_username: ${{ <your-docker-username> }}
       # password for the docker registry
       docker_password: ${{ <your-docker-password> }}
+```
+</details>
+
+### Jira Ticket Tagging
+
+<details>
+<summary>
+The action can be used to collect all jira issues between the last two tags created.
+Then the jira issues will be updated with a release date and the labels will be tagged with the current tag name.
+</summary>
+
+```yml
+name: Annotate Jira Issues
+on:
+  push:
+    tags: ['**']
+
+jobs:
+  jira_annotate:
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v1.3.0
+    with:
+      # name of the service to add as label
+      name: 'component name'
+      # optional: regex to match the tags
+      tag_matcher: your regex
+    secrets:
+      # basic url for jira api
+      jira_url: ${{ <your-url> }}
+      # api token for usage of jira
+      jira_token: ${{ <your-token> }}
+      # email of the api token owner
+      jira_email: ${{ <your-email> }}
 ```
 </details>
 
@@ -253,7 +261,7 @@ jobs:
     with:
       # optional: name of the running action, default: yamllint / yamllint
       action-name: your name
-      # path which files should be checked recursively, default: .
+      # optional: path which files should be checked recursively, default: .
       target-path: your path
 ```
 </details>
