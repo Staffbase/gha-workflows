@@ -55,7 +55,7 @@ jobs:
       label: deploy
       # optional: name of the user which does the commit, default: AutoDev Action
       user: your name
-      # optional: mail of the user which doe the commit, default: staffbot@staffbase.com
+      # optional: mail of the user which does the commit, default: staffbot@staffbase.com
       email: your mail
     secrets:
       # token to fetch the pull requests
@@ -127,7 +127,7 @@ jobs:
     secrets:
       # basic url for jira api
       jira_url: ${{ <your-url> }}
-      # api token for usage of jira
+      # api token for jira usage
       jira_token: ${{ <your-token> }}
       # email of the api token owner
       jira_email: ${{ <your-email> }}
@@ -140,6 +140,7 @@ jobs:
 <summary>The action can be used to draft automatically a new release.</summary>
 
 If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
+More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
 
 ```yml
 name: Release Drafter
@@ -170,6 +171,7 @@ jobs:
 <summary>The action can be used to analyze a project with sonarcloud.</summary>
 
 If you want to use this action you need to add the project metadata in the file `sonar-project.properties` in the base directory.
+More information on how to set this up can be found [here](https://github.com/SonarSource/sonarcloud-github-action#usage).
 
 ```yml
 name: Sonarcloud
