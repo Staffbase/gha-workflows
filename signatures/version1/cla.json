@@ -1,3 +1,12 @@
 {
-   "signedContributors": []
+  "signedContributors": [
+    {
+      "name": "linda-knechtel",
+      "id": 77050811,
+      "comment_id": 1135709083,
+      "created_at": "2022-05-24T10:09:13Z",
+      "repoId": 467032485,
+      "pullRequestNo": 29
+    }
+  ]
 }
