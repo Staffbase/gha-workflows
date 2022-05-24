@@ -14,7 +14,7 @@ on:
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v1.3.0
     with:
       ...
 ```
@@ -41,12 +41,12 @@ jobs:
   autodev:
     uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v1.3.0
     with:
-      # base branch from which the history originates, default: main
+      # optional: base branch from which the history originates, default: main
       base: master
-      # update status comment, default: false
+      # optional: update status comment, default: false
       # if you want to change the message, please adapt 'success_comment' and/or 'failure_comment'
       comments: true
-      # update status label, default: false
+      # optional: update status label, default: false
       # if you want to change the labels, please adapt 'success_label' and/or 'failure_label'
       labels: true
     secrets:
@@ -75,6 +75,8 @@ jobs:
     with:
       # name of the service to add as label
       name: 'component name'
+      # optional: regex to match the tags
+      tag_matcher: your regex
     secrets:
       # basic url for jira api
       jira_url: ${{ <your-url> }}
@@ -98,20 +100,20 @@ jobs:
   gitops:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.3.0
     with:
-      # list of build-time variables, default: nothing
+      # optional: list of build-time variables
       dockerbuildargs: |
         "any important args"
-      # set the target stage to build, default: nothing
+      # optional: set the target stage to build
       dockerbuildtarget: "any target"
-      # name of the docker image, default: private/<repository_name>
+      # optional: name of the docker image, default: private/<repository_name>
       dockerimage: ${{ inputs.image }}
-      # files whoch should be updated for dev
+      # optional: files which should be updated for dev
       gitopsdev: |-
         your files
-      # files whoch should be updated for stage
+      # optional: files which should be updated for stage
       gitopsstage: |-
         your files
-      # files whoch should be updated for prod
+      # optional: files which should be updated for prod
       gitopsprod: |-
         your files
     secrets:
@@ -129,6 +131,8 @@ jobs:
 <details>
 <summary>The action can be used to draft automatically a new release.</summary>
 
+If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
+
 ```yml
 name: Release Drafter
 
@@ -139,7 +143,16 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@<version>
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v1.3.0
+    with: 
+      # optional: name of the release
+      name: Version X.Y.Z
+      # optional: should the release be published, default: false
+      publish: true
+      # optional: tag name of the release
+      tag: vX.Y.Z
+      # optional: version to be associated with the release
+      version: X.Y.Z
 ```
 </details>
 
