@@ -18,8 +18,26 @@ on:
         default: 'staffbot@staffbase.com'
         required: false
         type: string
+      failure_comment:
+        required: false
+        type: string
+      failure_label:
+        default: 'failed'
+        required: false
+        type: string
       label:
         default: 'dev'
+        required: false
+        type: string
+      labels:
+        default: false
+        required: false
+        type: boolean
+      success_comment:
+        required: false
+        type: string
+      success_label:
+        default: 'successful'
         required: false
         type: string
       user:
@@ -44,13 +62,18 @@ jobs:
           fetch-depth: 0
 
       - name: Autodev
-        uses: staffbase/autodev-action@v1.2.3
+        uses: staffbase/autodev-action@v1.4.0
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
           comments: ${{ inputs.comments }}
           email: ${{ inputs.email }}
+          failure_comment: ${{ inputs.failure_comment }}
+          failure_label: ${{ inputs.failure_label }}
           label: ${{ inputs.label }}
+          labels: ${{ inputs.labels }}
           optimistic: true
+          success_comment: ${{ inputs.success_comment }}
+          success_label: ${{ inputs.success_label }}
           token: ${{ secrets.token }}
           user: ${{ inputs.user }}

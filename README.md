@@ -75,8 +75,6 @@ jobs:
     with:
       name: 'component name'
     secrets:
-      collector_key: ${{ <your-key> }}
-      tagging_key: ${{ <your-key> }}
       jira_url: ${{ <your-url> }}
       jira_token: ${{ <your-token> }}
       jira_email: ${{ <your-email> }}

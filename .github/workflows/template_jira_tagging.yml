@@ -10,10 +10,6 @@ on:
         required: false
         type: string
     secrets:
-      collector_key:
-        required: true
-      tagging_key:
-        required: true
       jira_url:
         required: true
       jira_token:
@@ -33,30 +29,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout Staffbase/github-action-issue-id-collection
-        uses: actions/checkout@v3
-        with:
-          repository: Staffbase/github-action-issue-id-collection
-          ssh-key: ${{ secrets.collector_key }}
-          ref: master
-          path: github-action-issue-id-collection
-
-      - name: Checkout Staffbase/github-action-jira-release-tagging
-        uses: actions/checkout@v3
-        with:
-          repository: Staffbase/github-action-jira-release-tagging
-          ssh-key: ${{ secrets.tagging_key }}
-          ref: master
-          path: github-action-jira-release-tagging
-
-      - name: fetchTicketIds
+      - name: Fetch ticket Ids
         id: fetchTicketIds
-        uses: ./github-action-issue-id-collection
+        uses: Staffbase/github-action-issue-id-collection@v1.0.0
         env:
           TAG_MATCHER: ${{ inputs.tag_matcher }}
 
       - name: Add release notes to JIRA tickets
-        uses: ./github-action-jira-release-tagging
+        uses: Staffbase/github-action-jira-release-tagging@v1.0.0
         env:
           JIRA_BASEURL: ${{ secrets.jira_url }}
           JIRA_TOKEN: ${{ secrets.jira_token }}
