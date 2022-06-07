@@ -16,6 +16,8 @@ on:
       version:
         required: false
         type: string
+    outputs:
+      tag_name: ${{ jobs.update_release_draft.outputs.tag_name }}
 
 jobs:
   update_release_draft:
@@ -23,8 +25,12 @@ jobs:
     name: update release draft
     runs-on: ubuntu-20.04
 
+    outputs:
+      tag_name: ${{ steps.release_drafter.outputs.tag_name }}
+
     steps:
       - name: Update Release
+        id: release_drafter
         uses: release-drafter/release-drafter@v5
         with:
           name: ${{ inputs.name }}
