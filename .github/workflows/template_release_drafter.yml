@@ -17,7 +17,9 @@ on:
         required: false
         type: string
     outputs:
-      tag_name: ${{ jobs.update_release_draft.outputs.tag_name }}
+      tag_name:
+        description: "name of the tag associated with this release"
+        value: "${{ jobs.update_release_draft.outputs.tag_name }}
 
 jobs:
   update_release_draft:
