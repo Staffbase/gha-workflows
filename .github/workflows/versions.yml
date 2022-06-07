@@ -24,6 +24,7 @@ jobs:
           base: main
           labels: |
             documentation
+            patch
           branch: update-readme
           add-paths: |
             README.md
