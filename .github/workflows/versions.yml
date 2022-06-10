@@ -1,0 +1,28 @@
+name: Update Readme Versions
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update_readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the source code
+        uses: actions/checkout@v3
+      - name: Find and Replace old versions
+        run: |
+          sed -i -E 's/(v[0-9]+.[0-9]+.[0-9]+)/${{ github.ref_name }}/g' README.md
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: ":memo: Update Readme Versions"
+          body: "all versions in the readme file are bumped"
+          commit-message: ":memo: update readme versions"
+          base: main
+          labels: |
+            documentation
+            patch
+          branch: update-readme
+          add-paths: |
+            README.md
