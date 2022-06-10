@@ -203,7 +203,7 @@ It is necessary that the coverage file is cached with the following code:
 
 ```yml
 - name: Cache Coverage Data
-  uses: actions/cache@v1.3.1
+  uses: actions/cache@v3.0.2
   with:
     path: <path-to-cached-coverage-file>
     key: ${{ runner.os }}-coverage-data
