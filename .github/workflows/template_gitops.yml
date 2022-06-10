@@ -42,8 +42,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - uses: actions/checkout@v3
+        with:
+          repository: Staffbase/gitops-github-action
+          ref: v3
+          path: .github/gitops
+
       - name: GitOps (build, push and deploy a new Docker image)
-        uses: Staffbase/gitops-github-action@v3
+        uses: ./.github/gitops
         with:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
