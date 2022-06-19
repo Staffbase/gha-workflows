@@ -9,6 +9,10 @@ on:
       dockerbuildtarget:
         required: false
         type: string
+      dockerenabled:
+        required: false
+        type: boolean
+        default: true
       gitopsdev:
         required: false
         type: string
@@ -53,6 +57,7 @@ jobs:
         with:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
+          dockerenabled: ${{ secrets.dockerenabled }}
           dockerbuildargs: ${{ inputs.dockerbuildargs }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
