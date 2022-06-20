@@ -14,7 +14,7 @@ on:
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v1.4.0
     with:
       ...
 ```
@@ -39,7 +39,7 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v1.4.0
     with:
       # optional: base branch from which the history originates, default: main
       base: master
@@ -74,7 +74,7 @@ on: [ push ]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.4.0
     with:
       # optional: build and push the Docker image, default: true
       dockerenabled: false
@@ -120,7 +120,7 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v1.4.0
     with:
       # name of the service to add as label
       name: 'component name'
@@ -154,7 +154,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v1.4.0
     with: 
       # optional: name of the release
       name: Version X.Y.Z
@@ -187,7 +187,7 @@ on:
 
 jobs:
   sonarcloud:
-    uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@v1.4.0
     with:
       # path to the cached coverage file
       path: <path-to-cached-coverage-file>
@@ -227,7 +227,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v1.4.0
     with:
       # optional: comment on the stale pull request while closed, default: This stale PR was closed because there was no activity.
       close-pr-message: your message
@@ -261,7 +261,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v1.3.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v1.4.0
     with:
       # optional: name of the running action, default: yamllint / yamllint
       action-name: your name
