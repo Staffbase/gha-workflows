@@ -70,12 +70,14 @@ jobs:
 
 ```yml
 name: GitOps
-on: [push]
+on: [ push ]
 
 jobs:
   gitops:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.3.1
     with:
+      # optional: build and push the Docker image, default: true
+      dockerenabled: true or false
       # optional: list of build-time variables
       dockerbuildargs: |
         "any important args"
