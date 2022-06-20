@@ -74,7 +74,6 @@ jobs:
           failure_label: ${{ inputs.failure_label }}
           label: ${{ inputs.label }}
           labels: ${{ inputs.labels }}
-          optimistic: true
           success_comment: ${{ inputs.success_comment }}
           success_label: ${{ inputs.success_label }}
           token: ${{ secrets.token }}
