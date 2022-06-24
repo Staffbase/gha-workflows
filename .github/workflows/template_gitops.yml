@@ -57,7 +57,7 @@ jobs:
         with:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
-          dockerenabled: ${{ secrets.dockerenabled }}
+          dockerenabled: ${{ inputs.dockerenabled }}
           dockerbuildargs: ${{ inputs.dockerbuildargs }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
