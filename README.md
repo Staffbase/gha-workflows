@@ -194,6 +194,8 @@ jobs:
       # optional: additional arguments for action
       args: >
         your commands
+      # optional: analysis base directory 
+      projectBaseDir: <your directory>
     secrets:
       # token to access pull request
       token: ${{ secrets.GITHUB_TOKEN }}
