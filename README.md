@@ -84,7 +84,7 @@ jobs:
       # optional: set the target stage to build
       dockerbuildtarget: "any target"
       # optional: name of the docker image, default: private/<repository_name>
-      dockerimage: ${{ inputs.image }}
+      dockerimage: <your-image>
       # optional: files which should be updated for dev
       gitopsdev: |-
         your files
