@@ -28,11 +28,11 @@ on:
         default: private/${{ github.event.repository.name }}
     secrets:
       docker_username:
-        required: true
+        required: false
       docker_password:
-        required: true
+        required: false
       gitops_token:
-        required: true
+        required: false
 
 jobs:
   gitops:

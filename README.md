@@ -95,11 +95,11 @@ jobs:
       gitopsprod: |-
         your files
     secrets:
-      # token to access the repository
+      # optional: token to access the repository
       gitops_token: ${{ <your-gitops-token> }}
-      # username for the docker registry
+      # optional: username for the docker registry
       docker_username: ${{ <your-docker-username> }}
-      # password for the docker registry
+      # optional: password for the docker registry
       docker_password: ${{ <your-docker-password> }}
 ```
 </details>
