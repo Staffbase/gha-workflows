@@ -26,6 +26,9 @@ on:
         required: false
         type: string
         default: private/${{ github.event.repository.name }}
+      path:
+        required: false
+        type: string
     secrets:
       docker_username:
         required: true
@@ -51,6 +54,13 @@ jobs:
           repository: Staffbase/gitops-github-action
           ref: v3
           path: .github/gitops
+
+      - name: Cache Data
+        if: ${{ inputs.path != '' }}
+        uses: actions/cache@v3.0.2
+        with:
+          path: ${{ inputs.path }}
+          key: ${{ runner.os }}-gitops-data
 
       - name: GitOps (build, push and deploy a new Docker image)
         uses: ./.github/gitops
