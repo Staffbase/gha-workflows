@@ -26,7 +26,7 @@ on:
         required: false
         type: string
         default: private/${{ github.event.repository.name }}
-      path:
+      cache-path:
         required: false
         type: string
     secrets:
@@ -56,10 +56,10 @@ jobs:
           path: .github/gitops
 
       - name: Cache Data
-        if: ${{ inputs.path != '' }}
+        if: ${{ inputs.cache-path != '' }}
         uses: actions/cache@v3.0.2
         with:
-          path: ${{ inputs.path }}
+          path: ${{ inputs.cache-path }}
           key: ${{ runner.os }}-gitops-data
 
       - name: GitOps (build, push and deploy a new Docker image)
