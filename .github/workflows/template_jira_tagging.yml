@@ -6,6 +6,7 @@ on:
       name:
         required: true
         type: string
+        default: ${{ github.event.repository.name }}
       tag_matcher:
         required: false
         type: string
