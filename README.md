@@ -84,7 +84,7 @@ jobs:
       # optional: set the target stage to build
       dockerbuildtarget: "any target"
       # optional: name of the docker image, default: private/<repository_name>
-      dockerimage: ${{ inputs.image }}
+      dockerimage: <your-image>
       # optional: files which should be updated for dev
       gitopsdev: |-
         your files
@@ -194,6 +194,8 @@ jobs:
       # optional: additional arguments for action
       args: >
         your commands
+      # optional: analysis base directory 
+      projectBaseDir: <your directory>
     secrets:
       # token to access pull request
       token: ${{ secrets.GITHUB_TOKEN }}
