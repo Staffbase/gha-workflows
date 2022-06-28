@@ -122,7 +122,7 @@ jobs:
   jira_annotate:
     uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v1.4.0
     with:
-      # name of the service to add as label
+      # name of the service to add as label, default: name of the repository
       name: 'component name'
       # optional: regex to match the tags
       tag_matcher: your regex
