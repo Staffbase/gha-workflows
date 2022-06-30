@@ -101,6 +101,8 @@ jobs:
       docker_username: ${{ <your-docker-username> }}
       # password for the docker registry
       docker_password: ${{ <your-docker-password> }}
+      # optional: token to pull private npm packages
+      npm_token: ${{ <your-docker-password> }}
 ```
 </details>
 
@@ -283,10 +285,6 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## License 📄
 
 This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LICENSE) file for details.
-
-[1]: https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
-[2]: https://github.com/Staffbase/gha-workflows/releases
-
   
 <table>
   <tr>
@@ -300,3 +298,6 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LIC
     </td>
   </tr>
 </table>
+
+[1]: https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
+[2]: https://github.com/Staffbase/gha-workflows/releases

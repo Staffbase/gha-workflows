@@ -60,7 +60,7 @@ jobs:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
           dockerenabled: ${{ inputs.dockerenabled }}
-          dockerbuildargs: | 
+          dockerbuildargs: |
             ${{ inputs.dockerbuildargs }}
             NPM_TOKEN=${{ secrets.npm_token }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
