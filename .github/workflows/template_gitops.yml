@@ -35,6 +35,12 @@ on:
         required: true
       npm_token:
         required: false
+      buildcache_baseurl:
+        required: false
+      buildcache_user:
+        required: false
+      buildcache_password:
+        required: false
 
 jobs:
   gitops:
@@ -63,6 +69,9 @@ jobs:
           dockerbuildargs: |
             ${{ inputs.dockerbuildargs }}
             NPM_TOKEN=${{ secrets.npm_token }}
+            BUILDCACHE_BASEURL_ARG=${{ secrets.buildcache_baseurl }}
+            BUILDCACHE_USER_ARG=${{ secrets.buildcache_user }}
+            BUILDCACHE_PASSWORD_ARG=${{ secrets.buildcache_password }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
           gitopstoken: ${{ secrets.gitops_token }}
