@@ -33,6 +33,8 @@ on:
         required: true
       gitops_token:
         required: true
+      npm_token:
+        required: false
 
 jobs:
   gitops:
@@ -58,7 +60,9 @@ jobs:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
           dockerenabled: ${{ inputs.dockerenabled }}
-          dockerbuildargs: ${{ inputs.dockerbuildargs }}
+          dockerbuildargs: | 
+            ${{ inputs.dockerbuildargs }}
+            NPM_TOKEN=${{ secrets.npm_token }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
           gitopstoken: ${{ secrets.gitops_token }}
