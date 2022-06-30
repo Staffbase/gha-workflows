@@ -53,7 +53,7 @@ on:
 jobs:
   gitops:
 
-    name: Deploy
+    name: GitOps
     runs-on: ubuntu-20.04
 
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
