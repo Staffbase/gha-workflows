@@ -41,6 +41,10 @@ on:
         required: false
       gradle_cache_password:
         required: false
+    outputs:
+      tag:
+        description: tag of the docker image
+        value: ${{ jobs.gitops.outputs.tag }}
 
 jobs:
   gitops:
@@ -49,6 +53,9 @@ jobs:
     runs-on: ubuntu-20.04
 
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+
+    outputs:
+      tag: ${{ steps.gitops.outputs.dockertag }}
 
     steps:
       - name: Checkout
@@ -61,6 +68,7 @@ jobs:
           path: .github/gitops
 
       - name: GitOps (build, push and deploy a new Docker image)
+        id: gitops
         uses: ./.github/gitops
         with:
           dockerusername: ${{ secrets.docker_username }}
