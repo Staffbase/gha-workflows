@@ -16,6 +16,10 @@ on:
       gitopsdev:
         required: false
         type: string
+      gitopsenabled:
+        required: false
+        type: boolean
+        default: true
       gitopsstage:
         required: false
         type: string
@@ -83,6 +87,7 @@ jobs:
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
           gitopstoken: ${{ secrets.gitops_token }}
+          gitopsenabled: ${{ inputs.gitopsenabled }}
           gitopsdev: ${{ inputs.gitopsdev }}
           gitopsstage: ${{ inputs.gitopsstage }}
           gitopsprod: ${{ inputs.gitopsprod }}
