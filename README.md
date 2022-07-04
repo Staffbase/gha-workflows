@@ -85,8 +85,6 @@ jobs:
       dockerbuildtarget: "any target"
       # optional: name of the docker image, default: private/<repository_name>
       dockerimage: <your-image>
-      # optional: update manifest files in the GitOps repository, default: true
-      gitopsenabled: false
       # optional: files which should be updated for dev
       gitopsdev: |-
         your files
