@@ -62,6 +62,7 @@ jobs:
           dockerenabled: ${{ inputs.dockerenabled }}
           dockerbuildargs: |
             ${{ inputs.dockerbuildargs }}
+            # remove token if feature is available: https://github.com/github-community/community/discussions/17554
             NPM_TOKEN=${{ secrets.npm_token }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
