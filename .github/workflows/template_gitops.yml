@@ -35,11 +35,11 @@ on:
         required: true
       npm_token:
         required: false
-      gradle_cache_url:
+      buildcache_baseurl:
         required: false
-      gradle_cache_user:
+      buildcache_user:
         required: false
-      gradle_cache_password:
+      buildcache_password:
         required: false
 
 jobs:
@@ -69,9 +69,9 @@ jobs:
           dockerbuildargs: |
             ${{ inputs.dockerbuildargs }}
             NPM_TOKEN=${{ secrets.npm_token }}
-            BUILDCACHE_BASEURL_ARG=${{ secrets.gradle_cache_url }}
-            BUILDCACHE_USER_ARG=${{ secrets.gradle_cache_user }}
-            BUILDCACHE_PASSWORD_ARG=${{ secrets.gradle_cache_password }}
+            BUILDCACHE_BASEURL_ARG=${{ secrets.buildcache_baseurl }}
+            BUILDCACHE_USER_ARG=${{ secrets.buildcache_user }}
+            BUILDCACHE_PASSWORD_ARG=${{ secrets.buildcache_password }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.image }}
           gitopstoken: ${{ secrets.gitops_token }}

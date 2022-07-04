@@ -102,13 +102,7 @@ jobs:
       # password for the docker registry
       docker_password: ${{ <your-docker-password> }}
       # optional: token to pull private npm packages
-      npm_token: ${{ <your-npm-token> }}
-      # optional: base url for the gradle cache
-      gradle_cache_url: ${{ <your-gradle-cache-baseurl> }}
-      # optional: user for the gradle cache
-      gradle_cache_user: ${{ <your-gradle-cache-user> }}
-      # optional: password for the gradle cache
-      gradle_cache_password: ${{ <your-gradle-cache-password> }}
+      npm_token: ${{ <your-docker-password> }}
 ```
 </details>
 
