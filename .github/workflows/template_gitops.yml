@@ -60,9 +60,9 @@ jobs:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
           dockerenabled: ${{ inputs.dockerenabled }}
+          # remove npm token if feature is available: https://github.com/github-community/community/discussions/17554
           dockerbuildargs: |
             ${{ inputs.dockerbuildargs }}
-            # remove token if feature is available: https://github.com/github-community/community/discussions/17554
             NPM_TOKEN=${{ secrets.npm_token }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
           dockerimage: ${{ inputs.dockerimage }}
