@@ -13,6 +13,10 @@ on:
         required: false
         type: boolean
         default: true
+      dockerimage:
+        required: false
+        type: string
+        default: private/${{ github.event.repository.name }}
       gitopsdev:
         required: false
         type: string
@@ -22,10 +26,6 @@ on:
       gitopsprod:
         required: false
         type: string
-      image:
-        required: false
-        type: string
-        default: private/${{ github.event.repository.name }}
     secrets:
       docker_username:
         required: true
@@ -33,11 +33,13 @@ on:
         required: true
       gitops_token:
         required: true
+      npm_token:
+        required: false
 
 jobs:
   gitops:
 
-    name: Deploy
+    name: GitOps
     runs-on: ubuntu-20.04
 
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
@@ -58,9 +60,12 @@ jobs:
           dockerusername: ${{ secrets.docker_username }}
           dockerpassword: ${{ secrets.docker_password }}
           dockerenabled: ${{ inputs.dockerenabled }}
-          dockerbuildargs: ${{ inputs.dockerbuildargs }}
+          # remove npm token if feature is available: https://github.com/github-community/community/discussions/17554
+          dockerbuildargs: |
+            ${{ inputs.dockerbuildargs }}
+            NPM_TOKEN=${{ secrets.npm_token }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
-          dockerimage: ${{ inputs.image }}
+          dockerimage: ${{ inputs.dockerimage }}
           gitopstoken: ${{ secrets.gitops_token }}
           gitopsdev: ${{ inputs.gitopsdev }}
           gitopsstage: ${{ inputs.gitopsstage }}
