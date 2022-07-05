@@ -13,6 +13,10 @@ on:
         required: false
         type: boolean
         default: true
+      dockerimage:
+        required: false
+        type: string
+        default: private/${{ github.event.repository.name }}
       gitopsdev:
         required: false
         type: string
@@ -22,10 +26,6 @@ on:
       gitopsprod:
         required: false
         type: string
-      image:
-        required: false
-        type: string
-        default: private/${{ github.event.repository.name }}
     secrets:
       docker_username:
         required: true
@@ -65,7 +65,7 @@ jobs:
             # remove token if feature is available: https://github.com/github-community/community/discussions/17554
             NPM_TOKEN=${{ secrets.npm_token }}
           dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
-          dockerimage: ${{ inputs.image }}
+          dockerimage: ${{ inputs.dockerimage }}
           gitopstoken: ${{ secrets.gitops_token }}
           gitopsdev: ${{ inputs.gitopsdev }}
           gitopsstage: ${{ inputs.gitopsstage }}
