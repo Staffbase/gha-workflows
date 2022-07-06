@@ -102,7 +102,7 @@ jobs:
       # password for the docker registry
       docker_password: ${{ <your-docker-password> }}
       # optional: token to pull private npm packages
-      npm_token: ${{ <your-docker-password> }}
+      npm_token: ${{ <your-npm-token> }}
 ```
 </details>
 
