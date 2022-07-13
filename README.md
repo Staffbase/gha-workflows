@@ -169,54 +169,6 @@ jobs:
 ```
 </details>
 
-### Sonarcloud
-
-<details>
-<summary>The action can be used to analyze a project with sonarcloud.</summary>
-
-If you want to use this action you need to add the project metadata in the file `sonar-project.properties` in the base directory.
-More information on how to set this up can be found [here](https://github.com/SonarSource/sonarcloud-github-action#usage).
-
-```yml
-name: Sonarcloud
-
-on:
-  push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '**'
-
-jobs:
-  sonarcloud:
-    uses: Staffbase/gha-workflows/.github/workflows/template_sonarcloud.yml@v1.4.1
-    with:
-      # path to the cached coverage file
-      path: <path-to-cached-coverage-file>
-      # optional: additional arguments for action
-      args: >
-        your commands
-      # optional: analysis base directory 
-      projectBaseDir: <your directory>
-    secrets:
-      # token to access pull request
-      token: ${{ secrets.GITHUB_TOKEN }}
-      # token to access sonarcloud
-      sonar_token: ${{ <your_token> }}
-```
-
-It is necessary that the coverage file is cached with the following code:
-
-```yml
-- name: Cache Coverage Data
-  uses: actions/cache@v3
-  with:
-    path: <path-to-cached-coverage-file>
-    key: ${{ runner.os }}-coverage-data
-```
-
-</details>
-
 ### Stale
 
 <details>
