@@ -7,15 +7,15 @@ on:
         required: true
         type: string
         default: ${{ github.event.repository.name }}
-      tag_matcher:
+      tag-matcher:
         required: false
         type: string
     secrets:
-      jira_url:
+      jira-url:
         required: true
-      jira_token:
+      jira-token:
         required: true
-      jira_email:
+      jira-email:
         required: true
 
 jobs:
@@ -34,14 +34,14 @@ jobs:
         id: fetchTicketIds
         uses: Staffbase/github-action-issue-id-collection@v1.0.0
         env:
-          TAG_MATCHER: ${{ inputs.tag_matcher }}
+          TAG_MATCHER: ${{ inputs.tag-matcher }}
 
       - name: Add release notes to JIRA tickets
         uses: Staffbase/github-action-jira-release-tagging@v1.0.0
         env:
-          JIRA_BASEURL: ${{ secrets.jira_url }}
-          JIRA_TOKEN: ${{ secrets.jira_token }}
-          JIRA_EMAIL: ${{ secrets.jira_email }}
+          JIRA_BASEURL: ${{ secrets.jira-url }}
+          JIRA_TOKEN: ${{ secrets.jira-token }}
+          JIRA_EMAIL: ${{ secrets.jira-email }}
         with:
           issueIds: ${{ steps.fetchTicketIds.outputs.tIDs }}
           componentName: ${{ inputs.name }}

@@ -127,14 +127,14 @@ jobs:
       # name of the service to add as label, default: name of the repository
       name: 'component name'
       # optional: regex to match the tags
-      tag_matcher: your regex
+      tag-matcher: your regex
     secrets:
       # basic url for jira api
-      jira_url: ${{ <your-url> }}
+      jira-url: ${{ <your-url> }}
       # api token for jira usage
-      jira_token: ${{ <your-token> }}
+      jira-token: ${{ <your-token> }}
       # email of the api token owner
-      jira_email: ${{ <your-email> }}
+      jira-email: ${{ <your-email> }}
 ```
 </details>
 
