@@ -3,37 +3,37 @@ name: GitOps
 on:
   workflow_call:
     inputs:
-      dockerbuildargs:
+      docker-build-args:
         required: false
         type: string
-      dockerbuildtarget:
+      docker-build-target:
         required: false
         type: string
-      dockerenabled:
+      docker-enabled:
         required: false
         type: boolean
         default: true
-      dockerimage:
+      docker-image:
         required: false
         type: string
         default: private/${{ github.event.repository.name }}
-      gitopsdev:
+      gitops-dev:
         required: false
         type: string
-      gitopsstage:
+      gitops-stage:
         required: false
         type: string
-      gitopsprod:
+      gitops-prod:
         required: false
         type: string
     secrets:
-      docker_username:
+      docker-username:
         required: true
-      docker_password:
+      docker-password:
         required: true
-      gitops_token:
+      gitops-token:
         required: true
-      npm_token:
+      npm-token:
         required: false
 
 jobs:
@@ -48,25 +48,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: actions/checkout@v3
-        with:
-          repository: Staffbase/gitops-github-action
-          ref: v3
-          path: .github/gitops
-
       - name: GitOps (build, push and deploy a new Docker image)
-        uses: ./.github/gitops
+        uses: Staffbase/gitops-github-action@v4
         with:
-          dockerusername: ${{ secrets.docker_username }}
-          dockerpassword: ${{ secrets.docker_password }}
-          dockerenabled: ${{ inputs.dockerenabled }}
+          docker-username: ${{ secrets.docker-username }}
+          docker-password: ${{ secrets.docker-password }}
+          docker-enabled: ${{ inputs.docker-enabled }}
           # remove npm token if feature is available: https://github.com/github-community/community/discussions/17554
-          dockerbuildargs: |
-            ${{ inputs.dockerbuildargs }}
-            NPM_TOKEN=${{ secrets.npm_token }}
-          dockerbuildtarget: ${{ inputs.dockerbuildtarget }}
-          dockerimage: ${{ inputs.dockerimage }}
-          gitopstoken: ${{ secrets.gitops_token }}
-          gitopsdev: ${{ inputs.gitopsdev }}
-          gitopsstage: ${{ inputs.gitopsstage }}
-          gitopsprod: ${{ inputs.gitopsprod }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            NPM_TOKEN=${{ secrets.npm-token }}
+          docker-build-target: ${{ inputs.docker-build-target }}
+          docker-image: ${{ inputs.docker-image }}
+          gitops-token: ${{ secrets.gitops-token }}
+          gitops-dev: ${{ inputs.gitops-dev }}
+          gitops-stage: ${{ inputs.gitops-stage }}
+          gitops-prod: ${{ inputs.gitops-prod }}
