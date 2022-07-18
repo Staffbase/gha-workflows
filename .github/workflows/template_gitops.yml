@@ -24,11 +24,11 @@ on:
         type: string
     secrets:
       docker-username:
-        required: true
+        required: false
       docker-password:
-        required: true
+        required: false
       gitops-token:
-        required: true
+        required: false
       npm-token:
         required: false
 
