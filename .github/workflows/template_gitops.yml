@@ -9,10 +9,6 @@ on:
       docker-build-target:
         required: false
         type: string
-      docker-enabled:
-        required: false
-        type: boolean
-        default: true
       docker-image:
         required: false
         type: string
@@ -53,7 +49,6 @@ jobs:
         with:
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
-          docker-enabled: ${{ inputs.docker-enabled }}
           # remove npm token if feature is available: https://github.com/github-community/community/discussions/17554
           docker-build-args: |
             ${{ inputs.docker-build-args }}

@@ -76,8 +76,6 @@ jobs:
   gitops:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.4.1
     with:
-      # optional: build and push the Docker image, default: true
-      docker-enabled: false
       # optional: list of build-time variables
       docker-build-args: |
         "any important args"
