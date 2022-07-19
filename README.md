@@ -93,11 +93,11 @@ jobs:
       gitops-prod: |-
         your files
     secrets:
-      # token to access the repository
+      # optional: token to access the repository
       gitops-token: ${{ <your-gitops-token> }}
-      # username for the docker registry
+      # optional: username for the docker registry
       docker-username: ${{ <your-docker-username> }}
-      # password for the docker registry
+      # optional: password for the docker registry
       docker-password: ${{ <your-docker-password> }}
       # optional: token to pull private npm packages
       npm-token: ${{ <your-npm-token> }}
@@ -122,7 +122,7 @@ jobs:
   jira_annotate:
     uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v1.5.0
     with:
-      # name of the service to add as label, default: name of the repository
+      # optional: name of the service to add as label, default: name of the repository
       name: 'component name'
       # optional: regex to match the tags
       tag-matcher: your regex
