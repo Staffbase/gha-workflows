@@ -76,33 +76,31 @@ jobs:
   gitops:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.4.1
     with:
-      # optional: build and push the Docker image, default: true
-      dockerenabled: false
       # optional: list of build-time variables
-      dockerbuildargs: |
+      docker-build-args: |
         "any important args"
       # optional: set the target stage to build
-      dockerbuildtarget: "any target"
+      docker-build-target: "any target"
       # optional: name of the docker image, default: private/<repository_name>
-      dockerimage: <your-image>
+      docker-image: <your-image>
       # optional: files which should be updated for dev
-      gitopsdev: |-
+      gitops-dev: |-
         your files
       # optional: files which should be updated for stage
-      gitopsstage: |-
+      gitops-stage: |-
         your files
       # optional: files which should be updated for prod
-      gitopsprod: |-
+      gitops-prod: |-
         your files
     secrets:
       # token to access the repository
-      gitops_token: ${{ <your-gitops-token> }}
+      gitops-token: ${{ <your-gitops-token> }}
       # username for the docker registry
-      docker_username: ${{ <your-docker-username> }}
+      docker-username: ${{ <your-docker-username> }}
       # password for the docker registry
-      docker_password: ${{ <your-docker-password> }}
+      docker-password: ${{ <your-docker-password> }}
       # optional: token to pull private npm packages
-      npm_token: ${{ <your-npm-token> }}
+      npm-token: ${{ <your-npm-token> }}
 ```
 </details>
 
@@ -127,14 +125,14 @@ jobs:
       # name of the service to add as label, default: name of the repository
       name: 'component name'
       # optional: regex to match the tags
-      tag_matcher: your regex
+      tag-matcher: your regex
     secrets:
       # basic url for jira api
-      jira_url: ${{ <your-url> }}
+      jira-url: ${{ <your-url> }}
       # api token for jira usage
-      jira_token: ${{ <your-token> }}
+      jira-token: ${{ <your-token> }}
       # email of the api token owner
-      jira_email: ${{ <your-email> }}
+      jira-email: ${{ <your-email> }}
 ```
 </details>
 
