@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       name:
-        required: true
+        required: false
         type: string
         default: ${{ github.event.repository.name }}
       tag-matcher:
