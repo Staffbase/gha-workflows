@@ -229,31 +229,12 @@ jobs:
 <summary>The action can be used to scan a range of commits for leaked credentials. The action will fail if any results are found.</summary>
 
 ```yml
-name: Secret Scanning
-
-on:
-  workflow_call:
+name: Trufflehog
+on: [ push ]
 
 jobs:
   trufflehog:
-
-    name: trufflehog
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@v3.4.3
-        with:
-          # Repository path
-          path: ./
-          # Start scanning from here (usually main branch).
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml
 ```
 </details>
 
