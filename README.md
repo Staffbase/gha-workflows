@@ -226,7 +226,7 @@ jobs:
 
 ### Secret Scanning
 <details>
-<summary>The action can be used to scan a range of commits for leaked credentials. The action will fail if any results are found.</summary>
+<summary>This workflow should be called by a PR and will scan it's commits for leaked credentials. The workflow will fail if any results are found.</summary>
 
 ```yml
 name: Trufflehog
