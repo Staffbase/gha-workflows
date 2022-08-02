@@ -257,7 +257,6 @@ jobs:
 ```
 </details>
 
-
 ## Release 🔖
 
 To create a new release just use [this page][2] and publish the draft release.
