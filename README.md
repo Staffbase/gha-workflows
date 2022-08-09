@@ -234,7 +234,7 @@ on: [ push ]
 
 jobs:
   trufflehog:
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v1.5.0
 ```
 </details>
 
