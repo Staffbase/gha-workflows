@@ -166,6 +166,21 @@ jobs:
       version: X.Y.Z
 ```
 </details>
+  
+  ### Secret Scanning
+  
+<details>
+<summary>This workflow should be called by a PR and will scan it's commits for leaked credentials. The workflow will fail if any results are found.</summary>
+
+```yml
+name: Trufflehog
+on: [ push ]
+
+jobs:
+  trufflehog:
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v1.5.0
+```
+</details>
 
 ### Stale
 
