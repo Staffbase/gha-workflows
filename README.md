@@ -173,8 +173,9 @@ jobs:
 <summary>This workflow should be called by a PR and will scan it's commits for leaked credentials. The workflow will fail if any results are found.</summary>
 
 ```yml
-name: Trufflehog
-on: [ push ]
+name: Secret Scan
+
+on: [pull_request]
 
 jobs:
   trufflehog:
