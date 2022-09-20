@@ -214,6 +214,34 @@ jobs:
 ```
 </details>
 
+### TechDocs
+
+<details>
+<summary>This GitHub Action can be used for generating and publishing Backstage TechDocs.</summary>
+
+```yml
+name: TechDocs
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  techdocs:
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v1.6.0
+    with:
+      # optional: Kind of the Backstage entity, default: Component
+      # ref: https://backstage.io/docs/features/software-catalog/descriptor-format#contents
+      entity-kind: Component
+      # optional: Name of the Backstage entity, default: repository name
+      entity-name: custom-entity-name
+    secrets:
+      aws-access-key-id: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.TECHDOCS_AWS_SECRET_ACCESS_KEY }}
+```
+</details>
+
 ### Yamllint
 
 <details>

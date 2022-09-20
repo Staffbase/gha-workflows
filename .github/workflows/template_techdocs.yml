@@ -1,0 +1,43 @@
+name: TechDocs
+
+on:
+  workflow_call:
+    inputs:
+      aws-region:
+        required: false
+        type: string
+        default: 'eu-central-1'
+      entity-kind:
+        required: false
+        type: string
+        default: 'Component'
+      entity-name:
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}
+    secrets:
+      aws-access-key-id:
+        required: false
+      aws-secret-access-key:
+        required: false
+
+jobs:
+  techdocs:
+
+    name: TechDocs
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build and Publish Site
+        uses: Staffbase/backstage-techdocs-action@v0.1.1
+        with:
+          entity-kind: ${{ inputs.entity-kind }}
+          entity-name: ${{ inputs.entity-name }}
+          publisher-type: 'awsS3'
+          storage-name: 'staffbase-backstage-techdocs'
+          aws-region: ${{ inputs.aws-region }}
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
