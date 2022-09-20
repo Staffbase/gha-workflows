@@ -17,15 +17,15 @@ on:
         default: ${{ github.event.repository.name }}
     secrets:
       aws-access-key-id:
-        required: false
+        required: true
       aws-secret-access-key:
-        required: false
+        required: true
 
 jobs:
   techdocs:
 
     name: TechDocs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
