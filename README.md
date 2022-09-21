@@ -231,10 +231,10 @@ jobs:
   techdocs:
     uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v1.7.0
     with:
-      # optional: kind of the backstage entity, default: Component
+      # optional: kind of the Backstage entity, default: Component
       # ref: https://backstage.io/docs/features/software-catalog/descriptor-format#contents
       entity-kind: Component
-      # optional: name of the backstage entity, default: repository name
+      # optional: name of the Backstage entity, default: repository name
       entity-name: custom-entity-name
     secrets:
       # specifies an aws access key associated with an IAM user or role
