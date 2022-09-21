@@ -17,9 +17,9 @@ on:
         default: ${{ github.event.repository.name }}
     secrets:
       aws-access-key-id:
-        required: true
+        required: false
       aws-secret-access-key:
-        required: true
+        required: false
 
 jobs:
   techdocs:
