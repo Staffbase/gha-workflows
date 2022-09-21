@@ -167,7 +167,7 @@ jobs:
 ```
 </details>
   
-  ### Secret Scanning
+### Secret Scanning
   
 <details>
 <summary>This workflow should be called by a PR and will scan it's commits for leaked credentials. The workflow will fail if any results are found.</summary>
@@ -231,13 +231,15 @@ jobs:
   techdocs:
     uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v1.7.0
     with:
-      # optional: Kind of the Backstage entity, default: Component
+      # optional: kind of the Backstage entity, default: Component
       # ref: https://backstage.io/docs/features/software-catalog/descriptor-format#contents
       entity-kind: Component
-      # optional: Name of the Backstage entity, default: repository name
+      # optional: name of the Backstage entity, default: repository name
       entity-name: custom-entity-name
     secrets:
+      # optional: specifies an aws access key associated with an IAM user or role
       aws-access-key-id: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
+      # optional: specifies the secret key associated with the access key
       aws-secret-access-key: ${{ secrets.TECHDOCS_AWS_SECRET_ACCESS_KEY }}
 ```
 </details>
