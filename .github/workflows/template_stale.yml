@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Stale old PRs
-        uses: actions/stale@v5
+        uses: actions/stale@v6
         with:
           close-pr-message: ${{ inputs.close-pr-message }}
           days-before-stale: ${{ inputs.days-before-stale }}
