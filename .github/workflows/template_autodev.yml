@@ -54,7 +54,7 @@ jobs:
     name: Build Dev Branch
     runs-on: ubuntu-22.04
 
-    if: github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label)
 
     steps:
       - name: Checkout
