@@ -15,6 +15,9 @@ on:
         required: false
         type: string
         default: ${{ github.event.repository.name }}
+      additional-plugins:
+        required: false
+        type: string
     secrets:
       aws-access-key-id:
         required: false
@@ -32,7 +35,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build and Publish Site
-        uses: Staffbase/backstage-techdocs-action@v0.1.1
+        uses: Staffbase/backstage-techdocs-action@v0.2.0
         with:
           entity-kind: ${{ inputs.entity-kind }}
           entity-name: ${{ inputs.entity-name }}
@@ -41,3 +44,4 @@ jobs:
           aws-region: ${{ inputs.aws-region }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          additional-plugins: ${{ inputs.additional-plugins }}
