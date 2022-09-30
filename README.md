@@ -236,6 +236,8 @@ jobs:
       entity-kind: Component
       # optional: name of the Backstage entity, default: repository name
       entity-name: custom-entity-name
+      # optional: list of space separated additional python plugins to install
+      additional-plugins: 'mkdocs-minify-plugin\>=0.3'
     secrets:
       # optional: specifies an aws access key associated with an IAM user or role
       aws-access-key-id: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
