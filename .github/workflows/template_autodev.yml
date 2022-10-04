@@ -54,8 +54,8 @@ jobs:
     name: Build Dev Branch
     runs-on: ubuntu-22.04
 
-    # check to not trigger if dependabot did something or label is not the configured dev label, otherwise run it
-    if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label)
+    # check to not trigger if dependabot did something or PR was closed or label is not the configured dev label
+    if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed')
 
     steps:
       - name: Checkout
