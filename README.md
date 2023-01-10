@@ -101,6 +101,10 @@ jobs:
       docker-password: ${{ <your-docker-password> }}
       # optional: token to pull private npm packages
       npm-token: ${{ <your-npm-token> }}
+      # optional: goproxy environment variable
+      goproxy: ${{ <your-goproxy> }}
+      # optional: gonosumdb environment variable
+      gonosumdb: ${{ <your-gonosumdb> }}
 ```
 </details>
 
