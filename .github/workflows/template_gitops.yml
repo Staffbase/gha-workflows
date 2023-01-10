@@ -31,6 +31,10 @@ on:
         required: false
       npm-token:
         required: false
+      goproxy:
+        required: false
+      gonosumdb:
+        required: false
 
 jobs:
   gitops:
@@ -49,10 +53,12 @@ jobs:
         with:
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
-          # remove npm token if feature is available: https://github.com/github-community/community/discussions/17554
+          # remove npm token, goproxy, gonosumdb if feature is available: https://github.com/github-community/community/discussions/17554
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             NPM_TOKEN=${{ secrets.npm-token }}
+            GOPROXY=${{ secrets.goproxy }}
+            GONOSUMDB=${{ secrets.gonosumdb }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-image: ${{ inputs.docker-image }}
           gitops-token: ${{ secrets.gitops-token }}
