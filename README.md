@@ -81,10 +81,10 @@ jobs:
         "any important args"
       # optional: set the target stage to build
       docker-build-target: "any target"
-      # optional: name of the docker image, default: private/<repository_name>
-      docker-image: <your-image>
       # optional: path to the Dockerfile, default: ./Dockerfile
       docker-file: <path-to-Dockerfile>
+      # optional: name of the docker image, default: private/<repository_name>
+      docker-image: <your-image>
       # optional: files which should be updated for dev
       gitops-dev: |-
         your files
