@@ -9,14 +9,14 @@ on:
       docker-build-target:
         required: false
         type: string
-      docker-image:
-        required: false
-        type: string
-        default: private/${{ github.event.repository.name }}
       docker-file:
         required: false
         type: string
         default: './Dockerfile'
+      docker-image:
+        required: false
+        type: string
+        default: private/${{ github.event.repository.name }}
       gitops-dev:
         required: false
         type: string
