@@ -9,6 +9,10 @@ on:
       docker-build-target:
         required: false
         type: string
+      docker-file:
+        required: false
+        type: string
+        default: './Dockerfile'
       docker-image:
         required: false
         type: string
@@ -60,6 +64,7 @@ jobs:
             GOPROXY=${{ secrets.goproxy }}
             GONOSUMDB=${{ secrets.gonosumdb }}
           docker-build-target: ${{ inputs.docker-build-target }}
+          docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
           gitops-token: ${{ secrets.gitops-token }}
           gitops-dev: ${{ inputs.gitops-dev }}
