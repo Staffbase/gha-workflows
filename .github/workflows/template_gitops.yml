@@ -64,8 +64,8 @@ jobs:
             GOPROXY=${{ secrets.goproxy }}
             GONOSUMDB=${{ secrets.gonosumdb }}
           docker-build-target: ${{ inputs.docker-build-target }}
-          docker-image: ${{ inputs.docker-image }}
           docker-file: ${{ inputs.docker-file }}
+          docker-image: ${{ inputs.docker-image }}
           gitops-token: ${{ secrets.gitops-token }}
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
