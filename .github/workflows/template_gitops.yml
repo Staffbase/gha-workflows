@@ -13,6 +13,10 @@ on:
         required: false
         type: string
         default: private/${{ github.event.repository.name }}
+      docker-file:
+        required: false
+        type: string
+        default: './Dockerfile'
       gitops-dev:
         required: false
         type: string
@@ -61,6 +65,7 @@ jobs:
             GONOSUMDB=${{ secrets.gonosumdb }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-image: ${{ inputs.docker-image }}
+          docker-file: ${{ inputs.docker-file }}
           gitops-token: ${{ secrets.gitops-token }}
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
