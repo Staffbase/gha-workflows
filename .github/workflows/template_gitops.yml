@@ -51,8 +51,8 @@ jobs:
       - name: GitOps (build, push and deploy a new Docker image)
         uses: Staffbase/gitops-github-action@v4.1
         with:
-          docker-username: ${{ secrets.docker-username }}
-          docker-password: ${{ secrets.docker-password }}
+          docker-username: ${{ secrets.ARTIFACTROY_USERNAME }}
+          docker-password: ${{ secrets.ARTIFACTORY_PASSWORD }}
           # remove npm token, goproxy, gonosumdb if feature is available: https://github.com/github-community/community/discussions/17554
           docker-build-args: |
             ${{ inputs.docker-build-args }}
