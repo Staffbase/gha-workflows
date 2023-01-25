@@ -74,7 +74,7 @@ on: [ push ]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.10.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v1.11.0
     with:
       # optional: list of build-time variables
       docker-build-args: |
@@ -83,6 +83,8 @@ jobs:
       docker-build-target: "any target"
       # optional: name of the docker image, default: private/<repository_name>
       docker-image: <your-image>
+      # optional: path to the Dockerfile, default: ./Dockerfile
+      docker-file: <path-to-Dockerfile>
       # optional: files which should be updated for dev
       gitops-dev: |-
         your files
