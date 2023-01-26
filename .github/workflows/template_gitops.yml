@@ -12,7 +12,7 @@ on:
       docker-image:
         required: false
         type: string
-        default: private/${{ github.event.repository.name }}
+        default: sb-images/${{ github.event.repository.name }}
       gitops-dev:
         required: false
         type: string
