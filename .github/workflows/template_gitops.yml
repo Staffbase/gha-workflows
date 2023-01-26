@@ -12,7 +12,7 @@ on:
       docker-image:
         required: false
         type: string
-        default: private/${{ github.event.repository.name }}
+        default: sb-images/${{ github.event.repository.name }}
       gitops-dev:
         required: false
         type: string
@@ -51,8 +51,8 @@ jobs:
       - name: GitOps (build, push and deploy a new Docker image)
         uses: Staffbase/gitops-github-action@v4.1
         with:
-          docker-username: ${{ secrets.ARTIFACTROY_USERNAME }}
-          docker-password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          docker-username: ${{ secrets.docker-username }}
+          docker-password: ${{ secrets.docker-password }}
           # remove npm token, goproxy, gonosumdb if feature is available: https://github.com/github-community/community/discussions/17554
           docker-build-args: |
             ${{ inputs.docker-build-args }}
