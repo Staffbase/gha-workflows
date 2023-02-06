@@ -32,7 +32,7 @@ jobs:
 
       - name: Fetch ticket Ids
         id: fetchTicketIds
-        uses: Staffbase/github-action-issue-id-collection@v1.0.0
+        uses: Staffbase/github-action-issue-id-collection@v1.1.0
         env:
           TAG_MATCHER: ${{ inputs.tag-matcher }}
 
