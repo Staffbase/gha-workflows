@@ -1,7 +1,7 @@
 # Reusable Workflows from the Enthusiasts 🎉
 
 The repository contains all general workflows which can be used for every workflow in another repository.
-If you want to have more information you can take a look at the [GitHub documentation][1].
+If you want to have more information you can take a look at the [GitHub documentation][reusable-workflows].
 
 If you want to use a template workflow you can copy the following template and adapt it to your specific use case.
 You can find all possible template workflows in the directory `.github/workflows` with the name `template_*.yml`.
@@ -278,9 +278,15 @@ jobs:
 ```
 </details>
 
+## Limitations 🚧
+
+With the current implementation of the reusable workflows from GitHub, we have some usage limitations.
+
+- It isn't possible to [access environment variables][reusable-workflow-env] and [secrets][reusable-workflow-secrets], so it's necessary to pass them to the workflow. But we don't want to do it for all secrets.
+
 ## Release 🔖
 
-To create a new release just use [this page][2] and publish the draft release.
+To create a new release just use [this page][release-new] and publish the draft release.
 
 ## Contributing 👥
 
@@ -303,5 +309,7 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LIC
   </tr>
 </table>
 
-[1]: https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
-[2]: https://github.com/Staffbase/gha-workflows/releases
+[reusable-workflows]: https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
+[release-new]: https://github.com/Staffbase/gha-workflows/releases
+[reusable-workflow-secrets]: https://github.com/orgs/community/discussions/17554
+[reusable-workflow-env]: https://github.com/orgs/community/discussions/26671
