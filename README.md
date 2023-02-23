@@ -232,6 +232,10 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/techdocs.yaml"
 
 jobs:
   techdocs:
