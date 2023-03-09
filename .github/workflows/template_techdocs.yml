@@ -3,6 +3,14 @@ name: TechDocs
 on:
   workflow_call:
     inputs:
+      publisher-type:
+        required: false
+        type: string
+        default: 'azureBlobStorage'
+      storage-name:
+        required: false
+        type: string
+        default: 'staffbase-backstage-techdocs'
       aws-region:
         required: false
         type: string
@@ -23,6 +31,10 @@ on:
         required: false
       aws-secret-access-key:
         required: false
+      azure-account-name:
+        required: false
+      azure-access-key:
+        required: false
 
 jobs:
   techdocs:
@@ -39,9 +51,11 @@ jobs:
         with:
           entity-kind: ${{ inputs.entity-kind }}
           entity-name: ${{ inputs.entity-name }}
-          publisher-type: 'awsS3'
-          storage-name: 'staffbase-backstage-techdocs'
+          publisher-type: ${{ inputs.publisher-type }}
+          storage-name: ${{ inputs.storage-name }}
           aws-region: ${{ inputs.aws-region }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          azure-account-name: ${{ secrets.azure-account-name }}
+          azure-access-key: ${{ secrets.azure-access-key }}
           additional-plugins: ${{ inputs.additional-plugins }}
