@@ -249,10 +249,10 @@ jobs:
       # optional: list of space separated additional python plugins to install
       additional-plugins: 'mkdocs-minify-plugin\>=0.3'
     secrets:
-      # optional: specifies an aws access key associated with an IAM user or role
-      aws-access-key-id: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
-      # optional: specifies the secret key associated with the access key
-      aws-secret-access-key: ${{ secrets.TECHDOCS_AWS_SECRET_ACCESS_KEY }}
+      # optional: specifies an Azure Storage account name
+      azure-account-name: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
+      # optional: specifies the access key associated with the storage account
+      azure-access-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
 ```
 </details>
 
