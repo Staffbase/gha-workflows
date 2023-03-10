@@ -250,9 +250,9 @@ jobs:
       additional-plugins: 'mkdocs-minify-plugin\>=0.3'
     secrets:
       # optional: specifies an Azure Storage account name
-      azure-account-name: ${{ secrets.TECHDOCS_AWS_ACCESS_KEY_ID }}
+      azure-account-name: ${{ secrets.TECHDOCS_AZURE_ACCOUNT_NAME }}
       # optional: specifies the access key associated with the storage account
-      azure-access-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
+      azure-account-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
 ```
 </details>
 
