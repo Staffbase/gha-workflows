@@ -7,7 +7,7 @@ on:
         default: 'This stale PR was closed because there was no activity.'
         required: false
         type: string
-      days-before-stale:
+      days-before-pr-stale:
         default: 60
         required: false
         type: number
@@ -39,7 +39,7 @@ jobs:
         uses: actions/stale@v8
         with:
           close-pr-message: ${{ inputs.close-pr-message }}
-          days-before-stale: ${{ inputs.days-before-stale }}
+          days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
           delete-branch: ${{ inputs.delete-branch }}
           exempt-pr-labels: ${{ inputs.exempt-pr-labels }}
           stale-pr-label: ${{ inputs.stale-pr-label }}

@@ -208,7 +208,7 @@ jobs:
       # optional: comment on the stale pull request while closed, default: This stale PR was closed because there was no activity.
       close-pr-message: your message
       # optional: idle number of days before marking pull requests stale, default: 60
-      days-before-stale: 30
+      days-before-pr-stale: 30
       # optional: delete branch after closing the pull request, default: true
       delete-branch: false
       # optional: labels on pull requests exempted from stale
