@@ -19,7 +19,7 @@ jobs:
     # see https://docs.github.com/en/actions/learn-github-actions/expressions#contains
     steps:
       - name: fail if label exists
-        if: contains(github.event.pull_request.labels.*.name, ${{ inputs.label }})
+        if: contains(github.event.pull_request.labels.*.name, '${{ inputs.label }}')
         run: |
           echo "This PR has the label '${{ inputs.label }}'."
           exit 1
