@@ -231,6 +231,27 @@ jobs:
 
 </details>
 
+### Merge Block
+
+<details>
+<summary>The action can be used to block the merge if a do not merge label is set.</summary>
+
+```yml
+name: Merge Block
+
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled]
+
+jobs:
+  block:
+    uses: Staffbase/gha-workflows/.github/workflows/template_do_not_merge.yml@v2.0.0
+    with:
+      # optional: name of the label if the PR should not be merged, default: do not merge
+      label: merge block
+```
+</details>
+
 ### Release Drafter
 
 <details>
