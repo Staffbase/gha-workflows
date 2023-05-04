@@ -245,7 +245,7 @@ on:
 
 jobs:
   block:
-    uses: Staffbase/gha-workflows/.github/workflows/template_do_not_merge.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@v2.0.0
     with:
       # optional: name of the label if the PR should not be merged, default: do not merge
       label: merge block
