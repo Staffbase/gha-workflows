@@ -1,18 +1,26 @@
 name: Do Not Merge
+
 on:
-  pull_request:
-    types: [labeled, unlabeled]
+  workflow_call:
+    inputs:
+      label:
+        required: false
+        type: string
+        default: do not merge
 
 jobs:
   do-not-merge:
+
+    name: Check
+    runs-on: ubuntu-22.04
+
     # contains(search, item) is not case-sensitive
     # Therefore 'Do Not Merge' and 'DO NOT MERGE' will also match
     # see https://docs.github.com/en/actions/learn-github-actions/expressions#contains
-    if: contains(github.event.pull_request.labels.*.name, 'do not merge')
-    name: Check
-    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, ${{ inputs.label }})
+
     steps:
       - name: fail if label exists
         run: |
-          echo "This PR has the label 'do not merge'."
+          echo "This PR has the label '${{ inputs.label }}'."
           exit 1
