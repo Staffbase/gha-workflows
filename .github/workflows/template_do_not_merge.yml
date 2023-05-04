@@ -2,11 +2,6 @@ name: Do Not Merge
 
 on:
   workflow_call:
-    inputs:
-      label:
-        required: false
-        type: string
-        default: do not merge
 
 jobs:
   do-not-merge:
@@ -19,7 +14,7 @@ jobs:
     # see https://docs.github.com/en/actions/learn-github-actions/expressions#contains
     steps:
       - name: fail if label exists
-        if: contains(github.event.pull_request.labels.*.name, '${{ inputs.label }}')
+        if: contains(github.event.pull_request.labels.*.name, 'do not merge')
         run: |
-          echo "This PR has the label '${{ inputs.label }}'."
+          echo "This PR has the label 'do not merge'."
           exit 1
