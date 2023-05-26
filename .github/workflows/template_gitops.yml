@@ -39,6 +39,12 @@ on:
         required: false
       gonosumdb:
         required: false
+      docker-build-secrets:
+        description: "List of secrets to expose to the build (e.g., key=string, GIT_AUTH_TOKEN=mytoken)"
+        required: false
+      docker-build-secret-files:
+        description: "List of secret files to expose to the build (e.g., key=filename, MY_SECRET=./secret.txt)"
+        required: false
 
 jobs:
   gitops:
@@ -70,3 +76,6 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
+          docker-build-secrets: ${{ secrets.docker-build-secrets }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
+
