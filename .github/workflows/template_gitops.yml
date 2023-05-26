@@ -81,4 +81,3 @@ jobs:
           gitops-prod: ${{ inputs.gitops-prod }}
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
-
