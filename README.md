@@ -107,10 +107,10 @@ jobs:
       goproxy: ${{ <your-goproxy> }}
       # optional: gonosumdb environment variable
       gonosumdb: ${{ <your-gonosumdb> }}
-      # optional: list of secrets to expose to the build
+      # optional: list of secrets to expose to the build (e.g., key=string, GIT_AUTH_TOKEN=mytoken)
       docker-build-secrets: |
         "${{ <your-secrets> }}"
-      # optional: list of secret-files to expose to the build
+      # optional: list of secret files to expose to the build (e.g., key=filename, MY_SECRET=./secret.txt)
       docker-build-secret-files: |
         "${{ <your-secret-files> }}"
 ```
