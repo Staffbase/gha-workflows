@@ -110,6 +110,9 @@ jobs:
       # optional: list of secrets to expose to the build
       docker-build-secrets: |
         "${{ <your-secrets> }}"
+      # optional: list of secret-files to expose to the build
+      docker-build-secret-files: |
+        "${{ <your-secret-files> }}"
 ```
 </details>
 
