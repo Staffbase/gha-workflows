@@ -39,6 +39,10 @@ on:
         required: false
       gonosumdb:
         required: false
+      docker-build-secrets:
+        required: false
+      docker-build-secret-files:
+        required: false
 
 jobs:
   gitops:
@@ -70,3 +74,5 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
+          docker-build-secrets: ${{ secrets.docker-build-secrets }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
