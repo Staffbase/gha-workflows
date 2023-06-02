@@ -95,24 +95,18 @@ jobs:
       gitops-prod: |-
         your files
     secrets:
-      # optional: token to access the repository
-      gitops-token: ${{ <your-gitops-token> }}
       # optional: username for the docker registry
       docker-username: ${{ <your-docker-username> }}
       # optional: password for the docker registry
       docker-password: ${{ <your-docker-password> }}
-      # optional: token to pull private npm packages
-      npm-token: ${{ <your-npm-token> }}
-      # optional: goproxy environment variable
-      goproxy: ${{ <your-goproxy> }}
-      # optional: gonosumdb environment variable
-      gonosumdb: ${{ <your-gonosumdb> }}
       # optional: list of secrets to expose to the build (e.g., key=string, GIT_AUTH_TOKEN=mytoken)
       docker-build-secrets: |
         "${{ <your-secrets> }}"
       # optional: list of secret files to expose to the build (e.g., key=filename, MY_SECRET=./secret.txt)
       docker-build-secret-files: |
         "${{ <your-secret-files> }}"
+      # optional: token to access the repository
+      gitops-token: ${{ <your-gitops-token> }}
 ```
 </details>
 
