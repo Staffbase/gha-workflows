@@ -6,9 +6,6 @@ on:
       docker-build-args:
         required: false
         type: string
-      docker-build-target:
-        required: false
-        type: string
       docker-build-provenance:
         required: false
         type: string
@@ -74,7 +71,6 @@ jobs:
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
-          docker-build-target: ${{ inputs.docker-build-target }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
           gitops-token: ${{ secrets.gitops-token }}
