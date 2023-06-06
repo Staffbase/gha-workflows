@@ -9,6 +9,10 @@ on:
       docker-build-target:
         required: false
         type: string
+      docker-build-provenance:
+        required: false
+        type: string
+        default: 'false'
       docker-file:
         required: false
         type: string
@@ -57,7 +61,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: GitOps (build, push and deploy a new Docker image)
-        uses: Staffbase/gitops-github-action@v5.1
+        uses: Staffbase/gitops-github-action@v5.2
         with:
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
@@ -67,6 +71,9 @@ jobs:
             NPM_TOKEN=${{ secrets.npm-token }}
             GOPROXY=${{ secrets.goproxy }}
             GONOSUMDB=${{ secrets.gonosumdb }}
+          docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-build-secrets: ${{ secrets.docker-build-secrets }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -74,5 +81,3 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
-          docker-build-secrets: ${{ secrets.docker-build-secrets }}
-          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
