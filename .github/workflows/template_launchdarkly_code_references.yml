@@ -1,0 +1,47 @@
+name: Find LaunchDarkly flag code references
+
+on:
+  workflow_call:
+    inputs:
+      project-key:
+        required: false
+        type: string
+        default: 'default'
+    secrets:
+      access-token:
+        required: true
+
+jobs:
+  launchDarklyCodeReferences:
+
+    name: Find LaunchDarkly flag code references
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create Files
+        run: |
+          mkdir .launchdarkly
+          cat <<EOT >> .launchdarkly/coderefs.yml
+          aliases:
+            - type: camelcase
+            - type: command
+              command: "./.launchdarkly/flag-alias.sh"
+              timeout: 5
+          EOT
+          cat <<EOT >> .launchdarkly/flag-alias.sh
+          #!/bin/sh
+          read flagKey <&0; echo "[\"\$flagKey\",\"\$(echo \$flagKey | awk '{print tolower(\$0)}' | awk -F'-' '{for(i=1;i<=NF;i++){\$i=toupper(substr(\$i,1,1)) substr(\$i,2)}} 1' OFS='' | awk '{print tolower(substr(\$0,0,1))substr(\$0,2)}')\"]"
+          EOT
+          chmod +x .launchdarkly/flag-alias.sh
+      - name: Show Files
+        run: |
+          cat .launchdarkly/coderefs.yml
+          cat .launchdarkly/flag-alias.sh
+      - name: LaunchDarkly Code References
+        uses: launchdarkly/find-code-references@v2.10.0
+        with:
+          accessToken: ${{ secrets.access-token }}
+          projKey: ${{ inputs.project-key }}
+          debug: true
