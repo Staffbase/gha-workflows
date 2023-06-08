@@ -150,6 +150,32 @@ jobs:
 ```
 </details>
 
+### LaunchDarkly Code References
+
+<details>
+<summary>
+The action can be used to collect and push code references for LaunchDarkly feature flags.
+</summary>
+
+```yml
+name: Find LaunchDarkly flag code references
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ld_code_references:
+    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v2.1.0
+    with:
+      # optional: key of the LD project, default: default
+      project-key: 'my-project'
+    secrets:
+      # LD access token with correct access rights
+      access-token: ${{ <your-access-token> }}
+```
+</details>
+
 ### Release Drafter
 
 <details>
