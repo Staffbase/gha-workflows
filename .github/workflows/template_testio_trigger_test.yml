@@ -1,0 +1,43 @@
+name: TestIO - Trigger Test
+
+on:
+  workflow_call:
+    inputs:
+      testio-slug:
+        required: true
+        type: string
+        default: 'staffbase'
+      testio-product-id:
+        required: true
+        type: string
+    secrets:
+      github-token:
+        required: true
+      testio-token:
+        required: true
+
+jobs:
+  testio-trigger-test:
+
+    name: TestIO - Trigger Test
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout folder with required resources from gha-workflows
+        uses: actions/checkout@v3
+        with:
+          repository: Staffbase/gha-workflows
+          ref: 'testio-trigger-template' # TODO to be reused when merged
+          token: ${{ secrets.token }}
+          sparse-checkout: .github/scripts/testio # only checkout this folder
+          path: .github/ # target dir of the checkout
+
+      - name: Temp Test - print directory contents
+        shell: bash
+        run: |
+          echo ${{ inputs.testio-slug }}
+          echo ${{ inputs.testio-product-id }}
+          ls -lisa
+          ls -lisa .github
+          ls -lisa .github/testio
+          cat .github/testio/exploratory_test_template.md
