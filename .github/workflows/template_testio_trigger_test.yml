@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       testio-slug:
-        required: true
+        required: false
         type: string
         default: 'staffbase'
       testio-product-id:
