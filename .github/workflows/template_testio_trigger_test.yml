@@ -47,3 +47,17 @@ jobs:
           ls -lisa .github/scripts/testio
           echo "script:"
           cat .github/scripts/testio/exploratory_test_template.md
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: |
+          cd .github/scripts/testio/
+          npm install
+
+      - name: Add PR comment for requesting required input
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx ts-node .github/scripts/testio/addPRcomment.ts

@@ -1,2 +1,6 @@
 # Intellij configuration
 .idea
+
+# TestIO-related
+.github/scripts/testio/node_modules
+.github/scripts/testio/package-lock.json
