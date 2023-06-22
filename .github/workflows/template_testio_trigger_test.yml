@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: Staffbase/gha-workflows
-          ref: 'testio-trigger-template'                        # TODO to be reused when merged
+          ref: 'testio-trigger-template'                        # TODO to be removed when merged
           token: ${{ secrets.token }}
           sparse-checkout: .github/scripts/testio               # only checkout this folder
           path: .github/                                        # target dir of the checkout
