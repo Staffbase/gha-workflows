@@ -30,14 +30,20 @@ jobs:
           ref: 'testio-trigger-template'                        # TODO to be removed when merged
           token: ${{ secrets.github-token }}
           sparse-checkout: .github/scripts/testio               # only checkout this folder
-          path: .github/                                        # target dir of the checkout
+          # path: temp-testio/                                        # target dir of the checkout
 
       - name: Temp Test - print directory contents
         shell: bash
         run: |
           echo ${{ inputs.testio-slug }}
           echo ${{ inputs.testio-product-id }}
+          echo "all:"
           ls -lisa
+          echo "sub-1:"
           ls -lisa .github
-          ls -lisa .github/testio
-          cat .github/testio/exploratory_test_template.md
+          echo "sub-2:"
+          ls -lisa .github/scripts
+          echo "sub-3:"
+          ls -lisa .github/scripts/testio
+          echo "script:"
+          cat .github/scripts/testio/exploratory_test_template.md
