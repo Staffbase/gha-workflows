@@ -24,6 +24,7 @@ jobs:
 
     name: TestIO - Trigger Test
     runs-on: ubuntu-22.04
+    if: startsWith(github.event.comment.body, '@bot-testio exploratory-test')     # this is the prefix of all subsequent comments
 
     steps:
       - name: TestIO - Checkout folder with required resources from gha-workflows
@@ -45,7 +46,18 @@ jobs:
           npm install
 
       - name: TestIO - Add PR comment for requesting required input
+        id: prepare
+        if: startsWith(github.event.comment.body, '@bot-testio exploratory-test create')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/addPRcomment.ts
+
+      - name: TestIO - Retrieve input and create payload
+        id: payload
+        if: startsWith(github.event.comment.body, '@bot-testio exploratory-test submit')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
+          TESTIO_COMMENT_ID: ${{ github.event.comment.id }}
+        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/retrievePayload.ts
