@@ -4,7 +4,7 @@ import {Octokit} from "@octokit/rest";
 import * as core from "@actions/core";
 
 async function createPayload() {
-    const commentID: number = Number(process.env.TESTIO_COMMENT_ID);
+    const commentID: number = Number(process.env.TESTIO_SUBMIT_COMMENT_ID);
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
