@@ -7,7 +7,7 @@ const octokit: Octokit = new Octokit({
    auth: process.env.GITHUB_TOKEN
 });
 
-const template = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_template.md`), 'utf8');
+const template = fs.readFileSync(`${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_template.md`, 'utf8');
 console.log("Template file contents:");
 console.log(template);
 console.log(`Issue number: ${github.context.issue.number}`);
