@@ -6,7 +6,7 @@ console.log("Template file contents:");
 console.log(template);
 console.log(`Issue number: ${github.context.issue.number}`);
 
-const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+const octokit = github.getOctokit(`${process.env.GITHUB_TOKEN}`);
 
 // octokit.rest.issues.createComment();
 // await octokit.rest.issues.createComment({
