@@ -34,18 +34,6 @@ jobs:
           token: ${{ secrets.github-token }}
           sparse-checkout: ${{ env.TESTIO_SCRIPTS_DIR }}        # only checkout this folder
 
-      - name: TestIO - Temp Test - print directory contents
-        shell: bash
-        run: |
-          echo ${{ inputs.testio-slug }}
-          echo ${{ inputs.testio-product-id }}
-          echo "all:"
-          ls -lisa
-          echo "sub-3:"
-          ls -lisa ${{ env.TESTIO_SCRIPTS_DIR }}
-          echo "script:"
-          cat ${{ env.TESTIO_SCRIPTS_DIR }}/exploratory_test_template.md
-
       - name: TestIO - Set up Node
         uses: actions/setup-node@v3
         with:
