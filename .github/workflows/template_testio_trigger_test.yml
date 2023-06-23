@@ -17,7 +17,7 @@ on:
         required: true
 
 env:
-    TESTIO_SCRIPTS_DIR: .github/scripts/testio
+  TESTIO_SCRIPTS_DIR: .github/scripts/testio
 
 jobs:
   testio-trigger-test:
