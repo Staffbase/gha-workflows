@@ -3,12 +3,10 @@ import * as fs from "fs";
 import {Octokit} from "@octokit/rest";
 
 async function addComment() {
-    const template = fs.readFileSync(`${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_template.md`, 'utf8');
-    console.log("Template file contents:");
-    console.log(template);
-    console.log(`Issue number: ${github.context.issue.number}`);
-
-// const octokit = github.getOctokit(`${process.env.GITHUB_TOKEN}`);
+    const commentTemplate = fs.readFileSync(`${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_template.md`, 'utf8');
+    const jsonString = fs.readFileSync(`${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment.json`, 'utf8');
+    const requiredInformationPlaceholder = "$$REQUIRED_INFORMATION_TEMPLATE$$";
+    const commentBody = commentTemplate.replace(requiredInformationPlaceholder, jsonString);
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
@@ -18,7 +16,7 @@ async function addComment() {
         repo: github.context.repo.repo,
         owner: github.context.repo.owner,
         issue_number: github.context.issue.number,
-        body: template,
+        body: commentBody,
     });
 
 }
