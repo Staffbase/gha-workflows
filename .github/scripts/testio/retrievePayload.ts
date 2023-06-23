@@ -3,7 +3,7 @@ import * as fs from "fs";
 import {Octokit} from "@octokit/rest";
 import * as core from "@actions/core";
 
-async function addComment() {
+async function createPayload() {
     const commentID: number = Number(process.env.TESTIO_COMMENT_ID);
 
     const octokit = new Octokit({
@@ -23,4 +23,4 @@ async function addComment() {
 
 }
 
-addComment().then();
+createPayload().then();
