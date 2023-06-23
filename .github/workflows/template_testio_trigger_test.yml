@@ -60,4 +60,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
-        run: npx ts-node .github/scripts/testio/addPRcomment.ts
+        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/addPRcomment.ts
