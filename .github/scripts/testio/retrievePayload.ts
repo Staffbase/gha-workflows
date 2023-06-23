@@ -18,8 +18,6 @@ async function createPayload() {
 
     console.log("This comment has been received:");
     console.log(retrievedComment);
-    console.log("and stringified:");
-    console.log(JSON.stringify(retrievedComment));
 
 }
 
