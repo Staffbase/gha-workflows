@@ -16,6 +16,9 @@ on:
       testio-token:
         required: true
 
+env:
+    TESTIO_SCRIPTS_DIR: .github/scripts/testio
+
 jobs:
   testio-trigger-test:
 
@@ -23,41 +26,38 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout folder with required resources from gha-workflows
+      - name: TestIO - Checkout folder with required resources from gha-workflows
         uses: actions/checkout@v3
         with:
           repository: Staffbase/gha-workflows
           ref: 'testio-trigger-template'                        # TODO to be removed when merged
           token: ${{ secrets.github-token }}
-          sparse-checkout: .github/scripts/testio               # only checkout this folder
-          # path: temp-testio/                                        # target dir of the checkout
+          sparse-checkout: ${{ env.TESTIO_SCRIPTS_DIR }}        # only checkout this folder
 
-      - name: Temp Test - print directory contents
+      - name: TestIO - Temp Test - print directory contents
         shell: bash
         run: |
           echo ${{ inputs.testio-slug }}
           echo ${{ inputs.testio-product-id }}
           echo "all:"
           ls -lisa
-          echo "sub-1:"
-          ls -lisa .github
-          echo "sub-2:"
-          ls -lisa .github/scripts
           echo "sub-3:"
-          ls -lisa .github/scripts/testio
+          ls -lisa ${{ env.TESTIO_SCRIPTS_DIR }}
           echo "script:"
-          cat .github/scripts/testio/exploratory_test_template.md
+          cat ${{ env.TESTIO_SCRIPTS_DIR }}/exploratory_test_template.md
 
-      - uses: actions/setup-node@v3
+      - name: TestIO - Set up Node
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install Dependencies
+      - name: TestIO - Install Dependencies
         run: |
-          cd .github/scripts/testio/
+          cd ${{ env.TESTIO_SCRIPTS_DIR }}
           npm install
 
-      - name: Add PR comment for requesting required input
+      - name: TestIO - Add PR comment for requesting required input
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
         run: npx ts-node .github/scripts/testio/addPRcomment.ts
