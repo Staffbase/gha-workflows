@@ -61,4 +61,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
           TESTIO_SUBMIT_COMMENT_ID: ${{ github.event.comment.id }}
+          TESTIO_SUBMIT_COMMENT_URL: ${{ github.event.comment.html_url }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/retrievePayload.ts

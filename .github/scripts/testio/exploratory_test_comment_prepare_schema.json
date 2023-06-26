@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "test_environment": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "access": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "access"
+      ]
+    },
+    "feature": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "howtofind": {
+          "type": "string"
+        },
+        "user_stories": {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "howtofind",
+        "user_stories"
+      ]
+    }
+  },
+  "required": [
+    "test_environment",
+    "feature"
+  ]
+}
