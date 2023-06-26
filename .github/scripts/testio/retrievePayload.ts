@@ -39,7 +39,7 @@ async function createPayload() {
     console.log("Converted payload:");
     console.log(testIOPayload);
     const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
-    fs.writeFile(payloadFile, testIOPayload, (err) => {
+    fs.writeFile(payloadFile, JSON.stringify(testIOPayload), (err) => {
         if (err) throw err;
         console.log(`The payload file ${payloadFile} has been saved successfully`);
     });
