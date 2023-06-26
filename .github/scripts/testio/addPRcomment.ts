@@ -4,7 +4,7 @@ import {Octokit} from "@octokit/rest";
 
 async function addComment() {
     const commentPrepareTemplateFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_template.md`;
-    let commentTemplate: String;
+    let commentTemplate = "";
     await fs.readFile(commentPrepareTemplateFile, 'utf8', (err, data) => {
         if (err) throw err;
         commentTemplate = data;
@@ -12,7 +12,7 @@ async function addComment() {
     });
 
     const commentPrepareJsonFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare.json`;
-    let jsonString: String;
+    let jsonString = "";
     await fs.readFile(commentPrepareJsonFile, 'utf8', (err, content) => {
         if (err) throw err;
         jsonString = content;
