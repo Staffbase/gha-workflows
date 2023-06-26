@@ -29,8 +29,8 @@ async function createPayload() {
         if (validation.errors) {
             const output = betterAjvErrors(prepareTestSchemaFile, preparation, validation.errors);
             console.log(output);
+            throw new Error(`Provided json is not conform to schema: ${output}`);
         }
-        throw new Error(`Provided json is not conform to schema: ${validation.errors}`);
     }
 }
 
