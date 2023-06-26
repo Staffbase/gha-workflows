@@ -24,7 +24,7 @@ export class Util {
         return {valid, validation};
     }
 
-    static convertPrepareObjectToTestIOPayload(prepareObject: any, repo: string, owner: string, pr: string): any {
+    static convertPrepareObjectToTestIOPayload(prepareObject: any, repo: string, owner: string, pr: number): any {
         const testioPayload = {
             exploratory_test: {
                 test_title: `${owner}/${repo}/${pr}`,

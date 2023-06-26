@@ -33,6 +33,10 @@ async function createPayload() {
         }
         throw new Error("Provided json is not conform to schema");
     }
+
+    const testIOPayload = Util.convertPrepareObjectToTestIOPayload(preparation, github.context.repo.repo, github.context.repo.owner, github.context.issue.number);
+    console.log("Converted payload:");
+    console.log(testIOPayload);
 }
 
 createPayload().then();
