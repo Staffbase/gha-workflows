@@ -14,7 +14,7 @@ export class Util {
         return parsedObject;
     }
 
-    static validateObjectAgainstSchema(parsedObject: object, schemaFile: string): { valid: boolean; validation: ValidateFunction<unknown> } {
+    public static validateObjectAgainstSchema(parsedObject: object, schemaFile: string): { valid: boolean; validation: ValidateFunction<unknown> } {
         const prepareTestSchema = JSON.parse(fs.readFileSync(schemaFile, 'utf8'));
         const ajv = new Ajv({
             strictTuples: false
@@ -24,7 +24,7 @@ export class Util {
         return {valid, validation};
     }
 
-    static convertPrepareObjectToTestIOPayload(prepareObject: any, repo: string, owner: string, pr: number): any {
+    public static convertPrepareObjectToTestIOPayload(prepareObject: any, repo: string, owner: string, pr: number): any {
         const testioPayload = {
             exploratory_test: {
                 test_title: `${owner}/${repo}/${pr}`,
@@ -47,5 +47,35 @@ export class Util {
             }
         };
         return testioPayload;
+    }
+
+    public static async request(requestMethod: string, endpoint: string, authToken: string, bodyObject?: any): Promise<any> {
+        const authTokenString = `Token ${authToken}`;
+        let request = {
+            method: requestMethod,
+            headers: {
+                'Authorization': `${authTokenString}`
+            }
+        };
+        if (bodyObject) {
+            request.headers = {...request.headers, ...{
+                    'Content-Type': 'application/json',
+                }};
+            request = {...request, ...{
+                    body: JSON.stringify(bodyObject)
+                }};
+        }
+        const response = await fetch(endpoint, request);
+        if (response.ok) {
+            const result = await response.json();
+            if (result) {
+                console.log("Successfully received response from request");
+                return result;
+            }
+            return Promise.reject("Deserializing the data from the response wasn't successful");
+        } else {
+            const error = new Error(response.statusText + " at endpoint: " + endpoint);
+            return Promise.reject(error)
+        }
     }
 }
