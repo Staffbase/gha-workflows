@@ -31,6 +31,7 @@ async function createPayload() {
             console.log(output);
             throw new Error(`Provided json is not conform to schema: ${output}`);
         }
+        throw new Error("Provided json is not conform to schema");
     }
 }
 

@@ -35,4 +35,15 @@ describe("TestIO Trigger-from-PR logic", () => {
         }
         expect(valid).toBe(true);
     });
+
+    it('should convert prepare object into TestIO payload', () => {
+        const prepareObject = Util.getJsonObjectFromComment( /```json\s(.+)\s```/sm, commentBody, 1);
+        const repo = "testio-management";
+        const owner = "Staffbase";
+        const pr = "666";
+        const testioPayload = Util.convertPrepareObjectToTestIOPayload(prepareObject, repo, owner, pr);
+        const testName = `${owner}/${repo}/${pr}`;
+        expect(testioPayload.exploratory_test.test_title).toBe(testName);
+        expect(testioPayload.exploratory_test.test_environment.title).toBe(testName + " test environment");
+    });
 });
