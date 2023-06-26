@@ -1,5 +1,6 @@
 import {Util} from "./Util";
 import fs from "fs";
+import betterAjvErrors from 'better-ajv-errors';
 
 describe("TestIO Trigger-from-PR logic", () => {
 
@@ -26,7 +27,11 @@ describe("TestIO Trigger-from-PR logic", () => {
         const parsedObject = Util.getJsonObjectFromComment( /```json\s(.+)\s```/sm, commentBody, 1);
         const {valid, validation} = Util.validateObjectAgainstSchema(parsedObject, prepareTestSchemaFile);
         if (!valid) {
-            throw new Error(validation.errors?.[0].message);
+            if (validation.errors) {
+                const output = betterAjvErrors(prepareTestSchemaFile, parsedObject, validation.errors);
+                console.log(output);
+                throw new Error(output);
+            }
         }
         expect(valid).toBe(true);
     });

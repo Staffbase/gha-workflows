@@ -1,6 +1,5 @@
 import fs from "fs";
 import Ajv, {ValidateFunction} from "ajv";
-import {strict} from "assert";
 
 export class Util {
 

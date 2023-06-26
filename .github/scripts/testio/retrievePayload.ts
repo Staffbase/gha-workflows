@@ -1,6 +1,7 @@
 import * as github from "@actions/github";
 import {Octokit} from "@octokit/rest";
 import {Util} from "./Util";
+import betterAjvErrors from "better-ajv-errors";
 
 async function createPayload() {
     const commentID: number = Number(process.env.TESTIO_SUBMIT_COMMENT_ID);
@@ -24,7 +25,13 @@ async function createPayload() {
 
     const prepareTestSchemaFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_schema.json`;
     const {valid, validation} = Util.validateObjectAgainstSchema(preparation, prepareTestSchemaFile);
-    if (!valid) throw new Error(`Provided json is not conform to schema: ${validation.errors}`);
+    if (!valid) {
+        if (validation.errors) {
+            const output = betterAjvErrors(prepareTestSchemaFile, preparation, validation.errors);
+            console.log(output);
+        }
+        throw new Error(`Provided json is not conform to schema: ${validation.errors}`);
+    }
 }
 
 createPayload().then();
