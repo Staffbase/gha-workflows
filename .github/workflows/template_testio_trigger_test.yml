@@ -51,6 +51,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
+          TESTIO_CREATE_COMMENT_URL: ${{ github.event.comment.html_url }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/addPRcomment.ts
 
       - name: TestIO - Retrieve input and create payload
