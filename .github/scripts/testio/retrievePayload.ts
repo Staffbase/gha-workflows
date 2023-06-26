@@ -3,6 +3,7 @@ import * as fs from "fs";
 import {Octokit} from "@octokit/rest";
 import * as core from "@actions/core";
 import Ajv from "ajv";
+import {Util} from "./Util";
 
 async function createPayload() {
     const commentID: number = Number(process.env.TESTIO_SUBMIT_COMMENT_ID);
@@ -22,10 +23,7 @@ async function createPayload() {
     if (!commentContents) throw new Error(`Comment ${commentUrl} seems to be empty`);
 
     const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
-    const matches = jsonRegex.exec(commentContents);
-    const jsonContents = matches[1];                // 0 index = full match, 1 index = 1st capture group
-    if (!jsonContents) throw new Error("Provided input seems to be empty between ```json and ```");
-    const preparation = JSON.parse(jsonContents);
+    const preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
 
     const prepareTestSchemaFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_schema.json`;
     const prepareTestSchema = JSON.parse(fs.readFileSync(prepareTestSchemaFile, 'utf8'));
