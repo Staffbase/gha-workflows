@@ -2,6 +2,7 @@ import * as github from "@actions/github";
 import {Octokit} from "@octokit/rest";
 import {Util} from "./Util";
 import betterAjvErrors from "better-ajv-errors";
+import * as fs from "fs";
 
 async function createPayload() {
     const commentID: number = Number(process.env.TESTIO_SUBMIT_COMMENT_ID);
@@ -37,6 +38,11 @@ async function createPayload() {
     const testIOPayload = Util.convertPrepareObjectToTestIOPayload(preparation, github.context.repo.repo, github.context.repo.owner, github.context.issue.number);
     console.log("Converted payload:");
     console.log(testIOPayload);
+    const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
+    fs.writeFile(payloadFile, testIOPayload, (err) => {
+        if (err) throw err;
+        console.log(`The payload file ${payloadFile} has been saved successfully`);
+    });
 }
 
 createPayload().then();
