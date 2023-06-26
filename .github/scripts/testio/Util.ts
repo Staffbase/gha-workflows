@@ -30,7 +30,8 @@ export class Util {
                 test_title: `${owner}/${repo}/${pr}`,
                 test_environment: {
                     title: `${owner}/${repo}/${pr} test environment`,
-                    url: prepareObject.test_environment.access
+                    url: prepareObject.test_environment.url,
+                    access: prepareObject.test_environment.access,
                 },
                 features: [
                     {

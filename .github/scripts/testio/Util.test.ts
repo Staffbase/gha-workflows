@@ -45,7 +45,8 @@ describe("TestIO Trigger-from-PR logic", () => {
         const testName = `${owner}/${repo}/${pr}`;
         expect(testioPayload.exploratory_test.test_title).toBe(testName);
         expect(testioPayload.exploratory_test.test_environment.title).toBe(testName + " test environment");
-        expect(testioPayload.exploratory_test.test_environment.url).toBe(prepareObject.test_environment.access);
+        expect(testioPayload.exploratory_test.test_environment.url).toBe(prepareObject.test_environment.url);
+        expect(testioPayload.exploratory_test.test_environment.access).toBe(prepareObject.test_environment.access);
         expect(testioPayload.exploratory_test.features[0].title).toBe(prepareObject.feature.title);
         expect(testioPayload.exploratory_test.features[0].description).toBe(prepareObject.feature.description);
         expect(testioPayload.exploratory_test.features[0].howtofind).toBe(prepareObject.feature.howtofind);
