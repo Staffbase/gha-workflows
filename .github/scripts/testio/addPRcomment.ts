@@ -4,14 +4,18 @@ import {Octokit} from "@octokit/rest";
 
 async function addComment() {
     const commentPrepareTemplateFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_template.md`;
-    const commentTemplate = await fs.readFile(commentPrepareTemplateFile, 'utf8', (err) => {
+    let commentTemplate: String;
+    await fs.readFile(commentPrepareTemplateFile, 'utf8', (err, data) => {
         if (err) throw err;
+        commentTemplate = data;
         console.log(`The temporary file ${commentPrepareTemplateFile} has been read successfully`);
     });
 
     const commentPrepareJsonFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare.json`;
-    const jsonString = await fs.readFile(commentPrepareJsonFile, 'utf8', (err) => {
+    let jsonString: String;
+    await fs.readFile(commentPrepareJsonFile, 'utf8', (err, content) => {
         if (err) throw err;
+        jsonString = content;
         console.log(`The temporary file ${commentPrepareJsonFile} has been read successfully`);
     });
 
