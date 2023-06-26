@@ -18,23 +18,21 @@ async function createPayload() {
         comment_id: commentID
     });
 
-    console.log(retrievedComment);
+    const commentContents = retrievedComment.data.body;
+    if (!commentContents) throw new Error(`Comment ${commentUrl} seems to be empty`);
 
-    // const commentContents = retrievedComment.data;
-    // if (!commentContents) throw new Error(`Comment ${commentUrl} seems to be empty`);
-    //
-    // const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
-    // const matches = jsonRegex.exec(commentContents);
-    // const jsonContents = matches[1];                // 0 index = full match, 1 index = 1st capture group
-    // if (!jsonContents) throw new Error("Provided input seems to be empty between ```json and ```");
-    // const preparation = JSON.parse(jsonContents);
-    //
-    // const prepareTestSchemaFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_schema.json`;
-    // const prepareTestSchema = JSON.parse(fs.readFileSync(prepareTestSchemaFile, 'utf8'));
-    // const ajv = new Ajv();
-    // const validation = ajv.compile(prepareTestSchema);
-    // const valid = validation(preparation);
-    // if (!valid) throw new Error(`Provided json is not conform to schema: ${validation.errors}`);
+    const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
+    const matches = jsonRegex.exec(commentContents);
+    const jsonContents = matches[1];                // 0 index = full match, 1 index = 1st capture group
+    if (!jsonContents) throw new Error("Provided input seems to be empty between ```json and ```");
+    const preparation = JSON.parse(jsonContents);
+
+    const prepareTestSchemaFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_schema.json`;
+    const prepareTestSchema = JSON.parse(fs.readFileSync(prepareTestSchemaFile, 'utf8'));
+    const ajv = new Ajv();
+    const validation = ajv.compile(prepareTestSchema);
+    const valid = validation(preparation);
+    if (!valid) throw new Error(`Provided json is not conform to schema: ${validation.errors}`);
 }
 
 createPayload().then();
