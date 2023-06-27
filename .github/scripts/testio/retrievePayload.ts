@@ -22,11 +22,13 @@ async function createPayload() {
 
     const commentContents = `${retrievedComment.data.body}`;
 
+    if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
+    const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
+
     console.log("retrieved comment body:");
     console.log(commentContents);
-    // if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
-    //
-    // const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
+    console.log("regex:");
+    console.log(jsonRegex);
     // let preparation;
     // try {
     //     preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
