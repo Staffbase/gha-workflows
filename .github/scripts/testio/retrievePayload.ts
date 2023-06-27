@@ -30,12 +30,8 @@ async function createPayload() {
         preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
         console.log("preparation:");
         console.log(preparation);
-    } catch (error) {
-        console.log("caught error:");
-        console.log(error);
-        console.log("caught error stringified:");
-        console.log(JSON.stringify(error));
-        // Util.throwErrorAndPrepareErrorMessage(error, errorFileName);
+    } catch (error: Error) {
+        Util.throwErrorAndPrepareErrorMessage(error.message, errorFileName);
     }
     console.log("preparation after:");
     console.log(preparation);
