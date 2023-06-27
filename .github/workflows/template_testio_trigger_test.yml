@@ -63,7 +63,7 @@ jobs:
           TESTIO_SUBMIT_COMMENT_ID: ${{ github.event.comment.id }}
           TESTIO_SUBMIT_COMMENT_URL: ${{ github.event.comment.html_url }}
         run: |
-          ll ${{ env.TESTIO_SCRIPTS_DIR }}
+          ls -lisa ${{ env.TESTIO_SCRIPTS_DIR }}
           npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/retrievePayload.ts
 
       - name: TestIO - Trigger TestIO Test
