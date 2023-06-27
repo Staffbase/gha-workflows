@@ -6,8 +6,13 @@ async function reportFailure() {
     const errorFileName = `${process.env.TESTIO_ERROR_MSG_FILE}`;
     const errorMessageFilePath = `${process.env.TESTIO_SCRIPTS_DIR}/${errorFileName}`;
 
-    const errorMessageToReport = fs.readFileSync(errorMessageFilePath, 'utf8');
-    const commentBody = "🚨 Test failed 🚨 :bangbang: ⛔️ Please check the following error  ⛔️ :bangbang: \n```" + errorMessageToReport + "```";
+    let commentBody;
+    if (fs.existsSync(errorMessageFilePath)) {
+        const errorMessageToReport = fs.readFileSync(errorMessageFilePath, 'utf8');
+        commentBody = "🚨 Failure 🚨 :bangbang: ⛔️ Please check the following error  ⛔️ :bangbang: \n```" + errorMessageToReport + "```";
+    } else {
+        commentBody = "🚨 Failed to trigger a test on TestIO 🚨 Please revise your steps";
+    }
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
