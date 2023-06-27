@@ -60,7 +60,6 @@ jobs:
         if: startsWith(github.event.comment.body, '@bot-testio exploratory-test submit')
         env:
           GITHUB_TOKEN: ${{ secrets.github-token }}
-          TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
           TESTIO_SUBMIT_COMMENT_ID: ${{ github.event.comment.id }}
           TESTIO_SUBMIT_COMMENT_URL: ${{ github.event.comment.html_url }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/retrievePayload.ts
