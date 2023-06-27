@@ -25,16 +25,17 @@ async function createPayload() {
     if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
     const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
 
-    console.log("retrieved comment body:");
-    console.log(commentContents);
-    console.log("regex:");
-    console.log(jsonRegex);
-    // let preparation;
-    // try {
-    //     preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
-    // } catch (error) {
-    //     Util.throwErrorAndPrepareErrorMessage(error, errorFileName);
-    // }
+    let preparation;
+    try {
+        preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
+        console.log("preparation:");
+        console.log(preparation);
+    } catch (error) {
+        Util.throwErrorAndPrepareErrorMessage(error, errorFileName);
+    }
+    console.log("preparation after:");
+    console.log(preparation);
+
     //
     // const prepareTestSchemaFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_schema.json`;
     // const {valid, validation} = Util.validateObjectAgainstSchema(preparation, prepareTestSchemaFile);
