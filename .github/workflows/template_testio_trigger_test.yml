@@ -74,7 +74,7 @@ jobs:
       - name: TestIO - Report Success
         if: ${{ steps.trigger.outcome == 'success' }}
         env:
-            TESTIO_CREATED_TEST_ID: ${{ steps.trigger.output.testio-created-test-id }}
+            TESTIO_CREATED_TEST_ID: ${{ steps.trigger.outputs.testio-created-test-id }}
             TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
             TESTIO_SLUG: ${{ inputs.testio-slug }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportSuccess.ts
