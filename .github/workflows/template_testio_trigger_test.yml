@@ -51,7 +51,6 @@ jobs:
         if: startsWith(github.event.comment.body, '@bot-testio exploratory-test create')
         env:
           GITHUB_TOKEN: ${{ secrets.github-token }}
-          TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
           TESTIO_CREATE_COMMENT_URL: ${{ github.event.comment.html_url }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/addPRcomment.ts
 
@@ -68,7 +67,6 @@ jobs:
         id: trigger
         if: ${{ steps.payload.outcome == 'success' }}
         env:
-          TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
           TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
           TESTIO_TOKEN: ${{ secrets.testio-token }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/triggerTest.ts
