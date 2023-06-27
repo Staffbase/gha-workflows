@@ -28,13 +28,9 @@ async function createPayload() {
     let preparation;
     try {
         preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
-        console.log("preparation:");
-        console.log(preparation);
-    } catch (error: Error) {
-        Util.throwErrorAndPrepareErrorMessage(error.message, errorFileName);
+    } catch (error) {
+        Util.throwErrorAndPrepareErrorMessage(JSON.stringify(error), errorFileName);
     }
-    console.log("preparation after:");
-    console.log(preparation);
 
     //
     // const prepareTestSchemaFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_schema.json`;
