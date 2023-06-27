@@ -84,4 +84,6 @@ jobs:
 
       - name: TestIO - Report Failure
         if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportFailure.ts

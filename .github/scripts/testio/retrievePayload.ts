@@ -20,6 +20,9 @@ async function createPayload() {
         comment_id: commentID
     });
 
+    console.log("retrieved comment:");
+    console.log(retrievedComment);
+
     const commentContents = retrievedComment.data.body;
     if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
 
