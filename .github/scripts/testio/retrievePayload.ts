@@ -31,7 +31,11 @@ async function createPayload() {
         console.log("preparation:");
         console.log(preparation);
     } catch (error) {
-        Util.throwErrorAndPrepareErrorMessage(error, errorFileName);
+        console.log("caught error:");
+        console.log(error);
+        console.log("caught error stringified:");
+        console.log(JSON.stringify(error));
+        // Util.throwErrorAndPrepareErrorMessage(error, errorFileName);
     }
     console.log("preparation after:");
     console.log(preparation);
