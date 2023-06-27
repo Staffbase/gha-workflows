@@ -41,6 +41,7 @@ describe("TestIO Trigger-from-PR logic", () => {
         const repo = "testio-management";
         const owner = "Staffbase";
         const pr = 666;
+        const commentID = 123456;
         const testioPayload = Util.convertPrepareObjectToTestIOPayload(prepareObject, repo, owner, pr);
         const testName = `${owner}/${repo}/${pr}`;
         expect(testioPayload.exploratory_test.test_title).toBe(testName);

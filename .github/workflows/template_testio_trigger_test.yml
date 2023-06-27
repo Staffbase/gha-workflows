@@ -18,6 +18,7 @@ on:
 
 env:
   TESTIO_SCRIPTS_DIR: .github/scripts/testio
+  TESTIO_ERROR_MSG_FILE: errorToComment.msg
 
 jobs:
   testio-trigger-test:
@@ -62,9 +63,7 @@ jobs:
           TESTIO_SCRIPTS_DIR: ${{ env.TESTIO_SCRIPTS_DIR }}
           TESTIO_SUBMIT_COMMENT_ID: ${{ github.event.comment.id }}
           TESTIO_SUBMIT_COMMENT_URL: ${{ github.event.comment.html_url }}
-        run: |
-          ls -lisa ${{ env.TESTIO_SCRIPTS_DIR }}
-          npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/retrievePayload.ts
+        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/retrievePayload.ts
 
       - name: TestIO - Trigger TestIO Test
         id: trigger
@@ -74,3 +73,15 @@ jobs:
           TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
           TESTIO_TOKEN: ${{ secrets.testio-token }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/triggerTest.ts
+
+      - name: TestIO - Report Success
+        if: ${{ steps.trigger.outcome == 'success' }}
+        env:
+            TESTIO_CREATED_TEST_ID: ${{ steps.trigger.output.testio-created-test-id }}
+            TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
+            TESTIO_SLUG: ${{ inputs.testio-slug }}
+        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportSuccess.ts
+
+      - name: TestIO - Report Failure
+        if: failure()
+        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportFailure.ts

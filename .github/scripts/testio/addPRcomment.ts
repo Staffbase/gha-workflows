@@ -18,18 +18,11 @@ async function addComment() {
         auth: process.env.GITHUB_TOKEN
     });
 
-    const prepareComment = await octokit.rest.issues.createComment({
+    await octokit.rest.issues.createComment({
         repo: github.context.repo.repo,
         owner: github.context.repo.owner,
         issue_number: github.context.issue.number,
         body: commentBody,
-    });
-
-    const prepareCommentUrl = prepareComment.data.html_url;
-    const tempFilePath = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_url`;
-    fs.writeFile(tempFilePath, prepareCommentUrl, (err) => {
-        if (err) throw err;
-        console.log(`The temporary file ${tempFilePath} has been saved successfully`);
     });
 
 }

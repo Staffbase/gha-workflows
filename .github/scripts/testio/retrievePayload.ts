@@ -7,6 +7,7 @@ import * as fs from "fs";
 async function createPayload() {
     const commentID: number = Number(process.env.TESTIO_SUBMIT_COMMENT_ID);
     const commentUrl = `${process.env.TESTIO_SUBMIT_COMMENT_URL}`;
+    const errorFileName = `${process.env.TESTIO_ERROR_MSG_FILE}`;
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
@@ -19,7 +20,7 @@ async function createPayload() {
     });
 
     const commentContents = retrievedComment.data.body;
-    if (!commentContents) throw new Error(`Comment ${commentUrl} seems to be empty`);
+    if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
 
     const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
     const preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
@@ -30,17 +31,17 @@ async function createPayload() {
         if (validation.errors) {
             const output = betterAjvErrors(prepareTestSchemaFile, preparation, validation.errors);
             console.log(output);
-            throw new Error(`Provided json is not conform to schema: ${output}`);
+            Util.throwErrorAndPrepareErrorMessage(`Provided json is not conform to schema: ${output}`, errorFileName);
         }
-        throw new Error("Provided json is not conform to schema");
+        Util.throwErrorAndPrepareErrorMessage("Provided json is not conform to schema", errorFileName);
     }
 
     const testIOPayload = Util.convertPrepareObjectToTestIOPayload(preparation, github.context.repo.repo, github.context.repo.owner, github.context.issue.number);
     console.log("Converted payload:");
     console.log(testIOPayload);
     const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
-    fs.writeFile(payloadFile, JSON.stringify(testIOPayload), (err) => {
-        if (err) throw err;
+    await fs.writeFile(payloadFile, JSON.stringify(testIOPayload), (err) => {
+        if (err) Util.throwErrorAndPrepareErrorMessage(err.message, errorFileName);
         console.log(`The payload file ${payloadFile} has been saved successfully`);
     });
 }

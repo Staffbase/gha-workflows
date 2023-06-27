@@ -78,4 +78,11 @@ export class Util {
             return Promise.reject(error)
         }
     }
+
+    public static throwErrorAndPrepareErrorMessage(errorMessage: string, errorMessageFileName: string) {
+        const errorMessageFilePath = `${process.env.TESTIO_SCRIPTS_DIR}/${errorMessageFileName}`;
+        fs.writeFileSync(errorMessageFilePath, errorMessage);
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
 }
