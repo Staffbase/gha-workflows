@@ -12,7 +12,7 @@ async function reportSuccess() {
     const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
     const payload = JSON.parse(fs.readFileSync(payloadFile, 'utf8'));
 
-    const commentBody = Util.escapeHtml("🎊✨ [Test Created Successfully](" + testURL + ") ✔️ ✨🎊"
+    const commentBody = "🎊✨ [Test Created Successfully](" + testURL + ") ✔️ ✨🎊"
         + "\n<details>"
         + "\n<summary>Details 👇</summary>"
         + "\nThe following payload has been sent to trigger the test on TestIO:"
@@ -20,7 +20,7 @@ async function reportSuccess() {
         + payload
         + "\n```"
         + "\n</details>"
-    );
+    ;
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
