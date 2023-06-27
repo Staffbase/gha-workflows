@@ -16,8 +16,8 @@ async function reportSuccess() {
         + "\n<details>"
         + "\n<summary>Details 👇</summary>"
         + "\nThe following payload has been sent to trigger the test on TestIO:"
-        + "\n```json\n"
-        + payload
+        + "\n\n```json\n"
+        + JSON.stringify(payload, null, '\t')
         + "\n```"
         + "\n</details>"
     ;
