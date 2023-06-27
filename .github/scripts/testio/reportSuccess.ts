@@ -12,15 +12,15 @@ async function reportSuccess() {
     const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
     const payload = JSON.parse(fs.readFileSync(payloadFile, 'utf8'));
 
-    const commentBody = Util.escapeHtml(```🎊✨ [Test Created Successfully](${testURL}) ✔️ ✨🎊
-    <details>
-        <summary>Details 👇</summary>
-        The following payload has been sent to trigger the test on TestIO:
-        \`\`\`json
-        ${payload}
-        \`\`\`
-    </details>
-    ```);
+    const commentBody = Util.escapeHtml("🎊✨ [Test Created Successfully](" + testURL + ") ✔️ ✨🎊"
+        + "\n<details>"
+        + "\n<summary>Details 👇</summary>"
+        + "\nThe following payload has been sent to trigger the test on TestIO:"
+        + "\n```json\n"
+        + payload
+        + "\n```"
+        + "\n</details>"
+    );
 
     console.log("test url:");
     console.log(testURL);
