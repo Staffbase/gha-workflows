@@ -6,7 +6,7 @@ async function reportSuccess() {
     const testioSlug = `${process.env.TESTIO_SLUG}`;
     const testioProductId = `${process.env.TESTIO_PRODUCT_ID}`;
     const testURL = "https://" + testioSlug + ".test.io/products/" + testioProductId + "/test_cycles/" + testioCreatedTestId;
-    const commentBody = `🎊✨ [Test Created Successfully](${testURL}) ✔️ ✨🎊
+    const commentBody = `<p align="center">🎊✨ [Test Created Successfully](${testURL}) ✔️ ✨🎊</p>
     If you want to observe progress you need a TestIO account (👉 ask the QAs), otherwise you can wait for notification in [#auto-qa-testio](https://staffbasehq.slack.com/archives/C03QSRQQJTG).`;
 
     console.log("test url:");

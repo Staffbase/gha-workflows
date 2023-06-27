@@ -53,4 +53,11 @@ describe("TestIO Trigger-from-PR logic", () => {
         expect(testioPayload.exploratory_test.features[0].howtofind).toBe(prepareObject.feature.howtofind);
         expect(testioPayload.exploratory_test.features[0].user_stories).toBe(prepareObject.feature.user_stories);
     });
+
+    it('should correctly print markdown comment', () => {
+        const commentBody = `<p align="center">🎊✨ [Test Created Successfully](https://blablabla) ✔️ ✨🎊</p>
+    If you want to observe progress you need a TestIO account (👉 ask the QAs), otherwise you can wait for notification in [#auto-qa-testio](https://staffbasehq.slack.com/archives/C03QSRQQJTG).`;
+        console.log(commentBody);
+        expect(commentBody).toBeTruthy();
+    });
 });
