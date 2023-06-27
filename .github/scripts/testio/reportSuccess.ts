@@ -22,12 +22,6 @@ async function reportSuccess() {
         + "\n</details>"
     );
 
-    console.log("test url:");
-    console.log(testURL);
-    console.log("comment:");
-    console.log(commentBody);
-
-
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
     });
