@@ -8,6 +8,12 @@ async function reportSuccess() {
     const testURL = "https://" + testioSlug + ".test.io/products/" + testioProductId + "/test_cycles/" + testioCreatedTestId;
     const commentBody = `🎊✨ [Test Created Successfully](${testURL}) ✔️ ✨🎊`;
 
+    console.log("test url:");
+    console.log(testURL);
+    console.log("comment:");
+    console.log(commentBody);
+
+
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
     });
@@ -20,6 +26,7 @@ async function reportSuccess() {
     });
 
     // TODO delete prepare/submit comment and add summary of payload
+    // TODO delete test environment?
 }
 
 reportSuccess().then();
