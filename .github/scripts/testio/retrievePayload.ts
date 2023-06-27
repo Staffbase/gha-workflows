@@ -20,10 +20,10 @@ async function createPayload() {
         comment_id: commentID
     });
 
-    console.log("retrieved comment body:");
-    console.log(retrievedComment.data.body);
+    const commentContents = `${retrievedComment.data.body}`;
 
-    // const commentContents: string = retrievedComment.data.body;
+    console.log("retrieved comment body:");
+    console.log(commentContents);
     // if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
     //
     // const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
