@@ -8,6 +8,7 @@ async function createPayload() {
     const commentID: number = Number(process.env.TESTIO_SUBMIT_COMMENT_ID);
     const commentUrl = `${process.env.TESTIO_SUBMIT_COMMENT_URL}`;
     const errorFileName = `${process.env.TESTIO_ERROR_MSG_FILE}`;
+    console.log("error message file: " + errorFileName);
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
@@ -23,7 +24,12 @@ async function createPayload() {
     if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
 
     const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
-    const preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
+    let preparation;
+    try {
+        preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
+    } catch (error) {
+        Util.throwErrorAndPrepareErrorMessage(error, errorFileName);
+    }
 
     const prepareTestSchemaFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_prepare_schema.json`;
     const {valid, validation} = Util.validateObjectAgainstSchema(preparation, prepareTestSchemaFile);
