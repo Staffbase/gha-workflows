@@ -58,12 +58,16 @@ export class Util {
             }
         };
         if (bodyObject) {
-            request.headers = {...request.headers, ...{
+            request.headers = {
+                ...request.headers, ...{
                     'Content-Type': 'application/json',
-                }};
-            request = {...request, ...{
+                }
+            };
+            request = {
+                ...request, ...{
                     body: JSON.stringify(bodyObject)
-                }};
+                }
+            };
         }
         const response = await fetch(endpoint, request);
         if (response.ok) {
@@ -84,5 +88,14 @@ export class Util {
         fs.writeFileSync(errorMessageFilePath, errorMessage);
         console.error(errorMessage);
         throw new Error(errorMessage);
+    }
+
+    public static escapeHtml(unescapedString: string): string {
+        return unescapedString
+            .replace(/&/g, '&amp')
+            .replace(/'/g, '&apos')
+            .replace(/"/g, '&quot')
+            .replace(/>/g, '&gt')
+            .replace(/</g, '&lt');
     }
 }

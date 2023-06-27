@@ -1,13 +1,26 @@
 import * as github from "@actions/github";
 import {Octokit} from "@octokit/rest";
+import {Util} from "./Util";
+import fs from "fs";
 
 async function reportSuccess() {
     const testioCreatedTestId = `${process.env.TESTIO_CREATED_TEST_ID}`;
     const testioSlug = `${process.env.TESTIO_SLUG}`;
     const testioProductId = `${process.env.TESTIO_PRODUCT_ID}`;
     const testURL = "https://" + testioSlug + ".test.io/products/" + testioProductId + "/test_cycles/" + testioCreatedTestId;
-    const commentBody = `<p align="center">🎊✨ [Test Created Successfully](${testURL}) ✔️ ✨🎊</p>
-    If you want to observe progress you need a TestIO account (👉 ask the QAs), otherwise you can wait for notification in [#auto-qa-testio](https://staffbasehq.slack.com/archives/C03QSRQQJTG).`;
+
+    const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
+    const payload = JSON.parse(fs.readFileSync(payloadFile, 'utf8'));
+
+    const commentBody = Util.escapeHtml(```🎊✨ [Test Created Successfully](${testURL}) ✔️ ✨🎊
+    <details>
+        <summary>Details 👇</summary>
+        The following payload has been sent to trigger the test on TestIO:
+        \`\`\`json
+        ${payload}
+        \`\`\`
+    </details>
+    ```);
 
     console.log("test url:");
     console.log(testURL);
