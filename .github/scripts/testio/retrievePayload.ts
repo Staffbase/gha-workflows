@@ -1,4 +1,5 @@
 import * as github from "@actions/github";
+import * as core from "@actions/core";
 import {Octokit} from "@octokit/rest";
 import {Util} from "./Util";
 import betterAjvErrors from "better-ajv-errors";
@@ -18,9 +19,9 @@ async function createPayload() {
         owner: github.context.repo.owner,
         comment_id: commentID
     });
+    core.setOutput("testio-submit-comment-id", commentID);
 
     const commentContents = `${retrievedComment.data.body}`;
-
     if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
     const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
 

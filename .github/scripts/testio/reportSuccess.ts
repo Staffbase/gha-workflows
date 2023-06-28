@@ -4,6 +4,7 @@ import {Util} from "./Util";
 import fs from "fs";
 
 async function reportSuccess() {
+    const submitCommentID: number = Number(process.env.TESTIO_SUBMIT_COMMENT_ID);
     const testioCreatedTestId = `${process.env.TESTIO_CREATED_TEST_ID}`;
     const testioSlug = `${process.env.TESTIO_SLUG}`;
     const testioProductId = `${process.env.TESTIO_PRODUCT_ID}`;
@@ -26,6 +27,12 @@ async function reportSuccess() {
         auth: process.env.GITHUB_TOKEN
     });
 
+    await octokit.rest.issues.deleteComment({
+        repo: github.context.repo.repo,
+        owner: github.context.repo.owner,
+        comment_id: submitCommentID
+    });
+
     await octokit.rest.issues.createComment({
         repo: github.context.repo.repo,
         owner: github.context.repo.owner,
@@ -33,7 +40,7 @@ async function reportSuccess() {
         body: commentBody,
     });
 
-    // TODO delete prepare/submit comment and add summary of payload
+    // TODO use comments to pass on comment URLs so that the success/failure comment can link to the first initiating comment
     // TODO delete test environment?
 }
 

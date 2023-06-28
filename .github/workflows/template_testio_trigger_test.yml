@@ -78,6 +78,7 @@ jobs:
           TESTIO_CREATED_TEST_ID: ${{ steps.trigger.outputs.testio-created-test-id }}
           TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
           TESTIO_SLUG: ${{ inputs.testio-slug }}
+          TESTIO_SUBMIT_COMMENT_ID: {{ steps.payload.outputs.testio-submit-comment-id }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportSuccess.ts
 
       - name: TestIO - Report Failure
