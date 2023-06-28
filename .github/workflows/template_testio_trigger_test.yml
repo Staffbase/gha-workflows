@@ -79,10 +79,12 @@ jobs:
           TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
           TESTIO_SLUG: ${{ inputs.testio-slug }}
           TESTIO_SUBMIT_COMMENT_ID: ${{ steps.payload.outputs.testio-submit-comment-id }}
+          TESTIO_CREATE_COMMENT_URL: ${{ steps.payload.outputs.testio-create-comment-url }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportSuccess.ts
 
       - name: TestIO - Report Failure
         if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.github-token }}
+          TESTIO_CREATE_COMMENT_URL: ${{ steps.payload.outputs.testio-create-comment-url }}
         run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportFailure.ts

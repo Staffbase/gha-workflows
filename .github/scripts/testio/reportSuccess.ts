@@ -9,6 +9,7 @@ async function reportSuccess() {
     const testioSlug = `${process.env.TESTIO_SLUG}`;
     const testioProductId = `${process.env.TESTIO_PRODUCT_ID}`;
     const testURL = "https://" + testioSlug + ".test.io/products/" + testioProductId + "/test_cycles/" + testioCreatedTestId;
+    const createCommentUrl = `${process.env.TESTIO_CREATE_COMMENT_URL}`;
 
     const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
     const payload = JSON.parse(fs.readFileSync(payloadFile, 'utf8'));
@@ -21,6 +22,7 @@ async function reportSuccess() {
         + JSON.stringify(payload, null, 2)
         + "\n```"
         + "\n</details>"
+        + (createCommentUrl != "" ? `\nAs response to [test creation trigger](${createCommentUrl}).` : "")
     ;
 
     const octokit = new Octokit({

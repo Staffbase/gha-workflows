@@ -98,4 +98,14 @@ export class Util {
             .replace(/>/g, '&gt')
             .replace(/</g, '&lt');
     }
+
+    static getUrlFromComment(comment: string): string | undefined {
+        const urlRegex = /.*```json\s.*\s```\s.*\[.+]\(([^\)]+)\)*/sm;
+        const matches = urlRegex.exec(comment);
+        if (!matches) {
+            console.log("Couldn't find a URL in the comment");
+            return undefined;
+        }
+        return matches[1];
+    }
 }

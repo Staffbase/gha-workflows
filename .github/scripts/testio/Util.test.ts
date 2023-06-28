@@ -1,6 +1,7 @@
 import {Util} from "./Util";
 import fs from "fs";
 import betterAjvErrors from 'better-ajv-errors';
+import exp from "constants";
 
 describe("TestIO Trigger-from-PR logic", () => {
 
@@ -14,7 +15,9 @@ describe("TestIO Trigger-from-PR logic", () => {
         const jsonString = fs.readFileSync(commentPrepareJsonFile, 'utf8');
 
         const requiredInformationPlaceholder = "$$REQUIRED_INFORMATION_TEMPLATE$$";
-        commentBody = commentTemplate.replace(requiredInformationPlaceholder, jsonString);
+        const createCommentPlaceholder = "$$CREATE_COMMENT_URL$$";
+        const url = "https://my.url";
+        commentBody = commentTemplate.replace(requiredInformationPlaceholder, jsonString).replace(createCommentPlaceholder, url);
     });
 
     it('should parse an object from the Github preparation comment', () => {
@@ -34,6 +37,12 @@ describe("TestIO Trigger-from-PR logic", () => {
             }
         }
         expect(valid).toBe(true);
+    });
+
+    it('should correctly extract the URL from comment', () => {
+        // As response to [test creation trigger]($$CREATE_COMMENT_URL$$).
+        const url = Util.getUrlFromComment(commentBody);
+        expect(url).toBe("https://my.url");
     });
 
     it('should convert prepare object into TestIO payload', () => {

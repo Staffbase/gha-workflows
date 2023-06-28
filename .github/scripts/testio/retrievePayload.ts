@@ -23,8 +23,14 @@ async function createPayload() {
 
     const commentContents = `${retrievedComment.data.body}`;
     if (!commentContents) Util.throwErrorAndPrepareErrorMessage(`Comment ${commentUrl} seems to be empty`, errorFileName);
-    const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
+    const triggerCommentUrl = Util.getUrlFromComment(commentContents);
+    if (triggerCommentUrl != undefined) {
+        core.setOutput("testio-create-comment-url", triggerCommentUrl);
+    } else {
+        core.setOutput("testio-create-comment-url", "");
+    }
 
+    const jsonRegex = /```json\s(.+)\s```/sm;       // everything between ```json and ``` so that we can parse it
     let preparation: any;
     try {
         preparation = Util.getJsonObjectFromComment(jsonRegex, commentContents, 1);
