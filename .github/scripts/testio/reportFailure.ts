@@ -5,14 +5,16 @@ import {Octokit} from "@octokit/rest";
 async function reportFailure() {
     const errorFileName = `${process.env.TESTIO_ERROR_MSG_FILE}`;
     const errorMessageFilePath = `${process.env.TESTIO_SCRIPTS_DIR}/${errorFileName}`;
+    const createCommentUrl = `${process.env.TESTIO_CREATE_COMMENT_URL}`;
 
-    let commentBody = "";
+    let commentFailureBody = "";
     if (fs.existsSync(errorMessageFilePath)) {
         const errorMessageToReport = fs.readFileSync(errorMessageFilePath, 'utf8');
-        commentBody = "🚨 Failure 🚨 :bangbang: ⛔️ Please check the following error  ⛔️ :bangbang: \n```" + errorMessageToReport + "```";
+        commentFailureBody = "🚨 Failure 🚨 :bangbang: ⛔️ Please check the following error  ⛔️ :bangbang: \n```" + errorMessageToReport + "```";
     } else {
-        commentBody = "🚨 Failed to trigger a test on TestIO 🚨 Please revise your steps";
+        commentFailureBody = "🚨 Failed to trigger a test on TestIO 🚨 Please revise your steps";
     }
+    commentFailureBody += ```\n\nAs response to [test creation trigger](${createCommentUrl}).```;
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
@@ -22,7 +24,7 @@ async function reportFailure() {
         repo: github.context.repo.repo,
         owner: github.context.repo.owner,
         issue_number: github.context.issue.number,
-        body: commentBody
+        body: commentFailureBody
     });
 
 }

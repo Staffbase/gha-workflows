@@ -22,7 +22,6 @@ async function triggerTest() {
             Util.throwErrorAndPrepareErrorMessage(error, errorFileName);
         });
 
-    // TODO write id to output or env
 }
 
 triggerTest().then();

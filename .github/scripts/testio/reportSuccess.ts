@@ -14,16 +14,12 @@ async function reportSuccess() {
     const payloadFile = `${process.env.TESTIO_SCRIPTS_DIR}/testio_payload.json`;
     const payload = JSON.parse(fs.readFileSync(payloadFile, 'utf8'));
 
-    const commentBody = "🎊✨ [Test Created Successfully](" + testURL + ") ✔️ ✨🎊"
-        + "\n<details>"
-        + "\n<summary>Details 👇</summary>"
-        + "\nThe following payload has been sent to trigger the test on TestIO:"
-        + "\n\n```json\n"
-        + JSON.stringify(payload, null, 2)
-        + "\n```"
-        + "\n</details>"
-        + (createCommentUrl != "" ? `\nAs response to [test creation trigger](${createCommentUrl}).` : "")
-    ;
+    const commentSuccessTemplateFile = `${process.env.TESTIO_SCRIPTS_DIR}/exploratory_test_comment_success_template.md`;
+    const commentSuccessTemplate = fs.readFileSync(commentSuccessTemplateFile, 'utf8');
+    const testioTestUrlPlaceholder = "$$TESTIO_TEST_URL$$";
+    const sentPayloadPlaceholder = "$$SENT_PAYLOAD$$";
+    const createCommentUrlPlaceholder = "$$CREATE_COMMENT_URL$$";
+    const successCommentBody = commentSuccessTemplate.replace(testioTestUrlPlaceholder, testURL).replace(sentPayloadPlaceholder, payload).replace(createCommentUrlPlaceholder, createCommentUrl);
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
@@ -39,11 +35,12 @@ async function reportSuccess() {
         repo: github.context.repo.repo,
         owner: github.context.repo.owner,
         issue_number: github.context.issue.number,
-        body: commentBody,
+        body: successCommentBody,
     });
 
-    // TODO use comments to pass on comment URLs so that the success/failure comment can link to the first initiating comment
-    // TODO delete test environment?
+    // TODO delete test environment - options:
+    //  1) if test environment sent via payload is copied to test itself 👉 environment can be deleted immediately after creation
+    //  2) if test environment sent via payload is referenced in test 👉 weekly cleanup of all temporary test environments via scheduled gha
 }
 
 reportSuccess().then();

@@ -16,7 +16,7 @@ describe("TestIO Trigger-from-PR logic", () => {
 
         const requiredInformationPlaceholder = "$$REQUIRED_INFORMATION_TEMPLATE$$";
         const createCommentPlaceholder = "$$CREATE_COMMENT_URL$$";
-        const url = "https://my.url";
+        const url = "https://github.com/MyOrg/myrepo/issues/123456/comments#98765432";
         commentBody = commentTemplate.replace(requiredInformationPlaceholder, jsonString).replace(createCommentPlaceholder, url);
     });
 
@@ -40,9 +40,9 @@ describe("TestIO Trigger-from-PR logic", () => {
     });
 
     it('should correctly extract the URL from comment', () => {
-        // As response to [test creation trigger]($$CREATE_COMMENT_URL$$).
+        console.log(commentBody);
         const url = Util.getUrlFromComment(commentBody);
-        expect(url).toBe("https://my.url");
+        expect(url).toBe("https://github.com/MyOrg/myrepo/issues/123456/comments#98765432");
     });
 
     it('should convert prepare object into TestIO payload', () => {
