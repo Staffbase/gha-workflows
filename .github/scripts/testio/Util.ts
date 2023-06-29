@@ -90,15 +90,6 @@ export class Util {
         throw new Error(errorMessage);
     }
 
-    public static escapeHtml(unescapedString: string): string {
-        return unescapedString
-            .replace(/&/g, '&amp')
-            .replace(/'/g, '&apos')
-            .replace(/"/g, '&quot')
-            .replace(/>/g, '&gt')
-            .replace(/</g, '&lt');
-    }
-
     static getUrlFromComment(comment: string): string | undefined {
         const urlRegex = /.*```json\s.*\s```\s.*\[.+]\(([^\)]+)\)*/sm;
         const matches = urlRegex.exec(comment);

@@ -63,9 +63,4 @@ describe("TestIO Trigger-from-PR logic", () => {
         expect(testioPayload.exploratory_test.features[0].user_stories).toBe(prepareObject.feature.user_stories);
     });
 
-    it('should escape html', () => {
-        const commentBody = `<p align="center">🎊✨ [Test Created Successfully](https://blablabla) ✔️ ✨🎊</p>`;
-        const escapedCommentBody = Util.escapeHtml(commentBody);
-        expect(escapedCommentBody).toBe("&ltp align=&quotcenter&quot&gt🎊✨ [Test Created Successfully](https://blablabla) ✔️ ✨🎊&lt/p&gt");
-    });
 });
