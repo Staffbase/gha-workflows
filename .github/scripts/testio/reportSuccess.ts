@@ -1,6 +1,5 @@
 import * as github from "@actions/github";
 import {Octokit} from "@octokit/rest";
-import {Util} from "./Util";
 import fs from "fs";
 
 async function reportSuccess() {

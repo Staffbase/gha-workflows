@@ -1,7 +1,6 @@
 import {Util} from "./Util";
 import fs from "fs";
 import betterAjvErrors from 'better-ajv-errors';
-import exp from "constants";
 
 describe("TestIO Trigger-from-PR logic", () => {
 
