@@ -1,4 +1,5 @@
-🎊✨ [Test Created Successfully]($$TESTIO_TEST_URL$$) ✅️ ✨🎊
+🎊✨ ✅️ [Test Created Successfully]($$TESTIO_TEST_URL$$) ✅️ ✨🎊
+
 <details>
 <summary>Details 👇</summary>
 The following payload has been sent to trigger the test on TestIO:
