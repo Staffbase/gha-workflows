@@ -16,75 +16,18 @@ on:
       testio-token:
         required: true
 
-env:
-  TESTIO_SCRIPTS_DIR: .github/scripts/testio
-  TESTIO_ERROR_MSG_FILE: errorToComment.msg
-
 jobs:
   testio-trigger-test:
 
     name: TestIO - Trigger Test
     runs-on: ubuntu-22.04
-    if: startsWith(github.event.comment.body, '@bot-testio exploratory-test')     # this is the prefix of all subsequent comments
+    if: startsWith(github.event.comment.body, '@bot-testio exploratory-test')     # this is the prefix all subsequent comments must start with
 
     steps:
-      - name: TestIO - Checkout folder with required resources from gha-workflows
-        uses: actions/checkout@v3
+      - name: Request required input and trigger test on TestIO
+        uses: Staffbase/testio-trigger-test-github-action@main
         with:
-          repository: Staffbase/gha-workflows
-          ref: 'testio-trigger-template'                        # TODO to be removed when merged
-          token: ${{ secrets.github-token }}
-          sparse-checkout: ${{ env.TESTIO_SCRIPTS_DIR }}        # only checkout this folder
-
-      - name: TestIO - Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: TestIO - Install Dependencies
-        run: |
-          cd ${{ env.TESTIO_SCRIPTS_DIR }}
-          npm install
-
-      - name: TestIO - Add PR comment for requesting required input
-        id: prepare
-        if: startsWith(github.event.comment.body, '@bot-testio exploratory-test create')
-        env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
-          TESTIO_CREATE_COMMENT_URL: ${{ github.event.comment.html_url }}
-        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/addPRcomment.ts
-
-      - name: TestIO - Retrieve input and create payload
-        id: payload
-        if: startsWith(github.event.comment.body, '@bot-testio exploratory-test submit')
-        env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
-          TESTIO_SUBMIT_COMMENT_ID: ${{ github.event.comment.id }}
-          TESTIO_SUBMIT_COMMENT_URL: ${{ github.event.comment.html_url }}
-        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/retrievePayload.ts
-
-      - name: TestIO - Trigger TestIO Test
-        id: trigger
-        if: ${{ steps.payload.outcome == 'success' }}
-        env:
-          TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
-          TESTIO_TOKEN: ${{ secrets.testio-token }}
-        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/triggerTest.ts
-
-      - name: TestIO - Report Success
-        if: ${{ steps.trigger.outcome == 'success' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
-          TESTIO_CREATED_TEST_ID: ${{ steps.trigger.outputs.testio-created-test-id }}
-          TESTIO_PRODUCT_ID: ${{ inputs.testio-product-id }}
-          TESTIO_SLUG: ${{ inputs.testio-slug }}
-          TESTIO_SUBMIT_COMMENT_ID: ${{ steps.payload.outputs.testio-submit-comment-id }}
-          TESTIO_CREATE_COMMENT_URL: ${{ steps.payload.outputs.testio-create-comment-url }}
-        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportSuccess.ts
-
-      - name: TestIO - Report Failure
-        if: failure()
-        env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
-          TESTIO_CREATE_COMMENT_URL: ${{ steps.payload.outputs.testio-create-comment-url }}
-        run: npx ts-node ${{ env.TESTIO_SCRIPTS_DIR }}/reportFailure.ts
+          testio-slug: ${{ inputs.testio-slug }}
+          testio-product-id: ${{ inputs.testio-product-id }}
+          github-token: ${{ secrets.github-token }}
+          testio-token: ${{ secrets.testio-token }}
