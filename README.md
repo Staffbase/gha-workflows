@@ -311,9 +311,9 @@ jobs:
       # ID of the product on the TestIO platform to which the triggered test should be assigned to
       testio-product-id: your product ID
     secrets:
-      # required: GitHub token to be used for commenting in a PR
+      # GitHub token to be used for commenting in a PR
       github-token: ${{ secrets.GITHUB_TOKEN }}
-      # required: TestIO token of a user for which the triggered test is created 
+      # TestIO token of a user for which the triggered test is created 
       testio-token: ${{ secrets.TESTIO_TOKEN }}
 ```
 
