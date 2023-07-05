@@ -308,7 +308,7 @@ jobs:
     with:
       # optional: the slug you received from TestIO, defaults to 'staffbase'
       testio-slug: your TestIO slug
-      # required: ID of the product on the TestIO platform to which the triggered test should be assigned to
+      # ID of the product on the TestIO platform to which the triggered test should be assigned to
       testio-product-id: your product ID
     secrets:
       # required: GitHub token to be used for commenting in a PR
