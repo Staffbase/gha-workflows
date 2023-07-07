@@ -304,7 +304,7 @@ on:
 
 jobs:
   trigger-testio-test:
-    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v2.3.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v2.3.2
     with:
       # optional: the slug you received from TestIO, defaults to 'staffbase'
       testio-slug: your TestIO slug
