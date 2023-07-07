@@ -1,0 +1,33 @@
+name: TestIO - Trigger Test
+
+on:
+  workflow_call:
+    inputs:
+      testio-slug:
+        required: false
+        type: string
+        default: 'staffbase'
+      testio-product-id:
+        required: true
+        type: string
+    secrets:
+      github-token:
+        required: true
+      testio-token:
+        required: true
+
+jobs:
+  testio-trigger-test:
+
+    name: TestIO - Trigger Test
+    runs-on: ubuntu-22.04
+    if: startsWith(github.event.comment.body, '@bot-testio exploratory-test')     # this is the prefix all subsequent comments must start with
+
+    steps:
+      - name: Request required input and trigger test on TestIO
+        uses: Staffbase/testio-trigger-test-github-action@main
+        with:
+          testio-slug: ${{ inputs.testio-slug }}
+          testio-product-id: ${{ inputs.testio-product-id }}
+          github-token: ${{ secrets.github-token }}
+          testio-token: ${{ secrets.testio-token }}
