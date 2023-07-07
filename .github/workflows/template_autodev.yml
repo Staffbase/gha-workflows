@@ -65,7 +65,7 @@ jobs:
           fetch-depth: 0
 
       - name: Autodev
-        uses: staffbase/autodev-action@v1.8.0
+        uses: staffbase/autodev-action@v1.8.1
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
