@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Request required input and trigger test on TestIO
-        uses: Staffbase/testio-trigger-test-github-action@support-android-tests
+        uses: Staffbase/testio-trigger-test-github-action@more-optional-prepare-properties
         with:
           testio-slug: ${{ inputs.testio-slug }}
           testio-product-id: ${{ inputs.testio-product-id }}
