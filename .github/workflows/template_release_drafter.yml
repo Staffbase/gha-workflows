@@ -20,6 +20,12 @@ on:
       version:
         required: false
         type: string
+      name-template:
+        required: false
+        type: string
+      tag-template:
+        required: false
+        type: string
       prerelease:
         required: false
         type: boolean
@@ -63,5 +69,7 @@ jobs:
           version: ${{ inputs.version }}
           prerelease: ${{ inputs.prerelease }}
           prerelease-identifier: ${{ inputs.prerelease-identifier }}
+          name-template: ${{ inputs.name-template }}
+          tag-template: ${{ inputs.tag-template }}
         env:
           GITHUB_TOKEN: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
