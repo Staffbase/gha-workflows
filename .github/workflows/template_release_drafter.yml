@@ -16,6 +16,12 @@ on:
       version:
         required: false
         type: string
+      name-template:
+        required: false
+        type: string
+      tag-template:
+        required: false
+        type: string
 
 jobs:
   update_release_draft:
@@ -31,5 +37,7 @@ jobs:
           publish: ${{ inputs.publish }}
           tag: ${{ inputs.tag }}
           version: ${{ inputs.version }}
+          name-template: ${{ inputs.name-template }}
+          tag-template: ${{ inputs.tag-template }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
