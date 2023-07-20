@@ -24,8 +24,8 @@ jobs:
     if: startsWith(github.event.comment.body, '@bot-testio exploratory-test')     # this is the prefix all subsequent comments must start with
 
     steps:
-      - name: Request required input and trigger test on TestIO
-        uses: Staffbase/testio-trigger-test-github-action@v1.0.0
+      - name: Trigger Test on TestIO
+        uses: Staffbase/testio-trigger-test-github-action@v1.0.3
         with:
           testio-slug: ${{ inputs.testio-slug }}
           testio-product-id: ${{ inputs.testio-product-id }}
