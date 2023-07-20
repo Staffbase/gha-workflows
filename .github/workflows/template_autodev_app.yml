@@ -1,0 +1,87 @@
+name: Autodev
+on:
+  workflow_call:
+    inputs:
+      base:
+        default: 'main'
+        required: false
+        type: string
+      branch:
+        default: 'dev'
+        required: false
+        type: string
+      comments:
+        default: false
+        required: false
+        type: boolean
+      email:
+        default: 'staffbot@staffbase.com'
+        required: false
+        type: string
+      failure_comment:
+        required: false
+        type: string
+      failure_label:
+        default: 'failed'
+        required: false
+        type: string
+      label:
+        default: 'dev'
+        required: false
+        type: string
+      labels:
+        default: false
+        required: false
+        type: boolean
+      success_comment:
+        required: false
+        type: string
+      success_label:
+        default: 'successful'
+        required: false
+        type: string
+      user:
+        default: 'AutoDev Action'
+        required: false
+        type: string
+    secrets:
+      app_id:
+        required: true
+
+jobs:
+  autodev:
+
+    name: Build Dev Branch
+    runs-on: ubuntu-22.04
+
+    # check to not trigger if dependabot did something or PR was closed or label is not the configured dev label
+    if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed')
+
+    steps:
+      - name: Get App Token
+        uses: tibdex/github-app-token@v1.8.0
+        id: get_token
+        with:
+          app_id: ${{ secrets.app_id }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ steps.get_token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Autodev
+        uses: staffbase/autodev-action@v1.8.1
+        with:
+          base: ${{ inputs.base }}
+          branch: ${{ inputs.branch }}
+          comments: ${{ inputs.comments }}
+          email: ${{ inputs.email }}
+          failure_comment: ${{ inputs.failure_comment }}
+          failure_label: ${{ inputs.failure_label }}
+          label: ${{ inputs.label }}
+          labels: ${{ inputs.labels }}
+          success_comment: ${{ inputs.success_comment }}
+          success_label: ${{ inputs.success_label }}
+          token: ${{ steps.get_token.outputs.token }}
+          user: ${{ inputs.user }}
