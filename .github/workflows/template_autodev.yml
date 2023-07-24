@@ -62,11 +62,11 @@ jobs:
     if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed')
 
     env:
-      HAVING_APP_SECRETS: ${{ secrets.app_id != '' && secrets.private_key != '' }}
+      USING_APP_CREDENTIALS: ${{ secrets.app_id != '' && secrets.private_key != '' }}
 
     steps:
       - name: Get App Token
-        if: ${{ env.HAVING_APP_SECRETS == 'true' }}
+        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
         uses: tibdex/github-app-token@v1.8.0
         id: get_token
         with:
@@ -76,7 +76,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ env.HAVING_APP_SECRETS == 'true' && steps.get_token.outputs.token || secrets.token }}
+          token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
           fetch-depth: 0
 
       - name: Autodev
@@ -92,5 +92,5 @@ jobs:
           labels: ${{ inputs.labels }}
           success_comment: ${{ inputs.success_comment }}
           success_label: ${{ inputs.success_label }}
-          token: ${{ env.HAVING_APP_SECRETS == 'true' && steps.get_token.outputs.token || secrets.token }}
+          token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
           user: ${{ inputs.user }}
