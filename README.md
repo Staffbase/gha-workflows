@@ -58,8 +58,12 @@ jobs:
       # optional: mail of the user which does the commit, default: staffbot@staffbase.com
       email: your mail
     secrets:
-      # token to fetch the pull requests
+      # optional: access token to fetch the pull requests
       token: ${{ <your-token> }}
+      # optional: identifier of the GitHub App for authentication
+      app_id: ${{ <your-app-id> }}
+      # optional: private key of the GitHub App 
+      private_key: ${{ <your-private-key> }}
 ```
 </details>
 
