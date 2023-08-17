@@ -23,23 +23,23 @@ jobs:
         run: |
           # fetch last tag from git
           OLD_VERSION=`git describe --tags $(git rev-list --tags --max-count=1)`
-          
+
           PARTS=(${OLD_VERSION//./ })
-          
+
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-W")
           PATCH=${PARTS[2]}
           WEEK_FROM_LAST_TAG=${PARTS[1]}
-          
+
           #if we have a new week we start to count from 0
           if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
           PATCH=0
           fi
-          
+
           # increase Version
           PATCH=$((PATCH+1))
-          
+
           echo "next_version=${YEAR}.${WEEK}.${PATCH}" >> $GITHUB_OUTPUT
         shell: bash
 
