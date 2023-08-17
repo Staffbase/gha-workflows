@@ -210,6 +210,31 @@ jobs:
       version: X.Y.Z
 ```
 </details>
+
+### Release DrafterW Weekly
+
+<details>
+<summary>The action can be used to draft automatically a new weekly release.</summary>
+
+If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
+More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
+
+```yml
+name: Release Drafter Weekly
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_release_draft:
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter_weekly.yml@v2.6.0
+    with: 
+      # optional: should the release be published, default: false
+      publish: true
+```
+</details>
   
 ### Secret Scanning
   
