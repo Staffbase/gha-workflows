@@ -1,0 +1,54 @@
+name: Release Drafter
+
+on:
+  workflow_call:
+    inputs:
+      publish:
+        default: false
+        required: false
+        type: boolean
+
+jobs:
+  prepare_version:
+
+    name: Prepare Version
+    runs-on: ubuntu-22.04
+
+    outputs:
+      next_version: ${{ steps.set_version.outputs.next_version }}
+
+    steps:
+      - name: set version to github env
+        id: set_version
+        run: |
+          # fetch last tag from git
+          OLD_VERSION=`git describe --tags $(git rev-list --tags --max-count=1)`
+          
+          PARTS=(${OLD_VERSION//./ })
+          
+          DATE=$(date +"%Y%m%d")
+          YEAR=$(date +"%Y")
+          WEEK=$(date +"%-W")
+          PATCH=${PARTS[2]}
+          WEEK_FROM_LAST_TAG=${PARTS[1]}
+          
+          #if we have a new week we start to count from 0
+          if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
+          PATCH=0
+          fi
+          
+          # increase Version
+          PATCH=$((PATCH+1))
+          
+          echo "next_version=${YEAR}.${WEEK}.${PATCH}" >> $GITHUB_OUTPUT
+        shell: bash
+
+  update_release_draft:
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v2.6.0
+    needs:
+      - prepare_version
+    with:
+      name: 'Release ${{ needs.prepare_version.outputs.next_version }} 🚀'
+      tag: ${{ needs.prepare_version.outputs.next_version }}
+      version: ${{ needs.prepare_version.outputs.next_version }}
+      publish: ${{ inputs.publish }}
