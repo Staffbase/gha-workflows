@@ -20,7 +20,7 @@ on:
 jobs:
   update_release_draft:
 
-    name: Update Release Drafter
+    name: Update Release Draft
     runs-on: ubuntu-22.04
 
     steps:
