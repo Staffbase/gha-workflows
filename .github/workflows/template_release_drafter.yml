@@ -23,9 +23,6 @@ jobs:
     name: Update Release Drafter
     runs-on: ubuntu-22.04
 
-    outputs:
-      next_version: ${{ steps.set_version.outputs.next_version }}
-
     steps:
       - name: checkout code
         uses: actions/checkout@v3
