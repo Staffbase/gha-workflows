@@ -187,11 +187,15 @@ jobs:
 
 If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
 More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
+If there are no parameters given for the `name`, `tag` and/or `version`, the default parameter with version `YEAR.WEEK.PATCH` will be used.
 
 ```yml
 name: Release Drafter
 
 on:
+  schedule:
+    # run every Monday at midnight to ensure the draft release have the correct week number
+    - cron: '0 0 * * 1'
   push:
     branches:
       - main

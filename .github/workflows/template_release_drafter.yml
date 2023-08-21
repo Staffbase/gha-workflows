@@ -20,16 +20,42 @@ on:
 jobs:
   update_release_draft:
 
-    name: update release draft
+    name: Update Release Drafter
     runs-on: ubuntu-22.04
 
+    outputs:
+      next_version: ${{ steps.set_version.outputs.next_version }}
+
     steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: set version to github env
+        id: set_version
+        run: |
+          # fetch last tag from git
+          OLD_VERSION=`git describe --tags $(git rev-list --tags --max-count=1)`
+          PARTS=(${OLD_VERSION//./ })
+          DATE=$(date +"%Y%m%d")
+          YEAR=$(date +"%Y")
+          WEEK=$(date +"%-W")
+          PATCH=${PARTS[2]}
+          WEEK_FROM_LAST_TAG=${PARTS[1]}
+          #if we have a new week we start to count from 0
+          if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
+          PATCH=0
+          fi
+          # increase Version
+          PATCH=$((PATCH+1))
+          echo "next_version=${YEAR}.${WEEK}.${PATCH}" >> $GITHUB_OUTPUT
+        shell: bash
       - name: Update Release
         uses: release-drafter/release-drafter@v5
         with:
-          name: ${{ inputs.name }}
+          name: ${{ inputs.name || format('Release {0} 🚀', steps.set_version.outputs.next_version) }}
           publish: ${{ inputs.publish }}
-          tag: ${{ inputs.tag }}
-          version: ${{ inputs.version }}
+          tag: ${{ inputs.tag || steps.set_version.outputs.next_version }}
+          version: ${{ inputs.version || steps.set_version.outputs.next_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
