@@ -214,7 +214,9 @@ jobs:
 ### Release Version Detector
 
 <details>
-<summary>The action can be used to get the next version for a service in the format `YEAR.WEEK.PATCH`.</summary>
+<summary>The action can be used to get the next version for a service.</summary>
+
+The new version is in the format `YEAR.WEEK.PATCH`. You will get the version as output with the key `new_version`.
 
 ```yml
 name: Release Version Detector
