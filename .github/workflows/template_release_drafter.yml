@@ -30,7 +30,7 @@ jobs:
           cat <<EOT >> .github/release-drafter.yml
           template: |
             ## Changes
-          
+
             $CHANGES
           EOT
       - name: Update Release
