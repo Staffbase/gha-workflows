@@ -210,6 +210,35 @@ jobs:
       version: X.Y.Z
 ```
 </details>
+
+### Release Version Detector
+
+<details>
+<summary>The action can be used to get the next version for a service in the format `YEAR.WEEK.PATCH`.</summary>
+
+```yml
+name: Release Version Detector
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  new_version:
+    uses: Staffbase/gha-workflows/.github/workflows/ttemplate_release_version.yml@v2.6.0
+```
+
+You could use the action in combination with the reusable release drafter.
+Make sure to add the following lines to update the week number correctly for a draft release.
+
+```yml
+on:
+  schedule:
+    # run every Monday at midnight to ensure the draft release have the correct week number
+    - cron: '0 0 * * 1'
+```
+</details>
   
 ### Secret Scanning
   
