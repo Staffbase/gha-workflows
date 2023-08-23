@@ -228,7 +228,7 @@ on:
 
 jobs:
   new_version:
-    uses: Staffbase/gha-workflows/.github/workflows/ttemplate_release_version.yml@v2.6.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v2.6.0
 ```
 
 You could use the action in combination with the reusable release drafter.
