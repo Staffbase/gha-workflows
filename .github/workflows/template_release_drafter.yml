@@ -26,6 +26,7 @@ jobs:
     steps:
       - name: Create Drafter Configuration
         run: |
+          touch .github/release-drafter.yml
           cat <<EOT >> .github/release-drafter.yml
           template: |
             ## Changes
