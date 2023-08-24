@@ -27,7 +27,7 @@ jobs:
       - name: Create Drafter Configuration
         if: ${{ hashFiles('.github/release-drafter.yml') != '' }}
         run: |
-          mkdir .github
+          mkdir -p .github
           cat <<EOT >> .github/release-drafter.yml
           template: |
             ## Changes
