@@ -5,6 +5,8 @@ on:
     outputs:
       new_version:
         value: ${{ jobs.new_version.outputs.new_version }}
+      new_tag:
+        value: ${{ jobs.new_version.outputs.new_tag }}
 
 jobs:
   new_version:
