@@ -29,13 +29,13 @@ jobs:
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-W")
-          PATCH=${PARTS[2]}
+          COUNTER=${PARTS[2]}
           WEEK_FROM_LAST_TAG=${PARTS[1]}
           #if we have a new week we start to count from 0
           if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
-          PATCH=0
+          COUNTER=0
           fi
           # increase Version
-          PATCH=$((PATCH+1))
-          echo "next_version=${YEAR}.${WEEK}.${PATCH}" >> $GITHUB_OUTPUT
+          COUNTER=$((COUNTER+1))
+          echo "next_version=${YEAR}.${WEEK}.${COUNTER}" >> $GITHUB_OUTPUT
         shell: bash

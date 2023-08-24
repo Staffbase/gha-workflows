@@ -216,7 +216,7 @@ jobs:
 <details>
 <summary>The action can be used to get the next version for a service.</summary>
 
-The new version is in the format `YEAR.WEEK.PATCH`. You will get the version as output with the key `new_version`.
+The new version is in the format `YEAR.WEEK.COUNTER`. You will get the version as output with the key `new_version`.
 
 ```yml
 name: Release Version Detector
