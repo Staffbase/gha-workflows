@@ -20,9 +20,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.6.0
         with:
           fetch-depth: 0
+          fetch-tags: true
       - name: Detect new release version
         id: set_version
         run: |
