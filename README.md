@@ -237,7 +237,7 @@ Make sure to add the following lines to update the week number correctly for a d
 ```yml
 on:
   schedule:
-    # run every Monday at midnight to ensure the draft release have the correct week number
+    # run every Monday at midnight and every new year to ensure the draft release have the correct week number
     - cron: '0 0 * * 1'
 ```
 </details>
