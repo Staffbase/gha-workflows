@@ -239,6 +239,7 @@ on:
   schedule:
     # run every Monday at midnight and every new year to ensure the draft release have the correct week number
     - cron: '0 0 * * 1'
+    - cron: '0 0 1 * *'
 ```
 </details>
   
