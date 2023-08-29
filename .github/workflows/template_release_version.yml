@@ -19,16 +19,11 @@ jobs:
       new_tag: ${{ steps.set_version.outputs.next_tag }}
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3.6.0
-        with:
-          fetch-depth: 0
-          fetch-tags: true
       - name: Detect new release version
         id: set_version
         run: |
           # fetch last tag from git
-          OLD_VERSION=`git describe --tags $(git rev-list --tags --max-count=1)`
+          OLD_VERSION=`gh api repos/${{ github.repository }}/releases/latest | jq .tag_name -r`
           PARTS=(${OLD_VERSION//./ })
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
