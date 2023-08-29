@@ -20,6 +20,8 @@ jobs:
 
     steps:
       - name: Detect new release version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: set_version
         run: |
           # fetch last tag from git
