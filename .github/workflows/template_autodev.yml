@@ -78,6 +78,7 @@ jobs:
         with:
           token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
           fetch-depth: 0
+          fetch-tags: false
 
       - name: Autodev
         uses: staffbase/autodev-action@v1.8.2

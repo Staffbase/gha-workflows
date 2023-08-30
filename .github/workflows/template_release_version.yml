@@ -1,0 +1,43 @@
+name: Release Version Detector
+
+on:
+  workflow_call:
+    outputs:
+      new_version:
+        value: ${{ jobs.new_version.outputs.new_version }}
+      new_tag:
+        value: ${{ jobs.new_version.outputs.new_tag }}
+
+jobs:
+  new_version:
+
+    name: Get new release version
+    runs-on: ubuntu-22.04
+
+    outputs:
+      new_version: ${{ steps.set_version.outputs.next_version }}
+      new_tag: ${{ steps.set_version.outputs.next_tag }}
+
+    steps:
+      - name: Detect new release version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: set_version
+        run: |
+          # fetch last tag from git
+          OLD_VERSION=`gh api repos/${{ github.repository }}/releases/latest | jq .tag_name -r`
+          PARTS=(${OLD_VERSION//./ })
+          DATE=$(date +"%Y%m%d")
+          YEAR=$(date +"%Y")
+          WEEK=$(date +"%-W")
+          COUNTER=${PARTS[2]}
+          WEEK_FROM_LAST_TAG=${PARTS[1]}
+          #if we have a new week we start to count from 0
+          if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
+          COUNTER=0
+          fi
+          # increase Version
+          COUNTER=$((COUNTER+1))
+          echo "next_version=${YEAR}.${WEEK}.${COUNTER}" >> $GITHUB_OUTPUT
+          echo "next_tag=v${YEAR}.${WEEK}.${COUNTER}" >> $GITHUB_OUTPUT
+        shell: bash

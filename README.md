@@ -210,6 +210,38 @@ jobs:
       version: X.Y.Z
 ```
 </details>
+
+### Release Version Detector
+
+<details>
+<summary>The action can be used to get the next version for a service.</summary>
+
+The new version is in the format `YEAR.WEEK.COUNTER`. You will get the version as output with the key `new_version` and the new tag with the key `new_tag`.
+
+```yml
+name: Release Version Detector
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  new_version:
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v2.6.0
+```
+
+You could use the action in combination with the reusable release drafter.
+Make sure to add the following lines to update the week number correctly for a draft release.
+
+```yml
+on:
+  schedule:
+    # run every Monday at midnight and every new year to ensure the draft release have the correct week number
+    - cron: '0 0 * * 1'
+    - cron: '0 0 1 * *'
+```
+</details>
   
 ### Secret Scanning
   

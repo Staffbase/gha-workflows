@@ -29,6 +29,7 @@ jobs:
         uses: actions/checkout@v3.6.0
         with:
           fetch-depth: 0
+          fetch-tags: false
 
       - name: Fetch ticket Ids
         id: fetchTicketIds
