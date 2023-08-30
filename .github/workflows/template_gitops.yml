@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.6.0
 
       - name: GitOps (build, push and deploy a new Docker image)
         uses: Staffbase/gitops-github-action@v5.2
