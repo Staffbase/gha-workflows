@@ -24,6 +24,16 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Create Drafter Configuration
+        if: ${{ hashFiles('.github/release-drafter.yml') != '' }}
+        run: |
+          mkdir -p .github
+          cat <<EOT >> .github/release-drafter.yml
+          template: |
+            ## Changes
+
+            $CHANGES
+          EOT
       - name: Update Release
         uses: release-drafter/release-drafter@v5.24.0
         with:
