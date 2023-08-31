@@ -27,7 +27,7 @@ jobs:
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-W")
-          
+
           if [ gh release view = "release not found" ]; then
             COUNTER=0
           else
@@ -36,14 +36,14 @@ jobs:
             PARTS=(${OLD_VERSION//./ })
             COUNTER=${PARTS[2]}
             WEEK_FROM_LAST_TAG=${PARTS[1]}
-  
+
             #if we have a new week we start to count from 0
             if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
               COUNTER=0
             fi
-  
+
             # increase Version
-            COUNTER=$((COUNTER+1)) 
+            COUNTER=$((COUNTER+1))
           fi
 
           echo "next_version=${YEAR}.${WEEK}.${COUNTER}" >> $GITHUB_OUTPUT
