@@ -26,8 +26,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3.6.0
+      - name: Check file existence
+        id: check_existence
+        shell: bash
+        run: |
+          if [[ -f .github/release-drafter.yml ]]; then
+            echo "config_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "config_exists=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Create Drafter Configuration
-        if: ${{ hashFiles('.github/release-drafter.yml') != '' }}
+        if: steps.check_existence.outputs.config_exists == 'false'
         run: |
           mkdir -p .github
           cat <<EOT >> .github/release-drafter.yml
