@@ -30,7 +30,7 @@ jobs:
         id: check_existence
         shell: bash
         run: |
-          echo "$(tree)"
+          echo "$(tree -a)"
           if [[ -f .github/release-drafter.yml ]]; then
             echo "config_exists=true" >> "$GITHUB_OUTPUT"
           else
