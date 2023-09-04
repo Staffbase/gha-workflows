@@ -46,6 +46,7 @@ jobs:
 
             $CHANGES
           EOT
+          echo "$(tree -a)"
       - name: Update Release
         uses: release-drafter/release-drafter@v5.24.0
         with:
