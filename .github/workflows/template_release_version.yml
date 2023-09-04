@@ -41,7 +41,7 @@ jobs:
             if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
               COUNTER=0
             fi
-          
+
             # check if valid tag
             pattern="v[0-9]+.[0-9]+.[0-9]+$"
             if ! [[ $OLD_VERSION =~ $pattern ]]; then
