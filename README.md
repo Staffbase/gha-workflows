@@ -185,7 +185,7 @@ jobs:
 <details>
 <summary>The action can be used to draft automatically a new release.</summary>
 
-If you want to use the template action, you can customize the release template by adding the `.github/release-drafter.yml` configuration.
+If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
 More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
 
 ```yml
