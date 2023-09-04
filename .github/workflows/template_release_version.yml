@@ -29,7 +29,7 @@ jobs:
           WEEK=$(date +"%-W")
 
           if [ gh release view = "release not found" ]; then
-            COUNTER=0
+            COUNTER=1
           else
             # fetch last tag from github
             OLD_VERSION=`gh api repos/${{ github.repository }}/releases/latest | jq .tag_name -r`
@@ -37,8 +37,14 @@ jobs:
             COUNTER=${PARTS[2]}
             WEEK_FROM_LAST_TAG=${PARTS[1]}
 
-            #if we have a new week we start to count from 0
+            # if we have a new week we start to count from 0
             if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
+              COUNTER=0
+            fi
+          
+            # check if valid tag
+            pattern="v[0-9]+.[0-9]+.[0-9]+$"
+            if ! [[ $OLD_VERSION =~ $pattern ]]; then
               COUNTER=0
             fi
 
