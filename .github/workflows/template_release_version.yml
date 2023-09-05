@@ -28,6 +28,8 @@ jobs:
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-W")
 
+          echo $(gh release view 2>&1)
+
           if [[ $(gh release view 2>&1) =~ "release not found" ]]; then
             COUNTER=1
           else
