@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Detect new release version
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: set_version
         run: |
           DATE=$(date +"%Y%m%d")
