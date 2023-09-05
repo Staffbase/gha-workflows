@@ -28,7 +28,7 @@ jobs:
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-W")
 
-          if [[ $(gh release view) ]]; then
+          if [[ $(gh release view 2>&1) =~ "release not found" ]]; then
             COUNTER=1
           else
             # fetch last tag from github
