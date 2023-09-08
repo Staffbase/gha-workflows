@@ -57,6 +57,8 @@ jobs:
       user: your name
       # optional: mail of the user which does the commit, default: staffbot@staffbase.com
       email: your mail
+      # optional: path relative to the repo root dir in which the GitOps action should be executed, default: .
+      working-directory: ./my-service-folder
     secrets:
       # optional: access token to fetch the pull requests
       token: ${{ <your-token> }}

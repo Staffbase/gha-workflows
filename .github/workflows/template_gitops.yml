@@ -30,6 +30,10 @@ on:
       gitops-prod:
         required: false
         type: string
+      working-directory:
+        required: false
+        type: string
+        default: '.'
     secrets:
       docker-username:
         required: false
@@ -81,3 +85,4 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
+          working-directory: ${{ inputs.working-directory }}
