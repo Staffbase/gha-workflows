@@ -67,7 +67,7 @@ jobs:
     steps:
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
-        uses: tibdex/github-app-token@v2.0.0
+        uses: tibdex/github-app-token@v2.1.0
         id: get_token
         with:
           app_id: ${{ secrets.app_id }}
