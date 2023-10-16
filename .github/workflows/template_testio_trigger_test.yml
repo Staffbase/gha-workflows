@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Trigger Test on TestIO
-        uses: Staffbase/testio-trigger-test-github-action@v1.0.3
+        uses: Staffbase/testio-trigger-test-github-action@v1.1.1
         with:
           testio-slug: ${{ inputs.testio-slug }}
           testio-product-id: ${{ inputs.testio-product-id }}
