@@ -14,7 +14,7 @@ on:
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v2.8.0
     with:
       ...
 ```
@@ -39,7 +39,7 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v2.8.0
     with:
       # optional: base branch from which the history originates, default: main
       base: master
@@ -57,9 +57,15 @@ jobs:
       user: your name
       # optional: mail of the user which does the commit, default: staffbot@staffbase.com
       email: your mail
+      # optional: path relative to the repo root dir in which the GitOps action should be executed, default: .
+      working-directory: ./my-service-folder
     secrets:
-      # token to fetch the pull requests
+      # optional: access token to fetch the pull requests
       token: ${{ <your-token> }}
+      # optional: identifier of the GitHub App for authentication
+      app_id: ${{ <your-app-id> }}
+      # optional: private key of the GitHub App 
+      private_key: ${{ <your-private-key> }}
 ```
 </details>
 
@@ -74,7 +80,7 @@ on: [ push ]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v2.8.0
     with:
       # optional: list of build-time variables
       docker-build-args: |
@@ -130,7 +136,7 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v2.8.0
     with:
       # optional: name of the service to add as label, default: name of the repository
       name: 'component name'
@@ -143,6 +149,32 @@ jobs:
       jira-token: ${{ <your-token> }}
       # email of the api token owner
       jira-email: ${{ <your-email> }}
+```
+</details>
+
+### LaunchDarkly Code References
+
+<details>
+<summary>
+The action can be used to collect and push code references for LaunchDarkly feature flags.
+</summary>
+
+```yml
+name: Find LaunchDarkly flag code references
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ld_code_references:
+    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v2.8.0
+    with:
+      # optional: key of the LD project, default: default
+      project-key: 'my-project'
+    secrets:
+      # LD access token with correct access rights
+      access-token: ${{ <your-access-token> }}
 ```
 </details>
 
@@ -164,7 +196,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v2.8.0
     with: 
       # optional: name of the release
       name: Version X.Y.Z
@@ -174,6 +206,38 @@ jobs:
       tag: vX.Y.Z
       # optional: version to be associated with the release
       version: X.Y.Z
+```
+</details>
+
+### Release Version Detector
+
+<details>
+<summary>The action can be used to get the next version for a service.</summary>
+
+The new version is in the format `YEAR.WEEK.COUNTER`. You will get the version as output with the key `new_version` and the new tag with the key `new_tag`.
+
+```yml
+name: Release Version Detector
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  new_version:
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v2.8.0
+```
+
+You could use the action in combination with the reusable release drafter.
+Make sure to add the following lines to update the week number correctly for a draft release.
+
+```yml
+on:
+  schedule:
+    # run every Monday at midnight and every new year to ensure the draft release have the correct week number
+    - cron: '0 0 * * 1'
+    - cron: '0 0 1 1 *'
 ```
 </details>
   
@@ -189,7 +253,7 @@ on: [pull_request]
 
 jobs:
   trufflehog:
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v2.8.0
 ```
 </details>
 
@@ -207,7 +271,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v2.8.0
     with:
       # optional: comment on the stale pull request while closed, default: This stale PR was closed because there was no activity.
       close-pr-message: your message
@@ -243,7 +307,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v2.8.0
     with:
       # optional: kind of the Backstage entity, default: Component
       # ref: https://backstage.io/docs/features/software-catalog/descriptor-format#contents
@@ -258,6 +322,35 @@ jobs:
       # optional: specifies the access key associated with the storage account
       azure-account-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
 ```
+</details>
+
+### TestIO
+
+<details>
+
+<summary>This GitHub Action can be used to trigger a test on the external crowd-testing platform TestIO from a pull request.</summary>
+
+```yml
+name: TestIO - Trigger test from PR
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  trigger-testio-test:
+    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v2.8.0
+    with:
+      # optional: the slug you received from TestIO, defaults to 'staffbase'
+      testio-slug: your TestIO slug
+      # ID of the product on the TestIO platform to which the triggered test should be assigned to
+      testio-product-id: your product ID
+    secrets:
+      # GitHub token to be used for commenting in a PR
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      # TestIO token of a user for which the triggered test is created 
+      testio-token: ${{ secrets.TESTIO_TOKEN }}
+```
+
 </details>
 
 ### Yamllint
@@ -277,7 +370,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v2.8.0
     with:
       # optional: name of the running action, default: yamllint / yamllint
       action-name: your name

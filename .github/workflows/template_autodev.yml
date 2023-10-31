@@ -46,7 +46,11 @@ on:
         type: string
     secrets:
       token:
-        required: true
+        required: false
+      app_id:
+        required: false
+      private_key:
+        required: false
 
 jobs:
   autodev:
@@ -57,15 +61,27 @@ jobs:
     # check to not trigger if dependabot did something or PR was closed or label is not the configured dev label
     if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed')
 
+    env:
+      USING_APP_CREDENTIALS: ${{ secrets.app_id != '' && secrets.private_key != '' }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Get App Token
+        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
+        uses: tibdex/github-app-token@v2.1.0
+        id: get_token
         with:
-          token: ${{ secrets.token }}
+          app_id: ${{ secrets.app_id }}
+          private_key: ${{ secrets.private_key }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
           fetch-depth: 0
+          fetch-tags: false
 
       - name: Autodev
-        uses: staffbase/autodev-action@v1.7.0
+        uses: staffbase/autodev-action@v1.8.2
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
@@ -77,5 +93,5 @@ jobs:
           labels: ${{ inputs.labels }}
           success_comment: ${{ inputs.success_comment }}
           success_label: ${{ inputs.success_label }}
-          token: ${{ secrets.token }}
+          token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
           user: ${{ inputs.user }}

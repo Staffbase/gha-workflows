@@ -30,6 +30,10 @@ on:
       gitops-prod:
         required: false
         type: string
+      working-directory:
+        required: false
+        type: string
+        default: '.'
     # waiting for: https://github.com/github-community/community/discussions/17554
     secrets:
       docker-username:
@@ -55,7 +59,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: GitOps (build, push and deploy a new Docker image)
         uses: Staffbase/gitops-github-action@v5.2
@@ -75,3 +79,4 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
+          working-directory: ${{ inputs.working-directory }}
