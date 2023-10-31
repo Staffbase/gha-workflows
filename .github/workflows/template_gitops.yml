@@ -42,6 +42,8 @@ on:
         required: false
       gitops-token:
         required: false
+      gonosumdb:
+        required: false
 
 jobs:
   gitops:
@@ -60,11 +62,13 @@ jobs:
         with:
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
-          docker-build-args: ${{ inputs.docker-build-args }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            GONOSUMDB=${{ secrets.gonosumdb }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
-          docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
+          docker-build-target: ${{ inputs.docker-build-target }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
           gitops-token: ${{ secrets.gitops-token }}

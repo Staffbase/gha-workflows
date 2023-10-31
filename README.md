@@ -109,6 +109,8 @@ jobs:
         "${{ <your-secret-files> }}"
       # optional: token to access the repository
       gitops-token: ${{ <your-gitops-token> }}
+      # optional: gonosumdb environment variable
+      gonosumdb: ${{ <your-gonosumdb> }}
 ```
 </details>
 
