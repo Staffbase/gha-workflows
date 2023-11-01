@@ -34,7 +34,7 @@ name: Enable Dependabot Auto-Merge
 on: pull_request
 
 jobs:
-  automerge:
+  dependabot:
     uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v2.8.0
 ```
 </details>
