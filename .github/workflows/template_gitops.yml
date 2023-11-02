@@ -34,22 +34,19 @@ on:
         required: false
         type: string
         default: '.'
+    # waiting for: https://github.com/github-community/community/discussions/17554
     secrets:
       docker-username:
         required: false
       docker-password:
         required: false
-      gitops-token:
-        required: false
-      npm-token:
-        required: false
-      goproxy:
-        required: false
-      gonosumdb:
-        required: false
       docker-build-secrets:
         required: false
       docker-build-secret-files:
+        required: false
+      gitops-token:
+        required: false
+      gonosumdb:
         required: false
 
 jobs:
@@ -69,11 +66,8 @@ jobs:
         with:
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
-          # remove npm token, goproxy, gonosumdb if feature is available: https://github.com/github-community/community/discussions/17554
           docker-build-args: |
             ${{ inputs.docker-build-args }}
-            NPM_TOKEN=${{ secrets.npm-token }}
-            GOPROXY=${{ secrets.goproxy }}
             GONOSUMDB=${{ secrets.gonosumdb }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
