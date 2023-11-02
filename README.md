@@ -28,6 +28,8 @@ In this section you can find examples of how to use template workflows. For more
 <details>
 <summary>The action can be used to auto-merge a dependabot PR with minor and patch updates.</summary>
 
+The action is called by creating a PR. Dependabot must have ownership of the corresponding dependency files in order to be able to merge the PRs.
+
 ```yml
 name: Enable Dependabot Auto-Merge
 
