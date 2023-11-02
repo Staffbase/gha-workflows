@@ -23,6 +23,28 @@ jobs:
 
 In this section you can find examples of how to use template workflows. For more information, please take a look at the templates.
 
+### Auto-Merge Dependabot
+
+<details>
+<summary>The action can be used to auto-merge a dependabot PR with minor and patch updates.</summary>
+
+The action is called by creating a PR. Dependabot must have ownership of the corresponding dependency files in order to be able to merge the PRs.
+
+```yml
+name: Enable Dependabot Auto-Merge
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v2.8.0
+```
+</details>
+
 ### AutoDev
 
 <details>
