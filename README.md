@@ -237,6 +237,7 @@ jobs:
 <summary>The action can be used to get the next version for a service.</summary>
 
 The new version is in the format `YEAR.WEEK.COUNTER`. You will get the version as output with the key `new_version` and the new tag with the key `new_tag`.
+You can remove all other version resolver from your configuration.
 
 ```yml
 name: Release Version Detector
