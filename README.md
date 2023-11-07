@@ -14,7 +14,7 @@ on:
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v3.2.0
     with:
       ...
 ```
@@ -43,7 +43,7 @@ permissions:
 
 jobs:
   dependabot:
-    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.2.0
 ```
 
 Or you can use a specific GitHub app id and private key to generate a new token which can be used for the action.
@@ -55,7 +55,7 @@ on: pull_request
 
 jobs:
   dependabot:
-    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.2.0
     secrets:
       # optional: identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}
@@ -81,7 +81,7 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v3.2.0
     with:
       # optional: base branch from which the history originates, default: main
       base: master
@@ -122,7 +122,7 @@ on: [ push ]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v3.2.0
     with:
       # optional: list of build-time variables
       docker-build-args: |
@@ -178,7 +178,7 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v3.2.0
     with:
       # optional: name of the service to add as label, default: name of the repository
       name: 'component name'
@@ -210,7 +210,7 @@ on:
 
 jobs:
   ld_code_references:
-    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v3.2.0
     with:
       # optional: key of the LD project, default: default
       project-key: 'my-project'
@@ -238,7 +238,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v3.2.0
     with: 
       # optional: name of the release
       name: Version X.Y.Z
@@ -269,7 +269,7 @@ on:
 
 jobs:
   new_version:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v3.2.0
 ```
 
 You could use the action in combination with the reusable release drafter.
@@ -296,7 +296,7 @@ on: [pull_request]
 
 jobs:
   trufflehog:
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v3.2.0
 ```
 </details>
 
@@ -314,7 +314,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v3.2.0
     with:
       # optional: comment on the stale pull request while closed, default: This stale PR was closed because there was no activity.
       close-pr-message: your message
@@ -350,7 +350,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v3.2.0
     with:
       # optional: kind of the Backstage entity, default: Component
       # ref: https://backstage.io/docs/features/software-catalog/descriptor-format#contents
@@ -381,7 +381,7 @@ on:
 
 jobs:
   trigger-testio-test:
-    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v3.2.0
     with:
       # optional: the slug you received from TestIO, defaults to 'staffbase'
       testio-slug: your TestIO slug
@@ -413,7 +413,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v3.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v3.2.0
     with:
       # optional: name of the running action, default: yamllint / yamllint
       action-name: your name
