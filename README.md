@@ -30,6 +30,8 @@ In this section you can find examples of how to use template workflows. For more
 
 The action is called by creating a PR. It is necessary that the repository is enabled for auto-merge.
 
+⚠️ If you want to enable the force merge, make sure that the app can bypass any protection rules.
+
 ```yml
 name: Enable Dependabot Auto-Merge
 
