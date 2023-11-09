@@ -5,23 +5,20 @@ on:
   workflow_call:
     secrets:
       app_id:
-        required: false
+        required: true
       private_key:
-        required: false
+        required: true
 
 jobs:
   dependabot:
 
     name: auto-merge
     runs-on: ubuntu-22.04
-    if: github.actor == 'dependabot[bot]'
 
-    env:
-      USING_APP_CREDENTIALS: ${{ secrets.app_id != '' && secrets.private_key != '' }}
+    if: github.actor == 'dependabot[bot]'
 
     steps:
       - name: Get App Token
-        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
         uses: tibdex/github-app-token@v2.1.0
         id: get_token
         with:
@@ -32,7 +29,7 @@ jobs:
         id: metadata
         uses: dependabot/fetch-metadata@v1
         with:
-          github-token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.get_token.outputs.token }}
 
       - name: Enable auto-merge for Dependabot PRs
         if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
@@ -41,4 +38,4 @@ jobs:
           gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}

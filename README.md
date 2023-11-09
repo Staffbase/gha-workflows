@@ -29,24 +29,6 @@ In this section you can find examples of how to use template workflows. For more
 <summary>The action can be used to auto-merge a dependabot PR with minor and patch updates.</summary>
 
 The action is called by creating a PR. It is necessary that the repository is enabled for auto-merge.
-There are two possibilities to enable the action. 
-First, you can use the general GitHub token but the actions does not run on the default branch.
-
-```yml
-name: Enable Dependabot Auto-Merge
-
-on: pull_request
-
-permissions:
-  contents: write
-  pull-requests: write
-
-jobs:
-  dependabot:
-    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.2.0
-```
-
-Or you can use a specific GitHub app id and private key to generate a new token which can be used for the action.
 
 ```yml
 name: Enable Dependabot Auto-Merge
@@ -57,9 +39,9 @@ jobs:
   dependabot:
     uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.2.0
     secrets:
-      # optional: identifier of the GitHub App for authentication
+      # identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}
-      # optional: private key of the GitHub App
+      # private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
 
