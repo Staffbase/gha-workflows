@@ -38,6 +38,9 @@ on: pull_request
 jobs:
   dependabot:
     uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.2.0
+    with:
+      # optional: ⚠️ only enable the force merge if you want to do the merge just now
+      force: true
     secrets:
       # identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}
