@@ -3,6 +3,11 @@ name: Dependabot Auto-Merge
 
 on:
   workflow_call:
+    inputs:
+      admin:
+        default: 'false'
+        required: false
+        type: boolean
     secrets:
       app_id:
         required: true
@@ -35,7 +40,12 @@ jobs:
         if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
         run: |
           gh pr review --approve "$PR_URL"
-          gh pr merge --auto --merge "$PR_URL"
+          
+          if [ ${{ inputs.admin }} == 'true' ]; then
+            gh pr merge "$PR_URL" --merge --admin
+          else
+            gh pr merge --auto --merge "$PR_URL"
+          fi
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
