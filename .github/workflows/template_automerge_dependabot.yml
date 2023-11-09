@@ -4,7 +4,7 @@ name: Dependabot Auto-Merge
 on:
   workflow_call:
     inputs:
-      admin:
+      force:
         default: 'false'
         required: false
         type: boolean
@@ -41,7 +41,7 @@ jobs:
         run: |
           gh pr review --approve "$PR_URL"
 
-          if [ ${{ inputs.admin }} == 'true' ]; then
+          if [ ${{ inputs.force }} == 'true' ]; then
             gh pr merge "$PR_URL" --merge --admin
           else
             gh pr merge --auto --merge "$PR_URL"
