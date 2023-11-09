@@ -40,7 +40,7 @@ jobs:
         if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
         run: |
           gh pr review --approve "$PR_URL"
-          
+
           if [ ${{ inputs.admin }} == 'true' ]; then
             gh pr merge "$PR_URL" --merge --admin
           else
