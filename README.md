@@ -35,7 +35,9 @@ The action is called by creating a PR. It is necessary that the repository is en
 ```yml
 name: Enable Dependabot Auto-Merge
 
-on: pull_request
+on:
+  pull_request:
+    types: [opened]
 
 jobs:
   dependabot:
