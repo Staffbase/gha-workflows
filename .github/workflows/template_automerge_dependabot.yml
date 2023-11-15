@@ -42,7 +42,7 @@ jobs:
           gh pr review --approve "$PR_URL"
 
           if [ ${{ inputs.force }} == 'true' ]; then
-            gh pr merge "$PR_URL" --merge --admin
+            gh pr merge "$PR_URL" --squash --admin
           else
             gh pr merge --auto --merge "$PR_URL"
           fi
