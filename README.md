@@ -29,15 +29,24 @@ In this section you can find examples of how to use template workflows. For more
 <summary>The action can be used to auto-merge a dependabot PR with minor and patch updates.</summary>
 
 The action is called by creating a PR. It is necessary that the repository is enabled for auto-merge.
+Afterward the PR will be merged with the help of the merge queue if all required conditions of the repository are fulfilled.
+
+⚠️ You can also force a merge of a PR. This means that the PR will immediately be merged.
+If you want to enable the force merge, make sure that the app can bypass any protection rules.
 
 ```yml
 name: Enable Dependabot Auto-Merge
 
-on: pull_request
+on:
+  pull_request:
+    types: [opened]
 
 jobs:
   dependabot:
     uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v3.2.0
+    with:
+      # optional: ⚠️ only enable the force merge if you want to do the merge just now
+      force: true
     secrets:
       # identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}
