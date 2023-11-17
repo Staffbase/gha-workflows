@@ -37,7 +37,10 @@ jobs:
           github-token: ${{ steps.get_token.outputs.token }}
 
       - name: Enable auto-merge for Dependabot PRs
-        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        if: >-
+          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor') &&
+          !startsWith(steps.metadata.outputs.previous-version, '0.')
         run: |
           gh pr review --approve "$PR_URL"
 
