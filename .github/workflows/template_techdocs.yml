@@ -6,19 +6,19 @@ on:
       publisher-type:
         required: false
         type: string
-        default: 'azureBlobStorage'
+        default: "azureBlobStorage"
       storage-name:
         required: false
         type: string
-        default: 'staffbase-backstage-techdocs'
+        default: "techdocs"
       aws-region:
         required: false
         type: string
-        default: 'eu-central-1'
+        default: "eu-central-1"
       entity-kind:
         required: false
         type: string
-        default: 'Component'
+        default: "Component"
       entity-name:
         required: false
         type: string
@@ -38,7 +38,6 @@ on:
 
 jobs:
   techdocs:
-
     name: TechDocs
     runs-on: ubuntu-22.04
 
