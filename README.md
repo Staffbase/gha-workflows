@@ -261,6 +261,9 @@ on:
 jobs:
   new_version:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v3.4.0
+    with:
+      # optional: format of the version, default: weekly
+      format: 'quarterly'
 ```
 
 You could use the action in combination with the reusable release drafter.
