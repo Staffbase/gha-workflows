@@ -6,7 +6,6 @@ on:
       format:
         required: false
         type: string
-        description: Format for the release version
         default: 'weekly'
     outputs:
       new_version:
