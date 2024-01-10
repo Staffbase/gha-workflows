@@ -2,6 +2,11 @@ name: Release Version Detector
 
 on:
   workflow_call:
+    inputs:
+      format:
+        required: false
+        type: string
+        default: 'weekly'
     outputs:
       new_version:
         value: ${{ jobs.new_version.outputs.new_version }}
@@ -27,6 +32,13 @@ jobs:
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-W")
+          QUARTER=$(date "+%q")
+
+          if [ ${{ inputs.format }} == 'quarterly' ] ; then
+            MINOR=$QUARTER
+          else
+            MINOR=$WEEK
+          fi
 
           if [[ $(gh release view -R ${{ github.repository }} 2>&1) =~ "release not found" ]]; then
             COUNTER=1
@@ -52,6 +64,6 @@ jobs:
             COUNTER=$((COUNTER+1))
           fi
 
-          echo "next_version=${YEAR}.${WEEK}.${COUNTER}" >> $GITHUB_OUTPUT
-          echo "next_tag=v${YEAR}.${WEEK}.${COUNTER}" >> $GITHUB_OUTPUT
+          echo "next_version=${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
+          echo "next_tag=v${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
         shell: bash
