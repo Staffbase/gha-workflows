@@ -16,6 +16,13 @@ on:
       version:
         required: false
         type: string
+    secrets:
+      token:
+        required: false
+      app_id:
+        required: true
+      private_key:
+        required: true
 
 jobs:
   update_release_draft:
@@ -23,7 +30,18 @@ jobs:
     name: update release draft
     runs-on: ubuntu-22.04
 
+    env:
+      USING_APP_CREDENTIALS: ${{ secrets.app_id != '' && secrets.private_key != '' }}
+
     steps:
+      - name: Get App Token
+        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
+        uses: tibdex/github-app-token@v2.1.0
+        id: get_token
+        with:
+          app_id: ${{ secrets.app_id }}
+          private_key: ${{ secrets.private_key }}
+
       - name: Update Release
         uses: release-drafter/release-drafter@v5.25.0
         with:
@@ -32,4 +50,4 @@ jobs:
           tag: ${{ inputs.tag }}
           version: ${{ inputs.version }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
