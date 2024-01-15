@@ -20,9 +20,9 @@ on:
       token:
         required: false
       app_id:
-        required: true
+        required: false
       private_key:
-        required: true
+        required: false
 
 jobs:
   update_release_draft:
