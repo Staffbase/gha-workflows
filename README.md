@@ -429,6 +429,8 @@ With the current implementation of the reusable workflows from GitHub, we have s
 
 - It isn't possible to [access environment variables][reusable-workflow-env] and [secrets][reusable-workflow-secrets], so it's necessary to pass them to the workflow. But we don't want to do it for all secrets.
 
+There are also some [further limitations][further-limitations] if you want to use the `GITHUB_TOKEN`.
+
 ## Release 🔖
 
 To create a new release just use [this page][release-new] and publish the draft release.
@@ -458,3 +460,4 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LIC
 [release-new]: https://github.com/Staffbase/gha-workflows/releases
 [reusable-workflow-secrets]: https://github.com/orgs/community/discussions/17554
 [reusable-workflow-env]: https://github.com/orgs/community/discussions/26671
+[further-limitations]: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
