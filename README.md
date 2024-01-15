@@ -239,6 +239,13 @@ jobs:
       tag: vX.Y.Z
       # optional: version to be associated with the release
       version: X.Y.Z
+    secrets:
+      # optional: access token for the release drafter
+      token: ${{ <your-token> }}
+      # optional: identifier of the GitHub App for authentication
+      app_id: ${{ <your-app-id> }}
+      # optional: private key of the GitHub App 
+      private_key: ${{ <your-private-key> }}
 ```
 </details>
 
