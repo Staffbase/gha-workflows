@@ -47,10 +47,15 @@ jobs:
             OLD_VERSION=`gh api repos/${{ github.repository }}/releases/latest | jq .tag_name -r`
             PARTS=(${OLD_VERSION//./ })
             COUNTER=${PARTS[2]}
-            WEEK_FROM_LAST_TAG=${PARTS[1]}
+            MINOR_FROM_LAST_TAG=${PARTS[1]}
 
-            # if we have a new week we start to count from 0
-            if [ ${WEEK_FROM_LAST_TAG} != ${WEEK} ]; then
+            # if we have a new week and the weekly release we start to count from 0
+            if [ ${MINOR_FROM_LAST_TAG} != ${WEEK} ] && [ ${{ inputs.format }} == 'weekly' ]; then
+              COUNTER=0
+            fi
+          
+            # if we have a new quarter and the quarterly release we start to count from 0
+            if [ ${MINOR_FROM_LAST_TAG} != ${QUARTER} ] && [ ${{ inputs.format }} == 'quarterly' ]; then
               COUNTER=0
             fi
 
