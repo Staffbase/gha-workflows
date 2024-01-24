@@ -53,7 +53,7 @@ jobs:
             if [ ${MINOR_FROM_LAST_TAG} != ${WEEK} ] && [ ${{ inputs.format }} == 'weekly' ]; then
               COUNTER=0
             fi
-          
+
             # if we have a new quarter and the quarterly release we start to count from 0
             if [ ${MINOR_FROM_LAST_TAG} != ${QUARTER} ] && [ ${{ inputs.format }} == 'quarterly' ]; then
               COUNTER=0
