@@ -57,7 +57,7 @@ jobs:
           fi
           if [ ${{ inputs.force }} == 'true' ]; then
             MERGE_COMMAND+=" --admin"
-          fi  
+          fi
           else
             MERGE_COMMAND+=" --auto --merge"
           fi
