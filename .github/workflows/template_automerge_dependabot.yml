@@ -50,12 +50,14 @@ jobs:
 
           MERGE_COMMAND="gh pr merge \"$PR_URL\""
 
-          if [ "${{ inputs.force }}" == 'true' ] && [ "${{ inputs.rebase }}" == 'true' ]; then
-            MERGE_COMMAND+=" --rebase --admin"
-          elif [ "${{ inputs.force }}" == 'true' ]; then
-            MERGE_COMMAND+=" --squash --admin"
-          elif [ "${{ inputs.rebase }}" == 'true' ]; then
+          if [ "${{ inputs.rebase }}" == 'true' ]; then
             MERGE_COMMAND+=" --rebase"
+          else
+            MERGE_COMMAND+=" --squash"
+          fi
+          if [ ${{ inputs.force }} == 'true' ]; then
+            MERGE_COMMAND+=" --admin"
+          fi  
           else
             MERGE_COMMAND+=" --auto --merge"
           fi
