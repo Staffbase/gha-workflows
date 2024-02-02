@@ -8,6 +8,10 @@ on:
         default: false
         required: false
         type: boolean
+      rebase:
+        default: false
+        required: false
+        type: boolean
     secrets:
       app_id:
         required: true
@@ -44,11 +48,20 @@ jobs:
         run: |
           gh pr review --approve "$PR_URL"
 
-          if [ ${{ inputs.force }} == 'true' ]; then
-            gh pr merge "$PR_URL" --squash --admin
+          MERGE_COMMAND="gh pr merge \"$PR_URL\""
+
+          if [ "${{ inputs.force }}" == 'true' ] && [ "${{ inputs.rebase }}" == 'true' ]; then
+            MERGE_COMMAND+=" --rebase --admin"
+          elif [ "${{ inputs.force }}" == 'true' ]; then
+            MERGE_COMMAND+=" --squash --admin"
+          elif [ "${{ inputs.rebase }}" == 'true' ]; then
+            MERGE_COMMAND+=" --rebase"
           else
-            gh pr merge --auto --merge "$PR_URL"
+            MERGE_COMMAND+=" --auto --merge"
           fi
+          
+          echo "Executing merge command: $MERGE_COMMAND"
+          eval $MERGE_COMMAND
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
