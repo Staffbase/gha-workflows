@@ -59,7 +59,7 @@ jobs:
           else
             MERGE_COMMAND+=" --auto --merge"
           fi
-          
+
           echo "Executing merge command: $MERGE_COMMAND"
           eval $MERGE_COMMAND
         env:
