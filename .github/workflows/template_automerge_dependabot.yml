@@ -47,30 +47,29 @@ jobs:
           !startsWith(steps.metadata.outputs.previous-version, '0.')
         run: |
           gh pr review --approve "$PR_URL"
+          
+          MERGE_OPTIONS=''
 
-          MERGE_COMMAND="gh pr merge \"$PR_URL\""
-
-          case "${{ inputs.strategy }}" in
+          case "$strategy" in
             "rebase")
-              MERGE_COMMAND+=" --rebase"
+              MERGE_OPTIONS+=" --rebase"
             ;;
             "merge")
-              MERGE_COMMAND+=" --merge"
+              MERGE_OPTIONS+=" --merge"
             ;;
             *)
-              MERGE_COMMAND+=" --squash"
+              MERGE_OPTIONS+=" --squash"
             ;;
           esac
 
-          if [ ${{ inputs.force }} == 'true' ]; then
-            MERGE_COMMAND+=" --admin"
-          fi
+          if [ "$force" == 'true' ]; then
+            MERGE_OPTIONS+=" --admin"
           else
-            MERGE_COMMAND+=" --auto --merge"
+            MERGE_OPTIONS+=" --auto"
           fi
 
-          echo "Executing merge command: $MERGE_COMMAND"
-          eval $MERGE_COMMAND
+          echo "Executing merge command with the options: '${MERGE_OPTIONS}'"
+          gh pr merge "$PR_URL" "${MERGE_OPTIONS}"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
