@@ -48,7 +48,7 @@ jobs:
       # optional: ⚠️ only enable the force merge if you want to do the merge just now
       force: true
       # optional: choose strategy when merging (default: squash)
-      strategy: rebase
+      strategy: rebase, merge
     secrets:
       # identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}
