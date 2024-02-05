@@ -47,7 +47,7 @@ jobs:
           !startsWith(steps.metadata.outputs.previous-version, '0.')
         run: |
           gh pr review --approve "$PR_URL"
-          
+
           MERGE_OPTIONS=''
 
           case "$strategy" in
