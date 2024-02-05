@@ -40,6 +40,7 @@ jobs:
         with:
           close-pr-message: ${{ inputs.close-pr-message }}
           days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
+          days-before-issue-stale: -1
           delete-branch: ${{ inputs.delete-branch }}
           exempt-pr-labels: ${{ inputs.exempt-pr-labels }}
           stale-pr-label: ${{ inputs.stale-pr-label }}
