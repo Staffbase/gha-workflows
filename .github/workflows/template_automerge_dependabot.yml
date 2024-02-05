@@ -8,10 +8,10 @@ on:
         default: false
         required: false
         type: boolean
-      rebase:
-        default: false
+      strategy:
+        default: "squash"
         required: false
-        type: boolean
+        type: string
     secrets:
       app_id:
         required: true
@@ -50,11 +50,18 @@ jobs:
 
           MERGE_COMMAND="gh pr merge \"$PR_URL\""
 
-          if [ "${{ inputs.rebase }}" == 'true' ]; then
-            MERGE_COMMAND+=" --rebase"
-          else
-            MERGE_COMMAND+=" --squash"
-          fi
+          case "${{ inputs.strategy }}" in
+            "rebase")
+              MERGE_COMMAND+=" --rebase"
+            ;;
+            "merge")
+              MERGE_COMMAND+=" --merge"
+            ;;
+            *)
+              MERGE_COMMAND+=" --squash"
+            ;;
+          esac
+
           if [ ${{ inputs.force }} == 'true' ]; then
             MERGE_COMMAND+=" --admin"
           fi
