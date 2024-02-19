@@ -69,7 +69,7 @@ jobs:
           fi
 
           echo "Executing merge command with the options: '${MERGE_OPTIONS}'"
-          gh pr merge "$PR_URL" "${MERGE_OPTIONS}"
+          gh pr merge "${MERGE_OPTIONS}" "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
