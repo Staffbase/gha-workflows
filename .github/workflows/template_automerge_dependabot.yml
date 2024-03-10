@@ -48,28 +48,28 @@ jobs:
         run: |
           gh pr review --approve "$PR_URL"
 
-          MERGE_OPTIONS=''
+          MERGE_OPTIONS=()
 
           case "$strategy" in
             "rebase")
-              MERGE_OPTIONS+=" --rebase"
-            ;;
+              MERGE_OPTIONS+=("--rebase")
+              ;;
             "merge")
-              MERGE_OPTIONS+=" --merge"
-            ;;
+              MERGE_OPTIONS+=("--merge")
+              ;;
             *)
-              MERGE_OPTIONS+=" --squash"
-            ;;
+              MERGE_OPTIONS+=("--squash")
+              ;;
           esac
 
           if [ "$force" == 'true' ]; then
-            MERGE_OPTIONS+=" --admin"
+            MERGE_OPTIONS+=("--admin")
           else
-            MERGE_OPTIONS+=" --auto"
+            MERGE_OPTIONS+=("--auto")
           fi
 
-          echo "Executing merge command with the options: '${MERGE_OPTIONS}'"
-          gh pr merge "$PR_URL" "${MERGE_OPTIONS}"
+          echo "Executing merge command with the options: '${MERGE_OPTIONS[*]}'"
+          gh pr merge "$PR_URL" "${MERGE_OPTIONS[@]}"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
