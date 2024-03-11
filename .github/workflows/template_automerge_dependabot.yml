@@ -50,7 +50,7 @@ jobs:
 
           MERGE_OPTIONS=()
 
-          case "${{ env.STRATEGY }}" in
+          case "${{ inputs.strategy }}" in
             "rebase")
               MERGE_OPTIONS+=("--rebase")
               ;;
@@ -62,7 +62,7 @@ jobs:
               ;;
           esac
 
-          if [ "${{ env.FORCE }}" == 'true' ]; then
+          if [ "${{ inputs.force }}" == 'true' ]; then
             MERGE_OPTIONS+=("--admin")
           else
             MERGE_OPTIONS+=("--auto")
@@ -73,5 +73,3 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
-          STRATEGY: ${{ inputs.strategy }}
-          FORCE: ${{ inputs.force }}
