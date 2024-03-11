@@ -8,6 +8,10 @@ on:
         default: false
         required: false
         type: boolean
+      strategy:
+        default: "squash"
+        required: false
+        type: string
     secrets:
       app_id:
         required: true
@@ -44,11 +48,28 @@ jobs:
         run: |
           gh pr review --approve "$PR_URL"
 
-          if [ ${{ inputs.force }} == 'true' ]; then
-            gh pr merge "$PR_URL" --squash --admin
+          MERGE_OPTIONS=()
+
+          case "${{ inputs.strategy }}" in
+            "rebase")
+              MERGE_OPTIONS+=("--rebase")
+              ;;
+            "merge")
+              MERGE_OPTIONS+=("--merge")
+              ;;
+            *)
+              MERGE_OPTIONS+=("--squash")
+              ;;
+          esac
+
+          if [ "${{ inputs.force }}" == 'true' ]; then
+            MERGE_OPTIONS+=("--admin")
           else
-            gh pr merge --auto --merge "$PR_URL"
+            MERGE_OPTIONS+=("--auto")
           fi
+
+          echo "Executing merge command with the options: '${MERGE_OPTIONS[*]}'"
+          gh pr merge "$PR_URL" "${MERGE_OPTIONS[@]}"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
