@@ -9,10 +9,6 @@ on:
       docker-build-target:
         required: false
         type: string
-      docker-build-provenance:
-        required: false
-        type: string
-        default: 'false'
       docker-file:
         required: false
         type: string
@@ -62,14 +58,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: GitOps (build, push and deploy a new Docker image)
-        uses: Staffbase/gitops-github-action@v5.3
+        uses: Staffbase/gitops-github-action@v5.4
         with:
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             GONOSUMDB=${{ secrets.gonosumdb }}
-          docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
