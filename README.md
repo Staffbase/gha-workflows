@@ -120,8 +120,6 @@ jobs:
       # optional: list of build-time variables
       docker-build-args: |
         "any important args"
-      # optional: generate provenance attestation for the build, default: false
-      docker-build-provenance: "mode=min,inline-only=true"
       # optional: set the target stage to build
       docker-build-target: "any target"
       # optional: path to the Dockerfile, default: ./Dockerfile
