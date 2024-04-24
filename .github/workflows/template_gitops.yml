@@ -12,7 +12,7 @@ on:
       docker-file:
         required: false
         type: string
-        default: './Dockerfile'
+        default: "./Dockerfile"
       docker-image:
         required: false
         type: string
@@ -26,10 +26,14 @@ on:
       gitops-prod:
         required: false
         type: string
+      gitops-organization:
+        required: false
+        type: string
+        default: ${{ github.repository_owner }}
       working-directory:
         required: false
         type: string
-        default: '.'
+        default: "."
     # waiting for: https://github.com/github-community/community/discussions/17554
     secrets:
       docker-username:
@@ -44,18 +48,33 @@ on:
         required: false
       gonosumdb:
         required: false
+      app-id:
+        required: false
+      private-key:
+        required: false
 
 jobs:
   gitops:
-
     name: GitOps
     runs-on: ubuntu-22.04
 
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
 
+    env:
+      USING_APP_CREDENTIALS: ${{ secrets.app-id != '' && secrets.private-key != '' }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Get App Token
+        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
+        uses: actions/create-github-app-token@v1.9.0
+        id: get_token
+        with:
+          app-id: ${{ secrets.app-id }}
+          private-key: ${{ secrets.private-key }}
+          owner: ${{inputs.gitops-organization }}
 
       - name: GitOps (build, push and deploy a new Docker image)
         uses: Staffbase/gitops-github-action@v5.4
@@ -70,7 +89,7 @@ jobs:
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
-          gitops-token: ${{ secrets.gitops-token }}
+          gitops-token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.gitops-token }}
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}

@@ -102,6 +102,7 @@ jobs:
       # optional: private key of the GitHub App 
       private_key: ${{ <your-private-key> }}
 ```
+
 </details>
 
 ### GitOps
@@ -135,6 +136,8 @@ jobs:
       # optional: files which should be updated for prod
       gitops-prod: |-
         your files
+      # optional: organization of the gitops repository, default: github.repository_owner
+      gitops-organization: <your-organization>
     secrets:
       # optional: username for the docker registry
       docker-username: ${{ <your-docker-username> }}
@@ -150,7 +153,12 @@ jobs:
       gitops-token: ${{ <your-gitops-token> }}
       # optional: gonosumdb environment variable
       gonosumdb: ${{ <your-gonosumdb> }}
+      # optional: identifier of the GitHub App for authentication
+      app-id: ${{ <your-app-id> }}
+      # optional: private key of the GitHub App
+      private-key: ${{ <your-private-key> }}
 ```
+
 </details>
 
 ### Jira Ticket Tagging
@@ -183,6 +191,7 @@ jobs:
       # email of the api token owner
       jira-email: ${{ <your-email> }}
 ```
+
 </details>
 
 ### LaunchDarkly Code References
@@ -209,6 +218,7 @@ jobs:
       # LD access token with correct access rights
       access-token: ${{ <your-access-token> }}
 ```
+
 </details>
 
 ### Release Drafter
@@ -247,6 +257,7 @@ jobs:
       # optional: private key of the GitHub App 
       private_key: ${{ <your-private-key> }}
 ```
+
 </details>
 
 ### Release Version Detector
@@ -283,6 +294,7 @@ on:
     - cron: '0 0 * * 1'
     - cron: '0 0 1 1 *'
 ```
+
 </details>
   
 ### Secret Scanning
@@ -299,6 +311,7 @@ jobs:
   trufflehog:
     uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v5.1.0
 ```
+
 </details>
 
 ### Stale
@@ -330,6 +343,7 @@ jobs:
       # optional: comment on the staled pull request, default: This PR has been automatically marked as stale because there has been no recent activity in the last 60 days. It will be closed in 7 days if no further activity occurs such as removing the label.
       stale-pr-message: your message
 ```
+
 </details>
 
 ### TechDocs
@@ -366,6 +380,7 @@ jobs:
       # optional: specifies the access key associated with the storage account
       azure-account-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
 ```
+
 </details>
 
 ### TestIO
@@ -421,6 +436,7 @@ jobs:
       # optional: path which files should be checked recursively, default: .
       target-path: your path
 ```
+
 </details>
 
 ## Limitations 🚧
