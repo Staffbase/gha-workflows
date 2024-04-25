@@ -1,0 +1,55 @@
+name: Do Not Merge
+
+on:
+  workflow_call:
+    inputs:
+      label:
+        required: false
+        type: string
+        default: "do not merge"
+      comment:
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  do-not-merge:
+    name: Check
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Find Comment
+        if: inputs.comment
+        uses: peter-evans/find-comment@v3.1.0
+        id: comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: ⚠️ **This Pull Request is not ready to be merged.**
+
+      - name: Comment on PR
+        if: inputs.comment && contains(github.event.pull_request.labels.*.name, inputs.label) && steps.comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v4.0.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ⚠️ **This Pull Request is not ready to be merged.**
+
+            Remove the label '${{ inputs.label }}' to proceed.
+
+      - name: Delete Comment
+        if: inputs.comment && !contains(github.event.pull_request.labels.*.name, inputs.label) && steps.comment.outputs.comment-id != ''
+        uses: actions/github-script@v7.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.deleteComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: ${{ steps.comment.outputs.comment-id }}
+            })
+
+      - name: Fail if label exists to block merge
+        if: contains(github.event.pull_request.labels.*.name, inputs.label)
+        run: |
+          echo "This PR has the label '${{ inputs.label }}'."
+          exit 1
