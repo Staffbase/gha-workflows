@@ -249,7 +249,10 @@ jobs:
     with:
       # optional: name of the label if the PR should not be merged, default: do not merge
       label: merge block
+      # optional: comment when the PR is blocked, default: true
+      comment: true
 ```
+
 </details>
 
 ### Release Drafter
