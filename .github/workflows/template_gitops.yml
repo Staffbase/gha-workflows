@@ -3,12 +3,20 @@ name: GitOps
 on:
   workflow_call:
     inputs:
+      docker-registry:
+        required: false
+        type: string
+        default: "staffbase.jfrog.io"
       docker-build-args:
         required: false
         type: string
       docker-build-target:
         required: false
         type: string
+      docker-build-provenance:
+        required: false
+        type: string
+        default: "false"
       docker-file:
         required: false
         type: string
@@ -30,6 +38,18 @@ on:
         required: false
         type: string
         default: ${{ github.repository_owner }}
+      gitops-repository:
+        required: false
+        type: string
+        default: "mops"
+      gitops-user:
+        required: false
+        type: string
+        default: "Staffbot"
+      gitops-email:
+        required: false
+        type: string
+        default: "staffbot@staffbase.com"
       working-directory:
         required: false
         type: string
@@ -79,6 +99,7 @@ jobs:
       - name: GitOps (build, push and deploy a new Docker image)
         uses: Staffbase/gitops-github-action@v5.4
         with:
+          docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
@@ -87,8 +108,13 @@ jobs:
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
+          docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
+          gitops-organization: ${{ inputs.gitops-organization }}
+          gitops-repository: ${{ inputs.gitops-repository }}
+          gitops-user: ${{ inputs.gitops-user }}
+          gitops-email: ${{ inputs.gitops-email }}
           gitops-token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.gitops-token }}
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}

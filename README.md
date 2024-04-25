@@ -118,15 +118,27 @@ jobs:
   gitops:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v5.1.0
     with:
+      # optional: host of the docker registry, default: "staffbase.jfrog.io"
+      docker-registry: "<your-registry>"
       # optional: list of build-time variables
       docker-build-args: |
         "any important args"
       # optional: set the target stage to build
       docker-build-target: "any target"
+      # optional: set the provenance level of the docker build, default: "false"
+      docker-build-provenance: "<your-provenance-level>"
       # optional: path to the Dockerfile, default: ./Dockerfile
       docker-file: <path-to-Dockerfile>
       # optional: name of the docker image, default: private/<repository_name>
       docker-image: <your-image>
+      # optional: organization of the gitops repository, default: github.repository_owner
+      gitops-organization: <your-organization>
+      # optional: repository where to update the files, default: mops
+      gitops-repository: "<your-repository>"
+      # optional: user which does the commit, default: "Staffbot"
+      gitops-user: "<your-user>"
+      # optional: email of the user which does the commit, default: "staffbot@staffbase.com"
+      gitops-email: "<your-email>"
       # optional: files which should be updated for dev
       gitops-dev: |-
         your files
@@ -136,8 +148,6 @@ jobs:
       # optional: files which should be updated for prod
       gitops-prod: |-
         your files
-      # optional: organization of the gitops repository, default: github.repository_owner
-      gitops-organization: <your-organization>
     secrets:
       # optional: username for the docker registry
       docker-username: ${{ <your-docker-username> }}
