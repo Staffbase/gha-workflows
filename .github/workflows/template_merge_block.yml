@@ -6,7 +6,7 @@ on:
       label:
         required: false
         type: string
-        default: do not merge
+        default: "do not merge"
       comment:
         required: false
         type: boolean
@@ -24,7 +24,7 @@ jobs:
         id: comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body-includes: ⚠️ **The merge is blocked.**
+          body-includes: ⚠️ **This Pull Request is not ready to be merged.**
 
       - name: Comment on PR
         if: inputs.comment && contains(github.event.pull_request.labels.*.name, inputs.label) && steps.comment.outputs.comment-id == ''
@@ -32,7 +32,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ⚠️ **The merge is blocked.**
+            ⚠️ **This Pull Request is not ready to be merged.**
 
             Remove the label '${{ inputs.label }}' to proceed.
 

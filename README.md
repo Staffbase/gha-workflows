@@ -245,12 +245,12 @@ on:
 
 jobs:
   block:
-    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@v2.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@v5.2.0
     with:
       # optional: name of the label if the PR should not be merged, default: do not merge
       label: merge block
       # optional: comment when the PR is blocked, default: true
-      comment: true
+      comment: false
 ```
 
 </details>
