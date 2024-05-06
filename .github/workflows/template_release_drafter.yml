@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
-        uses: actions/create-github-app-token@v1.9.0
+        uses: actions/create-github-app-token@v1.10.0
         id: get_token
         with:
           app-id: ${{ secrets.app_id }}
