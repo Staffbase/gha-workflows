@@ -20,7 +20,6 @@ on:
 
 jobs:
   dependabot:
-
     name: auto-merge
     runs-on: ubuntu-22.04
 
@@ -46,8 +45,6 @@ jobs:
           steps.metadata.outputs.update-type == 'version-update:semver-minor') &&
           !startsWith(steps.metadata.outputs.previous-version, '0.')
         run: |
-          gh pr review --approve "$PR_URL"
-
           MERGE_OPTIONS=()
 
           case "${{ inputs.strategy }}" in
