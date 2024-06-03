@@ -127,6 +127,8 @@ jobs:
       docker-build-target: "any target"
       # optional: set the provenance level of the docker build, default: "false"
       docker-build-provenance: "<your-provenance-level>"
+      # optional: should the last stage image be retagged for the release image, default: false
+      docker-disable-retagging: true
       # optional: path to the Dockerfile, default: ./Dockerfile
       docker-file: <path-to-Dockerfile>
       # optional: name of the docker image, default: private/<repository_name>
