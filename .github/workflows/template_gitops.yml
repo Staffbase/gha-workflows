@@ -17,6 +17,10 @@ on:
         required: false
         type: string
         default: "false"
+      docker-disable-retagging:
+        required: false
+        type: string
+        default: "false"
       docker-file:
         required: false
         type: string
@@ -109,6 +113,7 @@ jobs:
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
           gitops-organization: ${{ inputs.gitops-organization }}
