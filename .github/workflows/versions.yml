@@ -13,9 +13,18 @@ jobs:
       - name: Find and Replace old versions
         run: |
           sed -i -E 's/(v[0-9]+.[0-9]+.[0-9]+)/${{ github.ref_name }}/g' README.md
+
+      - name: Get App Token
+        uses: actions/create-github-app-token@v1.10.1
+        id: get_token
+        with:
+          app-id: ${{ vars.STAFFBASE_ACTIONS_APP_ID }}
+          private-key: ${{ secrets.STAFFBASE_ACTIONS_PRIVATE_KEY }}
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ steps.get_token.outputs.token }}
           title: ":memo: Update Readme Versions"
           body: "all versions in the readme file are bumped"
           commit-message: ":memo: update readme versions"
