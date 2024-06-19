@@ -49,11 +49,11 @@ on:
       gitops-user:
         required: false
         type: string
-        default: "Staffbot"
+        default: "staffbase-actions[bot]"
       gitops-email:
         required: false
         type: string
-        default: "staffbot@staffbase.com"
+        default: "staffbase-actions[bot]@users.noreply.github.com"
       working-directory:
         required: false
         type: string
