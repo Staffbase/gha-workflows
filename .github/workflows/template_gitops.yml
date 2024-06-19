@@ -49,7 +49,7 @@ on:
       gitops-user:
         required: false
         type: string
-        default: "staffbase-actions[bot]"
+        default: "staffbase-actions"
       gitops-email:
         required: false
         type: string
