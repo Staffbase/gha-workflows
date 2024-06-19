@@ -99,7 +99,7 @@ jobs:
       token: ${{ <your-token> }}
       # optional: identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}
-      # optional: private key of the GitHub App 
+      # optional: private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
 
@@ -137,9 +137,9 @@ jobs:
       gitops-organization: <your-organization>
       # optional: repository where to update the files, default: mops
       gitops-repository: "<your-repository>"
-      # optional: user which does the commit, default: "Staffbot"
+      # optional: user which does the commit, default: "staffbase-actions"
       gitops-user: "<your-user>"
-      # optional: email of the user which does the commit, default: "staffbot@staffbase.com"
+      # optional: email of the user which does the commit, default: "staffbase-actions[bot]@users.noreply.github.com"
       gitops-email: "<your-email>"
       # optional: files which should be updated for dev
       gitops-dev: |-
@@ -276,7 +276,7 @@ on:
 jobs:
   update_release_draft:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v5.5.0
-    with: 
+    with:
       # optional: name of the release
       name: Version X.Y.Z
       # optional: should the release be published, default: false
@@ -290,7 +290,7 @@ jobs:
       token: ${{ <your-token> }}
       # optional: identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}
-      # optional: private key of the GitHub App 
+      # optional: private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
 
@@ -332,9 +332,9 @@ on:
 ```
 
 </details>
-  
+
 ### Secret Scanning
-  
+
 <details>
 <summary>This workflow should be called by a PR and will scan it's commits for leaked credentials. The workflow will fail if any results are found.</summary>
 
@@ -442,7 +442,7 @@ jobs:
     secrets:
       # GitHub token to be used for commenting in a PR
       github-token: ${{ secrets.GITHUB_TOKEN }}
-      # TestIO token of a user for which the triggered test is created 
+      # TestIO token of a user for which the triggered test is created
       testio-token: ${{ secrets.TESTIO_TOKEN }}
 ```
 
@@ -494,7 +494,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## License 📄
 
 This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LICENSE) file for details.
-  
+
 <table>
   <tr>
     <td>
