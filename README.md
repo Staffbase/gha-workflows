@@ -133,6 +133,8 @@ jobs:
       docker-file: <path-to-Dockerfile>
       # optional: name of the docker image, default: private/<repository_name>
       docker-image: <your-image>
+      # optional: custom tag for the docker image, default: main-<COMMIT_SHA>, dev-<COMMIT_SHA>, <GITHUB_TAG>
+      docker-custom-tag: <your-tag>
       # optional: organization of the gitops repository, default: github.repository_owner
       gitops-organization: <your-organization>
       # optional: repository where to update the files, default: mops

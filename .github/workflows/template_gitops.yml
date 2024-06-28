@@ -29,6 +29,9 @@ on:
         required: false
         type: string
         default: sb-images/${{ github.event.repository.name }}
+      docker-custom-tag:
+        required: false
+        type: string
       gitops-dev:
         required: false
         type: string
@@ -116,6 +119,7 @@ jobs:
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
+          docker-custom-tag: ${{ inputs.docker-custom-tag }}
           gitops-organization: ${{ inputs.gitops-organization }}
           gitops-repository: ${{ inputs.gitops-repository }}
           gitops-user: ${{ inputs.gitops-user }}
