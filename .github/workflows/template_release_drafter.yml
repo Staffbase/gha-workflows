@@ -28,7 +28,7 @@ jobs:
   update_release_draft:
 
     name: update release draft
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     env:
       USING_APP_CREDENTIALS: ${{ secrets.app_id != '' && secrets.private_key != '' }}
