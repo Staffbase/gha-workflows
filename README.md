@@ -49,6 +49,10 @@ jobs:
       force: true
       # optional: choose strategy when merging (default: squash)
       strategy: rebase, merge
+      # optional: choose which types of update you want to allow (default: minor,patch)
+      update-types: major,minor,patch
+      # optional: choose if you want to allow versions with semver 0.X.X (default: false)
+      include-pre-release: true
     secrets:
       # identifier of the GitHub App for authentication
       app_id: ${{ <your-app-id> }}

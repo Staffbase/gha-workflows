@@ -12,6 +12,16 @@ on:
         default: "squash"
         required: false
         type: string
+      update-types:
+        description: "Types of version update to allow (possible values are: minor, major, patch)"
+        default: "patch,minor"
+        required: false
+        type: string
+      include-pre-release:
+        description: "Include pre-release updates"
+        default: false
+        required: false
+        type: boolean
     secrets:
       app_id:
         required: true
@@ -42,9 +52,24 @@ jobs:
 
       - name: Enable auto-merge for Dependabot PRs
         if: >-
-          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-minor') &&
-          !startsWith(steps.metadata.outputs.previous-version, '0.')
+          (
+            inputs.include-pre-release ||
+            !startsWith(steps.metadata.outputs.previous-version, '0.')
+          ) &&
+          (
+            (
+              contains(inputs.update-types, 'major') &&
+              steps.metadata.outputs.update-type == 'version-update:semver-major'
+            ) ||
+            (
+              contains(inputs.update-types, 'minor') &&
+              steps.metadata.outputs.update-type == 'version-update:semver-minor'
+            ) ||
+            (
+              contains(inputs.update-types, 'patch') &&
+              steps.metadata.outputs.update-type == 'version-update:semver-patch'
+            )
+          )
         run: |
           gh pr review --approve "$PR_URL"
 
