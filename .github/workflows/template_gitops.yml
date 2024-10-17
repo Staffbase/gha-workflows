@@ -79,6 +79,8 @@ on:
         required: false
       private-key:
         required: false
+      upwind_client_secret:
+        required: false
 
 jobs:
   gitops:
@@ -138,5 +140,5 @@ jobs:
           image: "${{ inputs.docker-image }}"
           image_sha: "${{ steps.gitops.outputs.docker-digest }}"
           upwind_client_id: ${{ vars.UPWIND_CLIENT_ID }}
-          upwind_client_secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
+          upwind_client_secret: ${{ secrets.upwind_client_secret }}
           upwind_organization_id: ${{ vars.UPWIND_ORGANIZATION_ID }}
