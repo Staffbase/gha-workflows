@@ -175,6 +175,8 @@ jobs:
       app-id: ${{ <your-app-id> }}
       # optional: private key of the GitHub App
       private-key: ${{ <your-private-key> }}
+      # optional: Upwind client secret (our org secret)
+      upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
 
 </details>

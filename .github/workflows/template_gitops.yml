@@ -79,6 +79,8 @@ on:
         required: false
       private-key:
         required: false
+      upwind-client-secret:
+        required: false
 
 jobs:
   gitops:
@@ -104,7 +106,8 @@ jobs:
           owner: ${{inputs.gitops-organization }}
 
       - name: GitOps (build, push and deploy a new Docker image)
-        uses: Staffbase/gitops-github-action@v6.2
+        id: gitops
+        uses: Staffbase/gitops-github-action@v6.3.3
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
@@ -128,4 +131,7 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
+          upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
+          upwind-client-secret: ${{ secrets.upwind-client-secret }}
+          upwind-organization-id: ${{ vars.UPWIND_ORGANIZATION_ID }}
           working-directory: ${{ inputs.working-directory }}
