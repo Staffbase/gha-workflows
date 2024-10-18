@@ -136,6 +136,7 @@ jobs:
       - name: Emit Image Build Event to Upwind.io
         if: ${{ vars.UPWIND_CLIENT_ID != '' && vars.UPWIND_ORGANIZATION_ID != '' }}
         uses: upwindsecurity/create-image-build-event-action@v2
+        continue-on-error: true
         with:
           image: "${{ inputs.docker-image }}"
           image_sha: "${{ steps.gitops.outputs.docker-digest }}"
