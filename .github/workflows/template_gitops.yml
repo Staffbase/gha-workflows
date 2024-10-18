@@ -79,7 +79,7 @@ on:
         required: false
       private-key:
         required: false
-      upwind_client_secret:
+      upwind-client-secret:
         required: false
 
 jobs:
@@ -107,7 +107,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@v6.3.2
+        uses: Staffbase/gitops-github-action@v6.3.3
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
@@ -131,15 +131,7 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
+          upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
+          upwind-client-secret: ${{ secrets.upwind-client-secret }}
+          upwind-organization-id: ${{ vars.UPWIND_ORGANIZATION_ID }}
           working-directory: ${{ inputs.working-directory }}
-
-      - name: Emit Image Build Event to Upwind.io
-        if: ${{ vars.UPWIND_CLIENT_ID != '' && vars.UPWIND_ORGANIZATION_ID != '' }}
-        uses: upwindsecurity/create-image-build-event-action@v2
-        continue-on-error: true
-        with:
-          image: "${{ inputs.docker-image }}"
-          image_sha: "${{ steps.gitops.outputs.docker-digest }}"
-          upwind_client_id: ${{ vars.UPWIND_CLIENT_ID }}
-          upwind_client_secret: ${{ secrets.upwind_client_secret }}
-          upwind_organization_id: ${{ vars.UPWIND_ORGANIZATION_ID }}
