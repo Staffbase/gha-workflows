@@ -6,7 +6,7 @@ on:
       docker-registry:
         required: false
         type: string
-        default: "staffbase.jfrog.io"
+        default: "registry.staffbase.com"
       docker-build-args:
         required: false
         type: string
@@ -29,6 +29,9 @@ on:
         required: false
         type: string
         default: sb-images/${{ github.event.repository.name }}
+      docker-custom-tag:
+        required: false
+        type: string
       gitops-dev:
         required: false
         type: string
@@ -49,11 +52,11 @@ on:
       gitops-user:
         required: false
         type: string
-        default: "Staffbot"
+        default: "staffbase-actions"
       gitops-email:
         required: false
         type: string
-        default: "staffbot@staffbase.com"
+        default: "staffbase-actions[bot]@users.noreply.github.com"
       working-directory:
         required: false
         type: string
@@ -93,7 +96,7 @@ jobs:
 
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
-        uses: actions/create-github-app-token@v1.10.0
+        uses: actions/create-github-app-token@v1.11.0
         id: get_token
         with:
           app-id: ${{ secrets.app-id }}
@@ -101,7 +104,7 @@ jobs:
           owner: ${{inputs.gitops-organization }}
 
       - name: GitOps (build, push and deploy a new Docker image)
-        uses: Staffbase/gitops-github-action@v5.5
+        uses: Staffbase/gitops-github-action@v6.2
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
@@ -116,6 +119,7 @@ jobs:
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
+          docker-custom-tag: ${{ inputs.docker-custom-tag }}
           gitops-organization: ${{ inputs.gitops-organization }}
           gitops-repository: ${{ inputs.gitops-repository }}
           gitops-user: ${{ inputs.gitops-user }}
