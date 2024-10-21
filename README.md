@@ -156,6 +156,10 @@ jobs:
       # optional: files which should be updated for prod
       gitops-prod: |-
         your files
+      # optional: Upwind.io client ID
+      upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
+      # optional: Upwind.io organization ID
+      upwind-organization-id: ${{ vars.UPWIND_ORGANIZATION_ID }}
     secrets:
       # optional: username for the docker registry
       docker-username: ${{ <your-docker-username> }}
@@ -175,6 +179,8 @@ jobs:
       app-id: ${{ <your-app-id> }}
       # optional: private key of the GitHub App
       private-key: ${{ <your-private-key> }}
+      # optional: Upwind client secret
+      upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
 
 </details>
