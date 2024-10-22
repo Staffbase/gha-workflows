@@ -17,7 +17,7 @@ jobs:
   new_version:
 
     name: Get new release version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     outputs:
       new_version: ${{ steps.set_version.outputs.next_version }}
