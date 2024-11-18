@@ -81,7 +81,7 @@ jobs:
           fetch-tags: false
 
       - name: Autodev
-        uses: staffbase/autodev-action@v2.2
+        uses: Staffbase/autodev-action@v2.3.0
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
