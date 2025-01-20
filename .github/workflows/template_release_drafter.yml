@@ -43,7 +43,7 @@ jobs:
           private-key: ${{ secrets.private_key }}
 
       - name: Update Release
-        uses: release-drafter/release-drafter@v6.0.0
+        uses: release-drafter/release-drafter@v6.1.0
         with:
           name: ${{ inputs.name }}
           publish: ${{ inputs.publish }}
