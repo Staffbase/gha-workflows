@@ -1,0 +1,46 @@
+name: Changeset Check
+
+on: workflow_call
+
+jobs:
+  changeset-check:
+    name: changeset-check
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check for changeset file
+        id: checkfile
+        run: echo "{changeset}={$(git diff --name-only origin/main... | grep -c '.changeset/.*\.md$')} >> $GITHUB_OUTPUT"
+
+      - name: Find existing comment
+        uses: peter-evans/find-comment@v3.1.0
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: <!-- changeset-check -->
+
+      - name: Update comment for found changeset
+        uses: peter-evans/create-or-update-comment@v4.0.0
+        if: steps.checkfile.outputs.changeset != '0'
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            <!-- changeset-check -->
+            ## 🦋 Changeset file found
+
+            Good job! A changeset file has been added in this PR. Your changes will be included in the next release.
+          edit-mode: replace
+
+      - name: Update comment for missing changeset
+        uses: peter-evans/create-or-update-comment@v4.0.0
+        if: steps.checkfile.outputs.changeset == '0'
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            <!-- changeset-check -->
+            ## ⚠️ Changeset file missing
+
+            No changeset file has been added in this PR. Please consider adding one if this PR contains user-facing changes.
+          edit-mode: replace
