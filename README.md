@@ -109,6 +109,24 @@ jobs:
 
 </details>
 
+### Changeset Check
+
+<details>
+<summary>The action can be used to check a PR for the existance of <a href="https://github.com/changesets/changesets">changeset</a> files. It will then add/update a comment on the PR.</summary>
+
+```yml
+name: Changeset Check
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  changeset-check:
+    uses: Staffbase/gha-workflows/.github/workflows/tempalte_changeset_check@v7.1.0
+```
+
+</details>
+
 ### GitOps
 
 <details>
