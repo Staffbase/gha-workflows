@@ -7,6 +7,9 @@ jobs:
     name: changeset-check
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Check for changeset file
         id: checkfile
         run: echo "{changeset}={$(git diff --name-only origin/main... | grep -c '.changeset/.*\.md$')} >> $GITHUB_OUTPUT"
