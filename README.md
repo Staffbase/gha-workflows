@@ -122,7 +122,7 @@ on:
 
 jobs:
   changeset-check:
-    uses: Staffbase/gha-workflows/.github/workflows/tempalte_changeset_check@v7.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check@v7.1.0
 ```
 
 </details>
