@@ -10,12 +10,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Fetch base
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
-
-      - name: Check for changeset file
-        id: checkfile
-        run: echo "{changeset}={$(git diff --name-only ${{ github.event.pull_request.base.ref }} | grep -c '.changeset/.*\.md$')} >> $GITHUB_OUTPUT"
+      - name: Check for changesets
+        id: changeset-files
+        uses: tj-actions/changed-files@v45.0.6
+        with:
+          files: .changeset/*.md 
+          base_sha: ${{ github.event.pull_request.base.sha }}
 
       - name: Find existing comment
         uses: peter-evans/find-comment@v3.1.0
@@ -27,7 +27,7 @@ jobs:
 
       - name: Update comment for found changeset
         uses: peter-evans/create-or-update-comment@v4.0.0
-        if: steps.checkfile.outputs.changeset != '0'
+        if: steps.changeset-files.outputs.any_changed == 'true'
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -40,7 +40,7 @@ jobs:
 
       - name: Update comment for missing changeset
         uses: peter-evans/create-or-update-comment@v4.0.0
-        if: steps.checkfile.outputs.changeset == '0'
+        if: steps.changeset-files.outputs.any_changed != 'true'
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
