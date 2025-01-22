@@ -143,7 +143,7 @@ on:
       - main
 
 jobs:
-  changeset-check:
+  changeset-release:
     uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release@v7.0.0
     with:
       # optional, defaults to `.nvmrc`
