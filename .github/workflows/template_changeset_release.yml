@@ -14,7 +14,7 @@ on:
         required: false
         type: string
       version-script:
-        description: "The file script to run vor bumping the package versions. Defaults to `pnpm changeset version`"
+        description: "The file script to run for bumping the package versions. Defaults to `pnpm changeset version`"
         default: 'pnpm changeset version'
         required: false
         type: string
@@ -64,10 +64,10 @@ jobs:
         uses: changesets/action@v1.4.9
         with:
           commit: 'chore(release): Bump package version'
-          title: '📦 Release'
+          title: '📦 Release New Version'
           createGithubReleases: true
-          version: ${{inputs.version-script}}
-          publish: ${{inputs.publish-script}}
+          version: ${{ inputs.version-script }}
+          publish: ${{ inputs.publish-script }}
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
           HOME: ${{ github.workspace }}

@@ -135,7 +135,7 @@ jobs:
 ⚠️ Make sure you have `@changesets/cli` installed as a dev-dependency in your project!
 
 ```yml
-name: Release
+name: Release Changesets
 
 on:
   push:
@@ -152,6 +152,13 @@ jobs:
       publish-script: 'pnpm publish'
       # optional, defaults to `pnpm changeset version`
       version-script: 'pnpm version'
+    secrets:
+      # identifier of the GitHub App for authentication
+      app-id: ${{ <your-app-id> }}
+      # private key of the GitHub App
+      private-key: ${{ <your-private-key> }}
+      # needs write:packages rights
+      npm-token ${{ <your-npm-token> }}
 ```
 
 </details>
