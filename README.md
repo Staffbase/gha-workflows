@@ -127,6 +127,27 @@ jobs:
 
 </details>
 
+### Changeset Release
+
+<details>
+<summary>The action can be used to create release PR and publish releases for repos using PNPM and <a href="https://github.com/changesets/changesets">changesets</a>.</summary>
+
+> [!NOTE]
+> Make sure you have `@changesets/cli` installed as a dev-dependency in your project!
+
+```yml
+name: Changeset Check
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  changeset-check:
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check@v7.0.0
+```
+
+</details>
+
 ### GitOps
 
 <details>
