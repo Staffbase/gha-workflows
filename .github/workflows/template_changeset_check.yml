@@ -14,7 +14,7 @@ jobs:
         id: changeset-files
         uses: tj-actions/changed-files@v45.0.6
         with:
-          files: .changeset/*.md 
+          files: .changeset/*.md
           base_sha: ${{ github.event.pull_request.base.sha }}
 
       - name: Find existing comment
