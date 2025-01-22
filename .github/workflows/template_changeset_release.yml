@@ -18,12 +18,24 @@ on:
         default: 'pnpm changeset version'
         required: false
         type: string
+    secrets:
+      app_id:
+        required: true
+      private_key:
+        required: true
 
 jobs:
   release:
     name: changeset-release
     runs-on: ubuntu-24.04
     steps:
+      - name: Get App Token
+        uses: actions/create-github-app-token@v1.11.0
+        id: get_token
+        with:
+          app-id: ${{ secrets.app_id }}
+          private-key: ${{ secrets.private_key }}
+
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
@@ -54,5 +66,5 @@ jobs:
           publish: ${{ inputs.publish-script }}
           version: ${{inputs.version-script}}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
           NPM_TOKEN: ${{ secrets.STAFFBOT_NPM_WRITE }}
