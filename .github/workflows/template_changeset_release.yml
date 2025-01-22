@@ -64,6 +64,7 @@ jobs:
           cp $NPM_CONFIG_USERCONFIG $HOME/.npmrc
           echo $HOME
           ls $HOME
+          echo ${{ github.workspace}}
 
       - name: Create Release Pull Request
         id: changesets
@@ -76,3 +77,4 @@ jobs:
           publish: ${{inputs.publish-script}}
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+          HOME: ${{ github.workspace }}
