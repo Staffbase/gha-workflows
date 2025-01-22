@@ -122,7 +122,7 @@ on:
 
 jobs:
   changeset-check:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check@v7.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@v7.0.0
 ```
 
 </details>
@@ -144,7 +144,7 @@ on:
 
 jobs:
   changeset-release:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release@v7.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@v7.0.0
     with:
       # optional, defaults to `.nvmrc`
       node-version-file: '.node-version'
