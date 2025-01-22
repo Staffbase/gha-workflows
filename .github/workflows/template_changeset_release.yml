@@ -38,6 +38,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ steps.get_token.outputs.token }}
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4.0.0
@@ -61,7 +63,6 @@ jobs:
         with:
           commit: 'chore(release): Bump package version'
           title: '📦 Release'
-          setupGitUser: true
           createGithubReleases: true
           publish: ${{ inputs.publish-script }}
           version: ${{inputs.version-script}}
