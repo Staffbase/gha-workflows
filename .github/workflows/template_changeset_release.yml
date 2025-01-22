@@ -59,6 +59,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
 
+      - name: copy npmrc
+        run: cp $NPM_CONFIG_USERCONFIG .npmrc
+
       - name: Create Release Pull Request
         id: changesets
         uses: changesets/action@v1.4.9
@@ -67,12 +70,6 @@ jobs:
           title: '📦 Release'
           createGithubReleases: true
           version: ${{inputs.version-script}}
+          publish: ${{inputs.publish-script}}
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
-
-      - name: Publish
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        run: pnpm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
-
