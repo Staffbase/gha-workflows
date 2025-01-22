@@ -23,6 +23,8 @@ on:
         required: true
       private_key:
         required: true
+      npm-token:
+        required: true
 
 jobs:
   release:
@@ -55,7 +57,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.STAFFBOT_NPM_WRITE }}
+          NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
 
       - name: Create Release Pull Request
         id: changesets
@@ -68,4 +70,4 @@ jobs:
           version: ${{inputs.version-script}}
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
-          NPM_TOKEN: ${{ secrets.STAFFBOT_NPM_WRITE }}
+          NPM_TOKEN: ${{ secrets.npm-token }}
