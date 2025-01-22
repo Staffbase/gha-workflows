@@ -54,4 +54,5 @@ jobs:
           publish: ${{ inputs.publish-script }}
           version: ${{inputs.version-script}}
         env:
-          GITHUB_TOKEN: ${{ secrets.STAFFBOT_NPM_WRITE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.STAFFBOT_NPM_WRITE }}
