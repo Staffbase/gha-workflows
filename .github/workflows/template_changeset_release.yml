@@ -60,7 +60,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
 
       - name: copy npmrc
-        run: cp $NPM_CONFIG_USERCONFIG .npmrc
+        run: |
+          cp $NPM_CONFIG_USERCONFIG $HOME/.npmrc
+          echo $HOME
+          ls $HOME
 
       - name: Create Release Pull Request
         id: changesets
