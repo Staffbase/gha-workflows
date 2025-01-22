@@ -1,0 +1,57 @@
+name: Changeset Release
+
+on:
+  workflow_call:
+    inputs:
+      node-version-file:
+        description: "The file containing the Node.js version to use, defaults to .nvmrc"
+        default: '.nvrmc'
+        required: false
+        type: string
+      publish-script:
+        description: "The file script to run on publish. Defaults to `pnpm release`"
+        default: 'pnpm release'
+        required: false
+        type: string
+      version-script:
+        description: "The file script to run vor bumping the package versions. Defaults to `pnpm changeset version`"
+        default: 'pnpm changeset version'
+        required: false
+        type: string
+
+jobs:
+  release:
+    name: changeset-release
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4.0.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version-file: ${{ inputs.node-version-file }}
+          cache: 'pnpm'
+          registry-url: 'https://npm.pkg.github.com/'
+          scope: '@staffbase'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.STAFFBOT_NPM_WRITE }}
+
+      - name: Create Release Pull Request
+        id: changesets
+        uses: changesets/action@v1.4.9
+        with:
+          commit: 'chore(release): Bump package version'
+          title: '📦 Release'
+          setupGitUser: true
+          createGithubReleases: true
+          publish: ${{ inputs.publish-script }}
+          version: ${{inputs.version-script}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.STAFFBOT_NPM_WRITE }}
