@@ -59,13 +59,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
 
-      - name: copy npmrc
-        run: |
-          cp $NPM_CONFIG_USERCONFIG $HOME/.npmrc
-          echo $HOME
-          ls $HOME
-          echo ${{ github.workspace}}
-
       - name: Create Release Pull Request
         id: changesets
         uses: changesets/action@v1.4.9
@@ -78,3 +71,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
           HOME: ${{ github.workspace }}
+          NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
