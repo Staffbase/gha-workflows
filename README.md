@@ -132,18 +132,26 @@ jobs:
 <details>
 <summary>The action can be used to create release PR and publish releases for repos using PNPM and <a href="https://github.com/changesets/changesets">changesets</a>.</summary>
 
-> [!NOTE]
-> Make sure you have `@changesets/cli` installed as a dev-dependency in your project!
+⚠️ Make sure you have `@changesets/cli` installed as a dev-dependency in your project!
 
 ```yml
-name: Changeset Check
+name: Release
+
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
 
 jobs:
   changeset-check:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check@v7.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release@v7.0.0
+    with:
+      # optional, defaults to `.nvmrc`
+      node-version-file: '.node-version'
+      # optional, defaults to `pnpm release`
+      publish-script: 'pnpm publish'
+      # optional, defaults to `pnpm changeset version`
+      version-script: 'pnpm version'
 ```
 
 </details>
