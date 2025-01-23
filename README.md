@@ -109,6 +109,64 @@ jobs:
 
 </details>
 
+### Changeset Check
+
+<details>
+<summary>The action can be used to check a PR for the existance of <a href="https://github.com/changesets/changesets">changeset</a> files. It will then add/update a comment on the PR.</summary>
+
+```yml
+name: Changeset Check
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  changeset-check:
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@v7.0.0
+```
+
+</details>
+
+### Changeset Release
+
+<details>
+<summary>The action can be used to create release PR and publish releases for repos using PNPM and <a href="https://github.com/changesets/changesets">changesets</a>.</summary>
+
+⚠️ Make sure you have `@changesets/cli` installed as a dev-dependency in your project!
+
+```yml
+name: Release Changesets
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  changeset-release:
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@v7.0.0
+    with:
+      # optional: The file containing the Node.js version to use, defaults to .nvmrc
+      node-version-file: '.node-version'
+      # optional: The script to run on publish. Defaults to `pnpm release`
+      publish-script: 'pnpm publish'
+      # optional: The script to run for bumping the package versions. Defaults to `pnpm changeset version`
+      version-script: 'pnpm version'
+      # optional: The registry to use for Node.js packages.
+      node-registry: 'https://npm.pkg.github.com/'
+      # optional: The scope to use for Node.js packages.
+      node-registry-scope: '@staffbase'
+    secrets:
+      # identifier of the GitHub App for authentication
+      app-id: ${{ <your-app-id> }}
+      # private key of the GitHub App
+      private-key: ${{ <your-private-key> }}
+      # needs write:packages rights
+      npm-token ${{ <your-npm-token> }}
+```
+
+</details>
+
 ### GitOps
 
 <details>
