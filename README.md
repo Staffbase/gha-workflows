@@ -146,11 +146,11 @@ jobs:
   changeset-release:
     uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@v7.0.0
     with:
-      # optional, defaults to `.nvmrc`
+      # optional: The file containing the Node.js version to use, defaults to .nvmrc
       node-version-file: '.node-version'
-      # optional, defaults to `pnpm release`
+      # optional: The script to run on publish. Defaults to `pnpm release`
       publish-script: 'pnpm publish'
-      # optional, defaults to `pnpm changeset version`
+      # optional: The script to run for bumping the package versions. Defaults to `pnpm changeset version`
       version-script: 'pnpm version'
     secrets:
       # identifier of the GitHub App for authentication

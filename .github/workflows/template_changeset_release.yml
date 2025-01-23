@@ -9,13 +9,21 @@ on:
         required: false
         type: string
       publish-script:
-        description: "The file script to run on publish. Defaults to `pnpm release`"
+        description: "The script to run on publish. Defaults to `pnpm release`"
         default: 'pnpm release'
         required: false
         type: string
       version-script:
-        description: "The file script to run for bumping the package versions. Defaults to `pnpm changeset version`"
+        description: "The script to run for bumping the package versions. Defaults to `pnpm changeset version`"
         default: 'pnpm changeset version'
+        required: false
+        type: string
+      node-registry:
+        description: "The registry to use for Node.js packages."
+        required: false
+        type: string
+      node-registry-scope:
+        description: "The scope to use for Node.js packages."
         required: false
         type: string
     secrets:
@@ -51,8 +59,8 @@ jobs:
         with:
           node-version-file: ${{ inputs.node-version-file }}
           cache: 'pnpm'
-          registry-url: 'https://npm.pkg.github.com/'
-          scope: '@staffbase'
+          registry-url: ${{ inputs.node-registry }}
+          scope: ${{ inputs.node-registry-scope }}
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
