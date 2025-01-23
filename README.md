@@ -152,6 +152,10 @@ jobs:
       publish-script: 'pnpm publish'
       # optional: The script to run for bumping the package versions. Defaults to `pnpm changeset version`
       version-script: 'pnpm version'
+      # optional: The registry to use for Node.js packages.
+      node-registry: 'https://npm.pkg.github.com/'
+      # optional: The scope to use for Node.js packages.
+      node-registry-scope: '@staffbase'
     secrets:
       # identifier of the GitHub App for authentication
       app-id: ${{ <your-app-id> }}
