@@ -109,6 +109,22 @@ jobs:
 
 </details>
 
+### Backstage Entity Validation
+
+<details>
+<summary>The action can be used to validate the Backstage entity files.</summary>
+
+```yml
+name: Backstage Entity Validation
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  validation:
+    uses: Staffbase/gha-workflows/.github/workflows/template_backstage_entity_validation.yml@v7.2.0
+```
+
 ### Changeset Check
 
 <details>
