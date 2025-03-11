@@ -355,6 +355,10 @@ jobs:
       tag: vX.Y.Z
       # optional: version to be associated with the release
       version: X.Y.Z
+      # optional: prerelease status of the release, default: false
+      prerelease: true
+      # optional: prerelease identifier of the release
+      prerelease-identifier: alpha
     secrets:
       # optional: access token for the release drafter
       token: ${{ <your-token> }}
