@@ -16,6 +16,14 @@ on:
       version:
         required: false
         type: string
+      prerelease:
+        required: false
+        type: boolean
+        default: false
+      prerelease-identifier:
+        required: false
+        type: string
+        default: ""
     secrets:
       token:
         required: false
@@ -26,7 +34,6 @@ on:
 
 jobs:
   update_release_draft:
-
     name: update release draft
     runs-on: ubuntu-24.04
 
@@ -49,5 +56,7 @@ jobs:
           publish: ${{ inputs.publish }}
           tag: ${{ inputs.tag }}
           version: ${{ inputs.version }}
+          prerelease: ${{ inputs.prerelease }}
+          prerelease-identifier: ${{ inputs.prerelease-identifier }}
         env:
           GITHUB_TOKEN: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
