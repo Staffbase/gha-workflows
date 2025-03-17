@@ -13,7 +13,7 @@ jobs:
 
       - name: Check for changesets
         id: changeset-files
-        uses: tj-actions/changed-files@v45.0.6
+        uses: tj-actions/changed-files@v46.0.1
         with:
           files: .changeset/*.md
           base_sha: ${{ github.event.pull_request.base.sha }}
