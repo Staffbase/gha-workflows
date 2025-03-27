@@ -456,6 +456,35 @@ jobs:
 
 </details>
 
+### TechDocs Monorepo (Azure)
+
+<details>
+<summary>This GitHub Action can be used for generating and publishing Backstage TechDocs for a monorepo. It is limited to an Azure Storage account.</summary>
+
+```yml
+name: TechDocs
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/techdocs.yaml"
+
+jobs:
+  techdocs:
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@v7.2.0
+    secrets:
+      # required: specifies an Azure Storage account name
+      azure-account-name: ${{ secrets.TECHDOCS_AZURE_ACCOUNT_NAME }}
+      # required: specifies the access key associated with the storage account
+      azure-account-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
+```
+
+</details>
+
 ### TechDocs
 
 <details>

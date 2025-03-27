@@ -1,0 +1,76 @@
+name: TechDocs
+
+on:
+  workflow_call:
+    secrets:
+      azure-account-name:
+        required: true
+      azure-account-key:
+        required: true
+jobs:
+  techdocs:
+    name: TechDocs
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.2.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.5.0
+        with:
+          python-version: "3.12"
+
+      - name: Install techdocs-cli
+        run: sudo npm install -g @techdocs/cli
+
+      - name: Install mkdocs and mkdocs plugins
+        run: |
+          python -m pip install mkdocs-techdocs-core==1.* mkdocs-awesome-pages-plugin==2.* mkdocs-awesome-nav==3.0.0
+
+      - name: Generate and Publish TechDocs
+        run: |
+          find . -name "catalog-info.yaml" -print0 | while read -r -d $'\0' file
+          do
+            echo ""
+            echo "Working on $file"
+            i="0"
+            while true; do
+              idx=$i
+              i=$((i+1))
+
+              # .kind is mandatory and can be used to check whether there is another document
+              kind=$(yq e "select(documentIndex == $idx) | .kind" "$file")
+              if [ -z "$kind" ]; then
+                break
+              fi
+
+              name=$(yq e "select(documentIndex == $idx) | .metadata.name" "$file")
+              # Only process documents with techdocs-ref annotation
+              techDocsConfigured=$(yq e "select(documentIndex == $idx) | .metadata.annotations | has(\"backstage.io/techdocs-ref\")" "$file")
+              if [ "$techDocsConfigured" == false ]; then
+                  echo "  😥 Skip $kind/$name - TechDocs not configured"
+                  continue
+              fi
+
+              echo "  📝 Publish TechDocs for $kind/$name"
+
+              fileDir=$(find "$file" -printf '%h' -quit)
+              techdocs-cli generate \
+                --no-docker \
+                --verbose \
+                --source-dir=$fileDir \
+                --output-dir=$fileDir/site/ 1>/dev/null
+
+              techdocs-cli publish \
+                --directory=$fileDir/site/ \
+                --publisher-type azureBlobStorage \
+                --storage-name techdocs \
+                --azureAccountName ${{ secrets.azure-account-name }} \
+                --azureAccountKey ${{ secrets.azure-account-key }} \
+                --entity default/$kind/$name 1>/dev/null
+            done
+          done
