@@ -493,6 +493,35 @@ jobs:
 
 </details>
 
+### Terraform Format
+
+<details>
+
+<summary>This GitHub Action checks the formatting of Terraform files and commit fixes if necessary.</summary>
+
+```yml
+name: Terraform
+
+on: [pull_request]
+
+jobs:
+  terraform:
+    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@v7.2.0
+    with:
+      # optional: Terraform version, default: latest
+      terraform-version: latest
+      # optional: Committer name, default: staffbase-actions[bot]
+      committer-name: staffbase-actions[bot]
+      # optional: Committer email, default: staffbase-actions[bot]@users.noreply.github.com
+      committer-email: staffbase-actions[bot]@users.noreply.github.com
+    secrets:
+      # GitHub App is required because GITHUB_TOKEN will not trigger new actions
+      app-id: ${{ <your-app-id> }}
+      private-key: ${{ <your-private-key> }}
+```
+
+</details>
+
 ### TestIO
 
 <details>

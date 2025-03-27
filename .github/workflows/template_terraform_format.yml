@@ -1,0 +1,93 @@
+name: Terraform
+
+on:
+  workflow_call:
+    inputs:
+      terraform-version:
+        required: false
+        type: string
+        default: "latest"
+      comitter-name:
+        required: false
+        type: string
+        default: "staffbase-actions[bot]"
+      comitter-email:
+        required: false
+        type: string
+        default: "staffbase-actions[bot]@users.noreply.github.com"
+    secrets:
+      app-id:
+        required: true
+      private-key:
+        required: true
+
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Get App Token
+        uses: actions/create-github-app-token@v1.11.0
+        id: get_token
+        with:
+          app-id: ${{ secrets.app-id }}
+          private-key: ${{ secrets.private-key }}
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ steps.get_token.outputs.token }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+
+      - name: Terraform Format
+        id: format
+        run: terraform fmt -recursive -diff
+
+      - name: Find Format Comment
+        if: ${{ steps.format.outputs.stdout != '' }}
+        uses: peter-evans/find-comment@v3
+        id: comment
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "Terraform `format` "
+
+      - name: Comment Hint when Terraform Format failed
+        if: ${{ steps.format.outputs.stdout != '' }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          issue-number: ${{ github.event.number }}
+          edit-mode: replace
+          body: |
+            ### Terraform `format` applied changes
+            We found some linting issues in your files. We automatically fixed them for you. See the diff below for details.
+
+            <details><summary>Show Details</summary>
+
+            ```diff
+            ${{ steps.format.outputs.stdout }}
+            ```
+
+            </details>
+
+            Hint: You can install Terraform Support in your editor to avoid such issues in the future:
+            - [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform)
+            - [Jetbrains](https://plugins.jetbrains.com/plugin/7808-terraform-and-hcl)
+
+      - name: Commit changes
+        if: ${{ steps.format.outputs.stdout != '' }}
+        run: |
+          git config --global user.name "${{ inputs.comitter-name }}"
+          git config --global user.email "${{ inputs.comitter-email }}"
+          git add .
+          git commit -m "🚨 Format Terraform files"
+          git push
+
+      - name: Fail if format failed
+        if: ${{ steps.format.outputs.stdout != '' }}
+        run: exit 1
