@@ -1,0 +1,55 @@
+name: Find flaky tests and post to Slack
+
+on:
+  workflow_call:
+    inputs:
+      slack-channel-id:
+        required: true
+        type: string
+      slack-channel-name:
+        required: true
+        type: string
+      repository:
+        required: false
+        type: string
+        default: Staffbase/${{ github.event.repository.name }}
+      branch:
+        required: false
+        type: string
+        default: 'main'
+      prefix:
+        required: true
+        type: string
+    secrets:
+      slack-incoming-webhooks-url:
+        required: true
+
+jobs:
+  flaky-tests:
+    name: Flaky-Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.1'
+
+      - name: Install python dependencies
+        run: |
+          python -m pip install -r .github/scripts/flaky-tests/requirements.txt
+      - name: Find flaky tests and write to result file
+        run: |
+          python .github/scripts/flaky-tests/find_flaky_tests.py --slack-channel ${{ inputs.slack-channel-id }} --auth-token "${{ secrets.GITHUB_TOKEN }}" --prefix ${{ inputs.prefix }} ${{ inputs.repository }} ${{ inputs.branch }} > flaky_tests.json
+      - name: Post message to ${{ inputs.slack-channel-name }} Slack channel
+        if: success()
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          payload-file-path: './flaky_tests.json'
+          webhook: ${{ secrets.slack-incoming-webhooks-url }}
+          webhook-type: incoming-webhook
