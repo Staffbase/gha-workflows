@@ -15,7 +15,7 @@ jobs:
           sed -i -E 's/(v[0-9]+.[0-9]+.[0-9]+)/${{ github.ref_name }}/g' README.md
 
       - name: Get App Token
-        uses: actions/create-github-app-token@v1.12.0
+        uses: actions/create-github-app-token@v2.0.2
         id: get_token
         with:
           app-id: ${{ vars.STAFFBASE_ACTIONS_APP_ID }}
