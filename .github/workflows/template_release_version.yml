@@ -31,7 +31,7 @@ jobs:
         run: |
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
-          WEEK=$(date +"%-W")
+          WEEK=$(date +"%-V")
           QUARTER=$(date "+%q")
 
           if [ ${{ inputs.format }} == 'quarterly' ] ; then
