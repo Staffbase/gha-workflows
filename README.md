@@ -167,6 +167,42 @@ jobs:
 
 </details>
 
+### Find Flaky Tests
+
+<details>
+<summary>The action can be used to find flaky tests.</summary>
+
+```yml
+name: Find flaky tests
+
+on:
+  # At 05:00 on Monday.
+  schedule:
+    - cron: '0 5 * * 1'
+
+jobs:
+  flaky-tests:
+    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@v7.4.0
+    with:
+      # identifier for the slack channel
+      slack-channel-id: 45678787976
+      # name of the slack channel
+      slack-channel-name: '#flaky-tests'
+      # optional: name of the repository where it should check, default: current repository
+      repository: 'Staffbase/test-flaky'
+      # optional: name of the branch where it should check, default: main
+      branch: 'master'
+      # prefix of the test run which should be filtered out
+      prefix: 'test-'
+    secrets:
+      # URL of the Slack incoming webhooks
+      slack-incoming-webhooks-url: ${{ secrets.SLACK_INCOMING_WEBHOOKS_URL }}
+      # GitHub token
+      token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+</details>
+
 ### GitOps
 
 <details>

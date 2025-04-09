@@ -1,0 +1,43 @@
+name: Find flaky tests
+
+on:
+  workflow_call:
+    inputs:
+      slack-channel-id:
+        required: true
+        type: string
+      slack-channel-name:
+        required: true
+        type: string
+      repository:
+        required: false
+        type: string
+        default: ${{ github.event.repository.full_name }}
+      branch:
+        required: false
+        type: string
+        default: 'main'
+      prefix:
+        required: true
+        type: string
+    secrets:
+      slack-incoming-webhooks-url:
+        required: true
+      token:
+        required: true
+
+jobs:
+  flaky-tests:
+    name: Flaky-Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Find flaky tests
+        uses: Staffbase/github-action-find-flaky-tests@v0.1.0
+        with:
+          slack-channel-id: ${{ inputs.slack-channel-id }}
+          slack-channel-name: ${{ inputs.slack-channel-name }}
+          repository: ${{ inputs.repository }}
+          branch: ${{ inputs.branch }}
+          prefix: ${{ inputs.prefix }}
+          slack-incoming-webhooks-url: ${{ secrets.slack-incoming-webhooks-url }}
+          token: ${{ secrets.token }}
