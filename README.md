@@ -182,7 +182,7 @@ on:
 
 jobs:
   flaky-tests:
-    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_test.yml@v7.4.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@v7.4.0
     with:
       # identifier for the slack channel
       slack-channel-id: 45678787976
