@@ -192,7 +192,7 @@ jobs:
       repository: 'Staffbase/test-flaky'
       # optional: name of the branch where it should check, default: main
       branch: 'master'
-      # prefix of the test run
+      # prefix of the test run which should be filtered out
       prefix: 'test-'
     secrets:
       # URL of the Slack incoming webhooks
