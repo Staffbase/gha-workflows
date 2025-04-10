@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Find flaky tests
-        uses: Staffbase/github-action-find-flaky-tests@v0.1.0
+        uses: Staffbase/github-action-find-flaky-tests@fix
         with:
           slack-channel-id: ${{ inputs.slack-channel-id }}
           slack-channel-name: ${{ inputs.slack-channel-name }}
