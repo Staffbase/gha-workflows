@@ -383,6 +383,8 @@ jobs:
   update_release_draft:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v7.4.0
     with:
+      # optional: name of the release drafter configuration file, default: release-drafter.yml
+      config-name: release-drafter-test.yml
       # optional: name of the release
       name: Version X.Y.Z
       # optional: should the release be published, default: false
