@@ -250,6 +250,8 @@ jobs:
       # optional: files which should be updated for prod
       gitops-prod: |-
         your files
+      # optional: defines the github runner for the gitops step
+      runs-on: ubuntu-latest
       # optional: Upwind.io client ID
       upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
       # optional: Upwind.io organization ID
