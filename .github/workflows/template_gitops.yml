@@ -99,9 +99,16 @@ jobs:
       USING_APP_CREDENTIALS: ${{ secrets.app-id != '' && secrets.private-key != '' }}
 
     steps:
+      - name: Storage Size on device (before checkout)
+        run: df -h
+      - name: Storage Size by directory (before checkout)
+        run: du -h -d2 .
       - name: Checkout
         uses: actions/checkout@v4
-
+      - name: Storage Size on device (before get app token)
+        run: df -h
+      - name: Storage Size by directory (before get app token)
+        run: du -h -d2 .
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
         uses: actions/create-github-app-token@v2.0.2
@@ -110,7 +117,10 @@ jobs:
           app-id: ${{ secrets.app-id }}
           private-key: ${{ secrets.private-key }}
           owner: ${{inputs.gitops-organization }}
-
+      - name: Storage Size on device (before gitops)
+        run: df -h
+      - name: Storage Size by directory (before gitops)
+        run: du -h -d2 .
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
         uses: Staffbase/gitops-github-action@v6.4
