@@ -99,16 +99,18 @@ jobs:
       USING_APP_CREDENTIALS: ${{ secrets.app-id != '' && secrets.private-key != '' }}
 
     steps:
-      - name: Storage Size on device (before checkout)
+      - name: Storage Size on device (before cleanup)
         run: df -h
-      - name: Storage Size by directory (before checkout)
+      - name: Storage Size by directory (before cleanup)
         run: du -h -d2 .
+      - name: Remove some dirt
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Storage Size on device (before get app token)
-        run: df -h
-      - name: Storage Size by directory (before get app token)
-        run: du -h -d2 .
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
         uses: actions/create-github-app-token@v2.0.2
