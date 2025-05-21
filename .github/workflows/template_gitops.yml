@@ -99,11 +99,7 @@ jobs:
       USING_APP_CREDENTIALS: ${{ secrets.app-id != '' && secrets.private-key != '' }}
 
     steps:
-      - name: Storage Size on device (before cleanup)
-        run: df -h
-      - name: Storage Size by directory (before cleanup)
-        run: du -h -d2 .
-      - name: Remove some dirt
+      - name: Removed unused dependencies
         run: |
           sudo rm -rf /usr/local/.ghcup
           sudo rm -rf /opt/hostedtoolcache/CodeQL
@@ -121,10 +117,6 @@ jobs:
           app-id: ${{ secrets.app-id }}
           private-key: ${{ secrets.private-key }}
           owner: ${{inputs.gitops-organization }}
-      - name: Storage Size on device (before gitops)
-        run: df -h
-      - name: Storage Size by directory (before gitops)
-        run: du -h -d2 .
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
         uses: Staffbase/gitops-github-action@v6.4
