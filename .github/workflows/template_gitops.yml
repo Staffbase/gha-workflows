@@ -99,6 +99,14 @@ jobs:
       USING_APP_CREDENTIALS: ${{ secrets.app-id != '' && secrets.private-key != '' }}
 
     steps:
+      - name: Removed unused dependencies
+        run: |
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/lib/android/sdk/ndk
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
       - name: Checkout
         uses: actions/checkout@v4
 
