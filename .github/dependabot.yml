@@ -10,5 +10,3 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
-    reviewers:
-      - "@Staffbase/workflow-enthusiasts"
