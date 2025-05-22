@@ -60,6 +60,10 @@ on:
       upwind-client-id:
         required: false
         type: string
+      runs-on:
+        required: false
+        type: string
+        default: "ubuntu-24.04"
       upwind-organization-id:
         required: false
         type: string
@@ -67,10 +71,7 @@ on:
         required: false
         type: string
         default: "."
-      runs-on:
-        required: false
-        type: string
-        default: "ubuntu-24.04"
+    # waiting for: https://github.com/github-community/community/discussions/17554
     secrets:
       docker-username:
         required: false
