@@ -60,6 +60,10 @@ on:
       upwind-client-id:
         required: false
         type: string
+      runs-on:
+        required: false
+        type: string
+        default: "ubuntu-24.04"
       upwind-organization-id:
         required: false
         type: string
@@ -91,8 +95,7 @@ on:
 jobs:
   gitops:
     name: GitOps
-    runs-on: ubuntu-24.04
-
+    runs-on: ${{ inputs.runs-on }}
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
 
     env:
