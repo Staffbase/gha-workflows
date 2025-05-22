@@ -70,6 +70,7 @@ on:
       runs-on:
         required: false
         type: string
+        default: "ubuntu-24.04"
     secrets:
       docker-username:
         required: false
