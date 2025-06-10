@@ -17,6 +17,9 @@ on:
         required: false
         type: string
         default: 'main'
+      path-suffixes:
+        required: false
+        type: string
       prefix:
         required: true
         type: string
@@ -32,12 +35,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Find flaky tests
-        uses: Staffbase/github-action-find-flaky-tests@v0.2.1
+        uses: Staffbase/github-action-find-flaky-tests@v0.3.0
         with:
           slack-channel-id: ${{ inputs.slack-channel-id }}
           slack-channel-name: ${{ inputs.slack-channel-name }}
           repository: ${{ inputs.repository }}
           branch: ${{ inputs.branch }}
+          path-suffixes: ${{ inputs.path-suffixes }}
           prefix: ${{ inputs.prefix }}
           slack-incoming-webhooks-url: ${{ secrets.slack-incoming-webhooks-url }}
           token: ${{ secrets.token }}

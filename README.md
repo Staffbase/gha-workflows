@@ -192,6 +192,8 @@ jobs:
       repository: 'Staffbase/test-flaky'
       # optional: name of the branch where it should check, default: main
       branch: 'master'
+      # optional: file path suffixes (comma seperated) to filter the test files
+      path-suffixes: ".spec.ts,.spec.tsx,.test.ts,.test.tsx"
       # prefix of the test run which should be filtered out
       prefix: 'test-'
     secrets:
