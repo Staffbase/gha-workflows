@@ -30,7 +30,7 @@ In this section you can find examples of how to use template workflows. For more
 
 This workflow triggers when dependabot creates a PR. It will use the
 [staffbase bot](https://github.com/apps/staffbase-actions) to approve the PR and to enable auto-merge.
-Auto-merge need to be enabled on the repo for this to work.
+Auto-merge needs to be enabled on the repo for this to work.
 Afterward the PR will be merged with the help of the merge queue if all required conditions of the repository are fulfilled.
 
 Option `force` can be used to merge the PR right away instead of only enabling auto-merge. The bot needs to have 
