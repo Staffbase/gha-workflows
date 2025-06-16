@@ -26,12 +26,17 @@ In this section you can find examples of how to use template workflows. For more
 ### Auto-Merge Dependabot
 
 <details>
-<summary>The action can be used to auto-merge a dependabot PR with minor and patch updates.</summary>
+<summary>The action can be used to auto-merge a dependabot PR.</summary>
 
-The action is called by creating a PR. It is necessary that the repository is enabled for auto-merge.
+This workflow triggers when dependabot creates a PR. It will use the
+[staffbase bot](https://github.com/apps/staffbase-actions) to approve the PR and to enable auto-merge.
+Auto-merge need to be enabled on the repo for this to work.
 Afterward the PR will be merged with the help of the merge queue if all required conditions of the repository are fulfilled.
 
-⚠️ You can also force a merge of a PR. This means that the PR will immediately be merged.
+Option `force` can be used to merge the PR right away instead of only enabling auto-merge. The bot needs to have 
+protection rule bypass permissions for that to work.
+
+⚠️ You can also force a merge of a PR. This means that the PR will be merged immediately.
 If you want to enable the force merge, make sure that the app can bypass any protection rules.
 
 ```yml
@@ -45,11 +50,11 @@ jobs:
   dependabot:
     uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v7.9.0
     with:
-      # optional: ⚠️ only enable the force merge if you want to do the merge just now
+      # optional: ⚠️ the merge will be performed immediately instead of just activating auto-merge
       force: true
-      # optional: choose strategy when merging (default: squash)
-      strategy: rebase, merge
-      # optional: choose which types of update you want to allow (default: minor,patch)
+      # optional: choose strategy when merging (Accepted values: rebase, merge, squash. Default: squash)
+      strategy: squash
+      # optional: comma-separated list of updates to handle (Available types: major, minor, patch. Default: minor,patch)
       update-types: major,minor,patch
       # optional: choose if you want to allow versions with semver 0.X.X (default: false)
       include-pre-release: true
