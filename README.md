@@ -520,7 +520,7 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@v7.9.0
     secrets:
       # required: specifies an Azure Storage account name
-      azure-account-name: ${{ secrets.TECHDOCS_AZURE_ACCOUNT_NAME }}
+      azure-account-name: ${{ vars.TECHDOCS_AZURE_ACCOUNT_NAME }}
       # required: specifies the access key associated with the storage account
       azure-account-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
 ```
@@ -557,7 +557,7 @@ jobs:
       additional-plugins: 'mkdocs-minify-plugin\>=0.3'
     secrets:
       # optional: specifies an Azure Storage account name
-      azure-account-name: ${{ secrets.TECHDOCS_AZURE_ACCOUNT_NAME }}
+      azure-account-name: ${{ vars.TECHDOCS_AZURE_ACCOUNT_NAME }}
       # optional: specifies the access key associated with the storage account
       azure-account-key: ${{ secrets.TECHDOCS_AZURE_ACCESS_KEY }}
 ```
