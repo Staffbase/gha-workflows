@@ -123,7 +123,7 @@ jobs:
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
             ${{ inputs.docker-build-args }}
-            GONOSUMDB=${{ secrets.gonosumdb }}
+            GONOSUMDB=${{ vars.gonosumdb }}
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
