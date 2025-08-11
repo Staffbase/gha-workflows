@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Get App Token
-        uses: actions/create-github-app-token@v2.0.2
+        uses: actions/create-github-app-token@v2.1.0
         id: get_token
         with:
           app-id: ${{ secrets.app_id }}
