@@ -218,7 +218,7 @@ jobs:
   gitops:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v7.9.0
     with:
-      # optional: host of the docker registry, default: "staffbase.jfrog.io"
+      # optional: host of the docker registry, default: "registry.staffbase.com"
       docker-registry: "<your-registry>"
       # optional: list of build-time variables
       docker-build-args: |
