@@ -42,7 +42,7 @@ jobs:
           private-key: ${{ secrets.private_key }}
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           token: ${{ steps.get_token.outputs.token }}
 
