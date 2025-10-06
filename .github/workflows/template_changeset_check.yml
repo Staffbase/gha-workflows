@@ -27,7 +27,7 @@ jobs:
           body-includes: <!-- changeset-check -->
 
       - name: Update comment for found changeset
-        uses: peter-evans/create-or-update-comment@v4.0.0
+        uses: peter-evans/create-or-update-comment@v5
         if: steps.changeset-files.outputs.any_changed == 'true'
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
@@ -40,7 +40,7 @@ jobs:
           edit-mode: replace
 
       - name: Update comment for missing changeset
-        uses: peter-evans/create-or-update-comment@v4.0.0
+        uses: peter-evans/create-or-update-comment@v5
         if: steps.changeset-files.outputs.any_changed != 'true'
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}

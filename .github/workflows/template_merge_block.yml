@@ -28,7 +28,7 @@ jobs:
 
       - name: Comment on PR
         if: inputs.comment && contains(github.event.pull_request.labels.*.name, inputs.label) && steps.comment.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v4.0.0
+        uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
