@@ -50,7 +50,7 @@ jobs:
 
       - name: Find Format Comment
         if: ${{ steps.format.outputs.stdout != '' }}
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         id: comment
         with:
           issue-number: ${{ github.event.number }}
