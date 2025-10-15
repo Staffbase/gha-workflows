@@ -47,7 +47,7 @@ jobs:
           token: ${{ steps.get_token.outputs.token }}
 
       - name: Setup PNPM
-        uses: pnpm/action-setup@v4.1.0
+        uses: pnpm/action-setup@v4.2.0
 
       - name: Setup Node
         uses: actions/setup-node@v5.0.0
