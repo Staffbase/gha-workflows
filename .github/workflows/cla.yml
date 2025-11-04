@@ -20,4 +20,4 @@ jobs:
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://github.com/Staffbase/gha-workflows/blob/main/CLA.md'
           branch: 'signatures'
-          allowlist: 0x46616c6b,axdotl,flaxel,kaitimmer,timdittler,MarvinZeising,*bot*
+          allowlist: 0x46616c6b,axdotl,flaxel,kaitimmer,timdittler,MarvinZeising,michikrug,*bot*
