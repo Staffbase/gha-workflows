@@ -9,14 +9,12 @@ You can find all possible template workflows in the directory `.github/workflows
 ```yml
 name: <your name>
 
-on:
-  ...
+on: ...
 
 jobs:
   <action name>:
     uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v9.0.0
-    with:
-      ...
+    with: ...
 ```
 
 ## Example Configurations 🔧
@@ -193,7 +191,7 @@ jobs:
       # optional: name of the branch where it should check, default: main
       branch: 'master'
       # optional: file path suffixes (comma seperated) to filter the test files
-      path-suffixes: ".spec.ts,.spec.tsx,.test.ts,.test.tsx"
+      path-suffixes: '.spec.ts,.spec.tsx,.test.ts,.test.tsx'
       # prefix of the test run which should be filtered out
       prefix: 'test-'
     secrets:
@@ -212,21 +210,21 @@ jobs:
 
 ```yml
 name: GitOps
-on: [ push ]
+on: [push]
 
 jobs:
   gitops:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v9.0.0
     with:
       # optional: host of the docker registry, default: "registry.staffbase.com"
-      docker-registry: "<your-registry>"
+      docker-registry: '<your-registry>'
       # optional: list of build-time variables
       docker-build-args: |
         "any important args"
       # optional: set the target stage to build
-      docker-build-target: "any target"
+      docker-build-target: 'any target'
       # optional: set the provenance level of the docker build, default: "false"
-      docker-build-provenance: "<your-provenance-level>"
+      docker-build-provenance: '<your-provenance-level>'
       # optional: should the last stage image be retagged for the release image, default: false
       docker-disable-retagging: true
       # optional: path to the Dockerfile, default: ./Dockerfile
@@ -238,11 +236,11 @@ jobs:
       # optional: organization of the gitops repository, default: github.repository_owner
       gitops-organization: <your-organization>
       # optional: repository where to update the files, default: mops
-      gitops-repository: "<your-repository>"
+      gitops-repository: '<your-repository>'
       # optional: user which does the commit, default: "staffbase-actions"
-      gitops-user: "<your-user>"
+      gitops-user: '<your-user>'
       # optional: email of the user which does the commit, default: "staffbase-actions[bot]@users.noreply.github.com"
-      gitops-email: "<your-email>"
+      gitops-email: '<your-email>'
       # optional: files which should be updated for dev
       gitops-dev: |-
         your files
@@ -432,6 +430,8 @@ jobs:
   new_version:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v9.0.0
     with:
+      # optional: prefix of the tag in order to find the last release this is useful for multi artifact/service repositories, default: v
+      tag-prefix: 'v'
       # optional: format of the version, default: weekly
       format: 'quarterly'
 ```
@@ -476,7 +476,7 @@ name: Stale PRs
 
 on:
   schedule:
-    - cron: "0 0 * * 1-5"
+    - cron: '0 0 * * 1-5'
 
 jobs:
   stale:
@@ -511,9 +511,9 @@ on:
     branches:
       - 'main'
     paths:
-      - "docs/**"
-      - "mkdocs.yml"
-      - ".github/workflows/techdocs.yaml"
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/techdocs.yaml'
 
 jobs:
   techdocs:
@@ -540,9 +540,9 @@ on:
     branches:
       - 'main'
     paths:
-      - "docs/**"
-      - "mkdocs.yml"
-      - ".github/workflows/techdocs.yaml"
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/techdocs.yaml'
 
 jobs:
   techdocs:

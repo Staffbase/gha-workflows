@@ -3,6 +3,10 @@ name: Release Version Detector
 on:
   workflow_call:
     inputs:
+      tag-prefix:
+        required: false
+        type: string
+        default: 'v'
       format:
         required: false
         type: string
@@ -15,7 +19,6 @@ on:
 
 jobs:
   new_version:
-
     name: Get new release version
     runs-on: ubuntu-24.04
 
@@ -29,6 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: set_version
         run: |
+          TAG_PREFIX=${{ inputs['tag-prefix'] }}
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-V")
@@ -41,10 +45,11 @@ jobs:
           fi
 
           if [[ $(gh release view -R ${{ github.repository }} 2>&1) =~ "release not found" ]]; then
-            COUNTER=1
+            COUNTER=0
           else
-            # fetch last tag from github
-            OLD_VERSION=`gh api repos/${{ github.repository }}/releases/latest | jq .tag_name -r`
+            # fetch last tag name from github releases which are not drafts or pre-releases and starts with the given prefix
+            OLD_TAG_NAME=`gh release list -R ${{ github.repository }} --limit 100 --exclude-drafts --exclude-pre-releases --json tagName --jq '[.[] | select(.tagName | startswith("${TAG_PREFIX}"))] | .[0].tagName'`
+            OLD_VERSION=${OLD_TAG_NAME#${TAG_PREFIX}}
             PARTS=(${OLD_VERSION//./ })
             COUNTER=${PARTS[2]}
             MINOR_FROM_LAST_TAG=${PARTS[1]}
@@ -60,15 +65,15 @@ jobs:
             fi
 
             # check if valid tag
-            pattern="v[0-9]+.[0-9]+.[0-9]+$"
+            pattern="[0-9]+.[0-9]+.[0-9]+$"
             if ! [[ $OLD_VERSION =~ $pattern ]]; then
               COUNTER=0
             fi
-
-            # increase Version
-            COUNTER=$((COUNTER+1))
           fi
 
+          # increase Version
+          COUNTER=$((COUNTER+1))
+
           echo "next_version=${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
-          echo "next_tag=v${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
+          echo "next_tag=${TAG_PREFIX}${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
         shell: bash
