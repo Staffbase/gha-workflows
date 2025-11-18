@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 'v'
+      tag-suffix:
+        required: false
+        type: string
+        default: ''
       format:
         required: false
         type: string
@@ -33,6 +37,7 @@ jobs:
         id: set_version
         run: |
           TAG_PREFIX=${{ inputs['tag-prefix'] }}
+          TAG_SUFFIX=${{ inputs['tag-suffix'] }}
           DATE=$(date +"%Y%m%d")
           YEAR=$(date +"%Y")
           WEEK=$(date +"%-V")
@@ -48,8 +53,11 @@ jobs:
             COUNTER=0
           else
             # fetch last tag name from github releases which are not drafts or pre-releases and starts with the given prefix
-            OLD_TAG_NAME=`gh release list -R ${{ github.repository }} --limit 100 --exclude-drafts --exclude-pre-releases --json tagName --jq '[.[] | select(.tagName | startswith("${TAG_PREFIX}"))] | .[0].tagName'`
-            OLD_VERSION=${OLD_TAG_NAME#${TAG_PREFIX}}
+            OLD_TAG_NAME=`gh release list -R ${{ github.repository }} --limit 100 --exclude-drafts --exclude-pre-releases --json tagName --jq '[.[] | select(.tagName | startswith("${TAG_PREFIX}") and endswith("${TAG_SUFFIX}"))] | .[0].tagName'`
+
+            # remove prefix and suffix
+            OLD_VERSION=${${OLD_TAG_NAME#${TAG_PREFIX}}%${TAG_SUFFIX}}
+
             PARTS=(${OLD_VERSION//./ })
             COUNTER=${PARTS[2]}
             MINOR_FROM_LAST_TAG=${PARTS[1]}
@@ -75,5 +83,5 @@ jobs:
           COUNTER=$((COUNTER+1))
 
           echo "next_version=${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
-          echo "next_tag=${TAG_PREFIX}${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
+          echo "next_tag=${TAG_PREFIX}${YEAR}.${MINOR}.${COUNTER}${TAG_SUFFIX}" >> $GITHUB_OUTPUT
         shell: bash

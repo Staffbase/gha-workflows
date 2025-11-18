@@ -430,8 +430,10 @@ jobs:
   new_version:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v9.0.0
     with:
-      # optional: prefix of the tag in order to find the last release this is useful for multi artifact/service repositories, default: v
-      tag-prefix: 'v'
+      # optional: prefix of the tag in order to find the last release; this is useful for multi artifact/service repositories, default: 'v'
+      tag-prefix: 'app-v'
+      # optional: suffix of the tag in order to find the last release; this is useful for multi artifact/service repositories, default: '' (empty string)
+      tag-suffix: '-native'
       # optional: format of the version, default: weekly
       format: 'quarterly'
 ```
