@@ -55,8 +55,13 @@ jobs:
             # fetch last tag name from github releases which are not drafts or pre-releases and starts with the given prefix
             OLD_TAG_NAME=`gh release list -R ${{ github.repository }} --limit 100 --exclude-drafts --exclude-pre-releases --json tagName --jq '[.[] | select(.tagName | startswith("${TAG_PREFIX}") and endswith("${TAG_SUFFIX}"))] | .[0].tagName'`
 
+            echo "Last tag name: ${OLD_TAG_NAME}"
+
             # remove prefix and suffix
-            OLD_VERSION=${${OLD_TAG_NAME#${TAG_PREFIX}}%${TAG_SUFFIX}}
+            OLD_VERSION=${OLD_TAG_NAME#${TAG_PREFIX}}
+            OLD_VERSION=${OLD_VERSION%${TAG_SUFFIX}}
+
+            echo "Last version: ${OLD_VERSION}"
 
             PARTS=(${OLD_VERSION//./ })
             COUNTER=${PARTS[2]}
@@ -82,6 +87,12 @@ jobs:
           # increase Version
           COUNTER=$((COUNTER+1))
 
-          echo "next_version=${YEAR}.${MINOR}.${COUNTER}" >> $GITHUB_OUTPUT
-          echo "next_tag=${TAG_PREFIX}${YEAR}.${MINOR}.${COUNTER}${TAG_SUFFIX}" >> $GITHUB_OUTPUT
+          NEW_VERSION="${YEAR}.${MINOR}.${COUNTER}"
+          NEW_TAG="${TAG_PREFIX}${NEW_VERSION}${TAG_SUFFIX}"
+
+          echo "Next version: ${NEW_VERSION}"
+          echo "Next tag: ${NEW_TAG}"
+
+          echo "next_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+          echo "next_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
         shell: bash
