@@ -13,7 +13,7 @@ on: ...
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v9.1.0
     with: ...
 ```
 
@@ -41,7 +41,7 @@ on:
 
 jobs:
   dependabot:
-    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v9.1.0
     with:
       # optional: ⚠️ only enable the force merge if you want to do the merge just now
       force: true
@@ -76,7 +76,7 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v9.1.0
     with:
       # optional: base branch from which the history originates, default: main
       base: master
@@ -120,7 +120,7 @@ on:
 
 jobs:
   changeset-check:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@v9.1.0
 ```
 
 </details>
@@ -142,7 +142,7 @@ on:
 
 jobs:
   changeset-release:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@v9.1.0
     with:
       # optional: The file containing the Node.js version to use, defaults to .nvmrc
       node-version-file: '.node-version'
@@ -180,7 +180,7 @@ on:
 
 jobs:
   flaky-tests:
-    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@v9.1.0
     with:
       # identifier for the slack channel
       slack-channel-id: 45678787976
@@ -214,7 +214,7 @@ on: [push]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v9.1.0
     with:
       # optional: host of the docker registry, default: "registry.staffbase.com"
       docker-registry: '<your-registry>'
@@ -297,7 +297,7 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v9.1.0
     with:
       # optional: name of the service to add as label, default: name of the repository
       name: 'component name'
@@ -330,7 +330,7 @@ on:
 
 jobs:
   ld_code_references:
-    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v9.1.0
     with:
       # optional: key of the LD project, default: default
       project-key: 'my-project'
@@ -355,7 +355,7 @@ on:
 
 jobs:
   block:
-    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@v9.1.0
     with:
       # optional: name of the label if the PR should not be merged, default: do not merge
       label: merge block
@@ -383,7 +383,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v9.1.0
     with:
       # optional: name of the release drafter configuration file, default: release-drafter.yml
       config-name: release-drafter-test.yml
@@ -428,7 +428,7 @@ on:
 
 jobs:
   new_version:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v9.1.0
     with:
       # optional: prefix of the tag in order to find the last release; this is useful for multi artifact/service repositories, default: 'v'
       tag-prefix: 'app-v'
@@ -463,7 +463,7 @@ on: [pull_request]
 
 jobs:
   trufflehog:
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v9.1.0
 ```
 
 </details>
@@ -482,7 +482,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v9.1.0
     with:
       # optional: comment on the stale pull request while closed, default: This stale PR was closed because there was no activity.
       close-pr-message: your message
@@ -519,7 +519,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@v9.1.0
     secrets:
       # required: specifies an Azure Storage account name
       azure-account-name: ${{ vars.TECHDOCS_AZURE_ACCOUNT_NAME }}
@@ -548,7 +548,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v9.1.0
     with:
       # optional: kind of the Backstage entity, default: Component
       # ref: https://backstage.io/docs/features/software-catalog/descriptor-format#contents
@@ -579,7 +579,7 @@ on: [pull_request]
 
 jobs:
   terraform:
-    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@v9.1.0
     with:
       # optional: Terraform version, default: latest
       terraform-version: latest
@@ -609,7 +609,7 @@ on:
 
 jobs:
   trigger-testio-test:
-    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v9.1.0
     with:
       # optional: the slug you received from TestIO, defaults to 'staffbase'
       testio-slug: your TestIO slug
@@ -641,7 +641,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v9.0.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v9.1.0
     with:
       # optional: name of the running action, default: yamllint / yamllint
       action-name: your name
