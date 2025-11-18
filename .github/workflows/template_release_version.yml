@@ -53,7 +53,7 @@ jobs:
             COUNTER=0
           else
             # fetch last tag name from github releases which are not drafts or pre-releases and starts with the given prefix
-            OLD_TAG_NAME=`gh release list -R ${{ github.repository }} --limit 100 --exclude-drafts --exclude-pre-releases --json tagName --jq '[.[] | select(.tagName | startswith("${TAG_PREFIX}") and endswith("${TAG_SUFFIX}"))] | .[0].tagName'`
+            OLD_TAG_NAME=$(gh release list -R ${{ github.repository }} --limit 100 --exclude-drafts --exclude-pre-releases --json tagName --jq "[.[] | select(.tagName | startswith(\"${TAG_PREFIX}\") and endswith(\"${TAG_SUFFIX}\"))] | .[0].tagName")
 
             echo "Last tag name: ${OLD_TAG_NAME}"
 
