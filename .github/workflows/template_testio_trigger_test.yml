@@ -20,7 +20,7 @@ jobs:
   testio-trigger-test:
 
     name: TestIO - Trigger Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     if: startsWith(github.event.comment.body, '@bot-testio exploratory-test')     # this is the prefix all subsequent comments must start with
 
     steps:

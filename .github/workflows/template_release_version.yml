@@ -24,7 +24,7 @@ on:
 jobs:
   new_version:
     name: Get new release version
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
 
     outputs:
       new_version: ${{ steps.set_version.outputs.next_version }}

@@ -32,7 +32,7 @@ jobs:
   stale:
 
     name: stale
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
 
     steps:
       - name: Stale old PRs
