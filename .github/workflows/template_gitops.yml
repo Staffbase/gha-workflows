@@ -63,7 +63,7 @@ on:
       runs-on:
         required: false
         type: string
-        default: "ubuntu-slim"
+        default: "ubuntu-24.04"
       upwind-organization-id:
         required: false
         type: string
