@@ -13,6 +13,10 @@ on:
       docker-build-target:
         required: false
         type: string
+      docker-build-outputs:
+        required: false
+        type: string
+        description: "Custom output destinations for docker build (e.g., type=registry,push=true,compression=gzip,force-compression=true). Required for DHI images."
       docker-build-provenance:
         required: false
         type: string
@@ -127,6 +131,7 @@ jobs:
           docker-build-secrets: ${{ secrets.docker-build-secrets }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
+          docker-build-outputs: ${{ inputs.docker-build-outputs }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
