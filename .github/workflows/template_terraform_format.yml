@@ -24,7 +24,7 @@ on:
 jobs:
   format:
     name: Format
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Get App Token
         uses: actions/create-github-app-token@v2.2.0
