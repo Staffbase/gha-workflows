@@ -54,7 +54,7 @@ jobs:
           private-key: ${{ secrets.private_key }}
 
       - name: Update Release
-        uses: release-drafter/release-drafter@v6.1.0
+        uses: release-drafter/release-drafter@v6.2.0
         with:
           config-name: ${{ inputs.config-name }}
           name: ${{ inputs.name }}
