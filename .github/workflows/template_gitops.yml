@@ -20,7 +20,7 @@ on:
       docker-build-platforms:
         required: false
         type: string
-        default: "linux/amd64,linux/arm64"
+        default: "linux/amd64"
       docker-build-provenance:
         required: false
         type: string
@@ -72,6 +72,10 @@ on:
         required: false
         type: string
         default: "ubuntu-24.04"
+      runs-on-arm:
+        required: false
+        type: string
+        default: "ubuntu-24.04-arm"
       upwind-organization-id:
         required: false
         type: string
@@ -101,9 +105,47 @@ on:
         required: false
 
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Generate Matrix
+        id: set-matrix
+        shell: python
+        run: |
+          import os
+          import json
+
+          platforms_input = "${{ inputs.docker-build-platforms }}"
+          amd64_runner = "${{ inputs.runs-on }}"
+          arm64_runner = "${{ inputs.runs-on-arm }}"
+
+          # split input "linux/amd64,linux/arm64" into list
+          platforms = [p.strip() for p in platforms_input.split(',') if p.strip()]
+
+          include = []
+          for p in platforms:
+              runner = amd64_runner
+              # Map linux/arm64 to a specific ARM runner
+              # Adjust 'ubuntu-24.04-arm' to GitHub availability
+              if "arm64" in p:
+                  runner = arm64_runner
+
+              include.append({"platform": p, "runner": runner})
+
+          matrix = {"include": include}
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"matrix={json.dumps(matrix)}")
+
   gitops:
-    name: GitOps
-    runs-on: ${{ inputs.runs-on }}
+    name: GitOps (${{ matrix.platform }})
+    needs: prepare-matrix
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
 
     env:
@@ -136,7 +178,7 @@ jobs:
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-outputs: ${{ inputs.docker-build-outputs }}
-          docker-build-platforms: ${{ inputs.docker-build-platforms }}
+          docker-build-platforms: ${{ matrix.platform }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
