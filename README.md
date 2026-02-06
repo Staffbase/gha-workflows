@@ -597,35 +597,6 @@ jobs:
 
 </details>
 
-### TestIO
-
-<details>
-
-<summary>This GitHub Action can be used to trigger a test on the external crowd-testing platform TestIO from a pull request.</summary>
-
-```yml
-name: TestIO - Trigger test from PR
-on:
-  issue_comment:
-    types: [created, edited]
-
-jobs:
-  trigger-testio-test:
-    uses: Staffbase/gha-workflows/.github/workflows/template_testio_trigger_test.yml@v9.2.0
-    with:
-      # optional: the slug you received from TestIO, defaults to 'staffbase'
-      testio-slug: your TestIO slug
-      # ID of the product on the TestIO platform to which the triggered test should be assigned to
-      testio-product-id: your product ID
-    secrets:
-      # GitHub token to be used for commenting in a PR
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      # TestIO token of a user for which the triggered test is created
-      testio-token: ${{ secrets.TESTIO_TOKEN }}
-```
-
-</details>
-
 ### Yamllint
 
 <details>
