@@ -17,7 +17,7 @@ on:
         required: false
         type: string
         description: "Custom output destinations for docker build (e.g., type=registry,push=true,compression=gzip,force-compression=true). Required for DHI images."
-      docker-build-platforms:
+      docker-build-platform:
         required: false
         type: string
         default: "linux/amd64"
@@ -105,47 +105,28 @@ on:
         required: false
 
 jobs:
-  prepare-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+  check-single-platform:
+    name: Check if only a single platform is built
+    runs-on: ubuntu-slim
     steps:
-      - name: Generate Matrix
-        id: set-matrix
-        shell: python
+      - name: Check if only a single platform is built
+        id: check_single_platform
         run: |
-          import os
-          import json
+          platform="${{ inputs.docker-build-platform }}"
+          platform_count=$(echo "$platform" | tr ',' '\n' | wc -l)
+          if [ "$platform_count" -gt 1 ]; then
+              echo "Multiple platforms are built: ${platform}"
+              echo "::error::This action only supports one platform and no cross compiling."
+              exit 1
+          else
+              echo "Only a single platform is built: ${platform}"
+          fi
 
-          platforms_input = "${{ inputs.docker-build-platforms }}"
-          amd64_runner = "${{ inputs.runs-on }}"
-          arm64_runner = "${{ inputs.runs-on-arm }}"
-
-          # split input "linux/amd64,linux/arm64" into list
-          platforms = [p.strip() for p in platforms_input.split(',') if p.strip()]
-
-          include = []
-          for p in platforms:
-              runner = amd64_runner
-              # Map linux/arm64 to a specific ARM runner
-              # Adjust 'ubuntu-24.04-arm' to GitHub availability
-              if "arm64" in p:
-                  runner = arm64_runner
-
-              include.append({"platform": p, "runner": runner})
-
-          matrix = {"include": include}
-
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write(f"matrix={json.dumps(matrix)}")
 
   gitops:
-    name: GitOps (${{ matrix.platform }})
-    needs: prepare-matrix
-    strategy:
-      fail-fast: true
-      matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
-    runs-on: ${{ matrix.runner }}
+    name: GitOps (${{ inputs.docker-build-platform }})
+    needs: check-single-platform
+    runs-on: ${{ inputs.docker-build-platform == 'linux/arm64' && inputs.runs-on-arm || inputs.runs-on }}
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
 
     env:
