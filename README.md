@@ -254,10 +254,8 @@ jobs:
       # optional: files which should be updated for prod
       gitops-prod: |-
         your files
-      # optional: defines the github runner for the gitops step if building on AMD architecture, default: ubuntu-24.04
-      runs-on: ubuntu-24.04
-      # optional: defines the github runner for the gitops step if building on ARM architecture, default: ubuntu-24.04-arm
-      runs-on-arm: ubuntu-24.04-arm
+      # optional: defines the github runner for the gitops step if (e.g. ubuntu-24.04-arm for arm builds), default: ubuntu-24.04
+      runs-on: ubuntu-24.04-arm
       # optional: Upwind.io client ID
       upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
       # optional: Upwind.io organization ID
