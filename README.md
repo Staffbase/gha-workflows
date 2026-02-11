@@ -226,7 +226,7 @@ jobs:
       # optional: custom output destinations for docker build (e.g., type=registry,push=true,compression=gzip,force-compression=true). Required for DHI images.
       docker-build-outputs: '<your-output-settings>'
       # optional: set the target platforms for build (e.g., linux/arm64), default: "linux/amd64"
-      docker-build-platform: "linux/amd64"
+      docker-build-platform: "linux/arm64"
       # optional: set the provenance level of the docker build, default: "false"
       docker-build-provenance: '<your-provenance-level>'
       # optional: should the last stage image be retagged for the release image, default: false
