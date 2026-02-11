@@ -17,6 +17,11 @@ on:
         required: false
         type: string
         description: "Custom output destinations for docker build (e.g., type=registry,push=true,compression=gzip,force-compression=true). Required for DHI images."
+      docker-build-platform:
+        required: false
+        type: string
+        description: "A build platform (e.g., linux/amd64, linux/arm64). If multiple platforms are specified, the action will fail as it does not support cross-compilation."
+        default: "linux/amd64"
       docker-build-provenance:
         required: false
         type: string
@@ -98,7 +103,7 @@ on:
 
 jobs:
   gitops:
-    name: GitOps
+    name: GitOps (${{ inputs.docker-build-platform }})
     runs-on: ${{ inputs.runs-on }}
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
 
@@ -120,7 +125,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@v6.5
+        uses: Staffbase/gitops-github-action@v6.6
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
@@ -132,6 +137,7 @@ jobs:
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-outputs: ${{ inputs.docker-build-outputs }}
+          docker-build-platforms: ${{ inputs.docker-build-platform }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
