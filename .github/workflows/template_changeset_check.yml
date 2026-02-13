@@ -6,7 +6,7 @@ jobs:
   changeset-check:
     name: changeset-check
     if: (!contains(github.event.pull_request.user.login , '[bot]'))
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
