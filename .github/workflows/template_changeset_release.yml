@@ -50,7 +50,7 @@ jobs:
         uses: pnpm/action-setup@v4.2.0
 
       - name: Setup Node
-        uses: actions/setup-node@v6.0.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version-file: ${{ inputs.node-version-file }}
           cache: 'pnpm'
@@ -64,7 +64,7 @@ jobs:
 
       - name: Create Release Pull Request
         id: changesets
-        uses: changesets/action@v1.5.2
+        uses: changesets/action@v1.6.0
         with:
           commit: 'chore(release): Bump package version'
           title: '📦 Release New Version'

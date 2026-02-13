@@ -22,7 +22,7 @@ jobs:
           private-key: ${{ secrets.STAFFBASE_ACTIONS_PRIVATE_KEY }}
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.get_token.outputs.token }}
           title: ":memo: Update Readme Versions"
