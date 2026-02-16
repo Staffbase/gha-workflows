@@ -56,7 +56,7 @@ jobs:
   autodev:
 
     name: Build Dev Branch
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
 
     # check to not trigger if dependabot did something or PR was closed or label is not the configured dev label
     if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed')
