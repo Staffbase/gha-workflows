@@ -573,7 +573,6 @@ jobs:
 ### Terraform Format
 
 <details>
-
 <summary>This GitHub Action checks the formatting of Terraform files and commit fixes if necessary.</summary>
 
 ```yml
