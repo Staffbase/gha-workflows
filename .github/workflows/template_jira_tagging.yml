@@ -22,7 +22,7 @@ jobs:
   jira-annotate:
 
     name: Annotate all occurring tickets since last release-tag
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
