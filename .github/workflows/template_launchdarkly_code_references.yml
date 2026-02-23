@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Create Files
         run: |
           mkdir .launchdarkly
@@ -40,7 +40,7 @@ jobs:
           cat .launchdarkly/coderefs.yml
           cat .launchdarkly/flag-alias.sh
       - name: LaunchDarkly Code References
-        uses: launchdarkly/find-code-references@v2.14.0
+        uses: launchdarkly/find-code-references@89a7d362d1d4b3725fe0fe0ccd0dc69e3bdcba58 # v2.14.0
         with:
           accessToken: ${{ secrets.access-token }}
           projKey: ${{ inputs.project-key }}

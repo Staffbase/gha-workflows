@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Get App Token
-        uses: actions/create-github-app-token@v2.2.0
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
         id: get_token
         with:
           app-id: ${{ secrets.app_id }}
@@ -46,7 +46,7 @@ jobs:
 
       - name: Load dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2.5.0
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2.5.0
         with:
           github-token: ${{ steps.get_token.outputs.token }}
 
