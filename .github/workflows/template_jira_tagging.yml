@@ -26,19 +26,19 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           fetch-depth: 0
           fetch-tags: false
 
       - name: Fetch ticket Ids
         id: fetchTicketIds
-        uses: Staffbase/github-action-issue-id-collection@cc151b5eaddb57a4be8965c6ecf8b65cb6b8e690 # v1.2.0
+        uses: Staffbase/github-action-issue-id-collection@cc151b5eaddb57a4be8965c6ecf8b65cb6b8e690  # v1.2.0
         env:
           TAG_MATCHER: ${{ inputs.tag-matcher }}
 
       - name: Add release notes to JIRA tickets
-        uses: Staffbase/github-action-jira-release-tagging@f81a51064aab0b60e688850954ebeac50cb9da30 # v1.6.0
+        uses: Staffbase/github-action-jira-release-tagging@f81a51064aab0b60e688850954ebeac50cb9da30  # v1.6.0
         env:
           JIRA_BASEURL: ${{ secrets.jira-url }}
           JIRA_TOKEN: ${{ secrets.jira-token }}

@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Find Comment
         if: inputs.comment
-        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad  # v4.0.0
         id: comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -28,7 +28,7 @@ jobs:
 
       - name: Comment on PR
         if: inputs.comment && contains(github.event.pull_request.labels.*.name, inputs.label) && steps.comment.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9  # v5.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
@@ -38,7 +38,7 @@ jobs:
 
       - name: Delete Comment
         if: inputs.comment && !contains(github.event.pull_request.labels.*.name, inputs.label) && steps.comment.outputs.comment-id != ''
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

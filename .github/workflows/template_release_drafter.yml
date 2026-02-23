@@ -47,14 +47,14 @@ jobs:
     steps:
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
-        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94  # v2.2.0
         id: get_token
         with:
           app-id: ${{ secrets.app_id }}
           private-key: ${{ secrets.private_key }}
 
       - name: Update Release
-        uses: release-drafter/release-drafter@6db134d15f3909ccc9eefd369f02bd1e9cffdf97 # v6.2.0
+        uses: release-drafter/release-drafter@6db134d15f3909ccc9eefd369f02bd1e9cffdf97  # v6.2.0
         with:
           config-name: ${{ inputs.config-name }}
           name: ${{ inputs.name }}
