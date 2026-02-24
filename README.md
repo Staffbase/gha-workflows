@@ -13,7 +13,7 @@ on: ...
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@v11.1.0
     permissions: ...  # see individual examples below
     with: ...
 ```
@@ -42,7 +42,7 @@ on:
 
 jobs:
   dependabot:
-    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@v11.1.0
     permissions: {}
     with:
       # optional: ⚠️ only enable the force merge if you want to do the merge just now
@@ -78,7 +78,7 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@v11.1.0
     permissions:
       contents: read
     with:
@@ -124,7 +124,7 @@ on:
 
 jobs:
   changeset-check:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@v11.1.0
     permissions:
       contents: read
       pull-requests: write
@@ -149,7 +149,7 @@ on:
 
 jobs:
   changeset-release:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@v11.1.0
     permissions:
       contents: read
     with:
@@ -189,7 +189,7 @@ on:
 
 jobs:
   flaky-tests:
-    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@v11.1.0
     permissions: {}
     with:
       # identifier for the slack channel
@@ -224,7 +224,7 @@ on: [push]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@v11.1.0
     permissions:
       contents: read
     with:
@@ -313,7 +313,7 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@v11.1.0
     permissions:
       contents: read
     with:
@@ -348,7 +348,7 @@ on:
 
 jobs:
   ld_code_references:
-    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@v11.1.0
     permissions:
       contents: read
     with:
@@ -375,7 +375,7 @@ on:
 
 jobs:
   block:
-    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@v11.1.0
     permissions:
       pull-requests: write
     with:
@@ -405,7 +405,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@v11.1.0
     permissions:
       contents: write
       pull-requests: read
@@ -453,7 +453,7 @@ on:
 
 jobs:
   new_version:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@v11.1.0
     permissions:
       contents: read
     with:
@@ -490,7 +490,7 @@ on: [pull_request]
 
 jobs:
   trufflehog:
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@v11.1.0
     permissions:
       contents: read
 ```
@@ -511,7 +511,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@v11.1.0
     permissions:
       contents: write
       pull-requests: write
@@ -552,7 +552,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@v11.1.0
     permissions:
       contents: read
     secrets:
@@ -583,7 +583,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@v11.1.0
     permissions:
       contents: read
     with:
@@ -615,7 +615,7 @@ on: [pull_request]
 
 jobs:
   terraform:
-    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@v11.1.0
     permissions:
       contents: read
       pull-requests: write
@@ -651,7 +651,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v11.0.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@v11.1.0
     permissions:
       contents: read
       checks: write
