@@ -20,9 +20,10 @@ on:
 
 jobs:
   jira-annotate:
-
     name: Annotate all occurring tickets since last release-tag
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout

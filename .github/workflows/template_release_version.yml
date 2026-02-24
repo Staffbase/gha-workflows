@@ -25,6 +25,8 @@ jobs:
   new_version:
     name: Get new release version
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
 
     outputs:
       new_version: ${{ steps.set_version.outputs.next_version }}

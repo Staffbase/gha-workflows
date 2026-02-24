@@ -40,6 +40,8 @@ jobs:
   techdocs:
     name: TechDocs
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout

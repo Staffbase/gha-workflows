@@ -10,5 +10,8 @@ on:
 jobs:
   yamllint:
     uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@main
+    permissions:
+      contents: read
+      checks: write
     with:
       target-path: '.github/workflows'

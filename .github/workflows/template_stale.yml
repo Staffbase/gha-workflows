@@ -30,9 +30,12 @@ on:
 
 jobs:
   stale:
-
     name: stale
     runs-on: ubuntu-slim
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Stale old PRs

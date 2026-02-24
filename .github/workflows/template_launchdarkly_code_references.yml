@@ -13,9 +13,10 @@ on:
 
 jobs:
   launchDarklyCodeReferences:
-
     name: Find LaunchDarkly flag code references
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout

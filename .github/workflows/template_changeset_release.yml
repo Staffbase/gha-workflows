@@ -33,6 +33,8 @@ jobs:
   release:
     name: changeset-release
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
       - name: Get App Token
         uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94  # v2.2.0
