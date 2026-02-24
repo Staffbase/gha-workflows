@@ -703,5 +703,5 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LIC
 [release-new]: https://github.com/Staffbase/gha-workflows/releases
 [reusable-workflow-secrets]: https://github.com/orgs/community/discussions/17554
 [reusable-workflow-env]: https://github.com/orgs/community/discussions/26671
-[reusable-workflow-permissions]: https://docs.github.com/en/actions/sharing-automations/reusing-workflows#supported-keywords-for-jobs-that-call-a-reusable-workflow
+[reusable-workflow-permissions]: https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations#access-and-permissions-for-nested-workflows
 [further-limitations]: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
