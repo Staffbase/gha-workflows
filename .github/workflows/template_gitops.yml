@@ -112,11 +112,11 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
-        uses: actions/create-github-app-token@v2.2.0
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94  # v2.2.0
         id: get_token
         with:
           app-id: ${{ secrets.app-id }}
@@ -125,7 +125,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@v6.6
+        uses: Staffbase/gitops-github-action@500933363014dc38ab352417d07bcc6b6e2d64bc  # v6.6
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}

@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
       - name: Lint and Annotate
-        uses: staffbase/yamllint-action@v1.4.1
+        uses: staffbase/yamllint-action@f607dae290ba419436173cc364051db98ac8d805  # v1.4.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           action-name: ${{ inputs.action-name }}
