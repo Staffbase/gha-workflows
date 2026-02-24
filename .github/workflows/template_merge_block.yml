@@ -16,6 +16,8 @@ jobs:
   do-not-merge:
     name: Check
     runs-on: ubuntu-slim
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Find Comment

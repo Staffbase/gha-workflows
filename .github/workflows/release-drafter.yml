@@ -8,5 +8,8 @@ on:
 jobs:
   update_release_draft:
     uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@main
+    permissions:
+      contents: write
+      pull-requests: read
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}

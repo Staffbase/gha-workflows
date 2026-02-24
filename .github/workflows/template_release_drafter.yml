@@ -40,6 +40,9 @@ jobs:
   update_release_draft:
     name: update release draft
     runs-on: ubuntu-slim
+    permissions:
+      contents: write
+      pull-requests: read
 
     env:
       USING_APP_CREDENTIALS: ${{ secrets.app_id != '' && secrets.private_key != '' }}

@@ -33,6 +33,7 @@ jobs:
   flaky-tests:
     name: Flaky-Tests
     runs-on: ubuntu-slim
+    permissions: {}
     steps:
       - name: Find flaky tests
         uses: Staffbase/github-action-find-flaky-tests@166ee4950d01688cea6a229e6c20ba28ce66c645  # v0.3.1
