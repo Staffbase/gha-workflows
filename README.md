@@ -190,7 +190,9 @@ on:
 jobs:
   flaky-tests:
     uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@8b3899b42a8bc3eb63645192e2c7974a80069063 # v12.0.0
-    permissions: {}
+    permissions:
+      checks: read
+      contents: read
     with:
       # identifier for the slack channel
       slack-channel-id: 45678787976
