@@ -82,7 +82,7 @@ jobs:
           fetch-tags: false
 
       - name: Autodev
-        uses: Staffbase/autodev-action@0a588d0184173f19e5a181ae7f0be69143c2163e # v2.6.0
+        uses: Staffbase/autodev-action@5be41cfbb22ad71f567f4119f0649f1a34d8b78f # v2.7.0
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
