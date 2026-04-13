@@ -488,13 +488,15 @@ on:
 ```yml
 name: Secret Scan
 
+permissions: {}
+
 on: [pull_request]
 
 jobs:
   trufflehog:
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@963c984dde02b0a8711f0d098aa9f8a7f2e50bca # v12.0.1
     permissions:
       contents: read
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@963c984dde02b0a8711f0d098aa9f8a7f2e50bca # v12.0.1
 ```
 
 </details>
