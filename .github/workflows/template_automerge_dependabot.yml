@@ -5,7 +5,8 @@ on:
   workflow_call:
     inputs:
       force:
-        default: false
+        description: "When true (default), wait for all required status checks to pass, then merge with admin privileges to bypass the code-owner review. When false, use GitHub's standard auto-merge (`--auto`), which waits for all branch protection requirements including a human code-owner approval."
+        default: true
         required: false
         type: boolean
       strategy:
@@ -87,6 +88,8 @@ jobs:
           esac
 
           if [ "${{ inputs.force }}" == 'true' ]; then
+            echo "Waiting for required status checks before admin-merging..."
+            gh pr checks "$PR_URL" --watch --required --fail-fast
             MERGE_OPTIONS+=("--admin")
           else
             MERGE_OPTIONS+=("--auto")

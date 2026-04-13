@@ -25,13 +25,13 @@ In this section you can find examples of how to use template workflows. For more
 ### Auto-Merge Dependabot
 
 <details>
-<summary>The action can be used to auto-merge a dependabot PR with minor and patch updates.</summary>
+<summary>The action can be used to auto-merge a dependabot PR.</summary>
 
-The action is called by creating a PR. It is necessary that the repository is enabled for auto-merge.
-Afterward the PR will be merged with the help of the merge queue if all required conditions of the repository are fulfilled.
+This workflow triggers when dependabot creates a PR. It uses the provided GitHub App (e.g. the [staffbase-actions](https://github.com/apps/staffbase-actions) app) to approve the PR and then merges it.
 
-⚠️ You can also force a merge of a PR. This means that the PR will immediately be merged.
-If you want to enable the force merge, make sure that the app can bypass any protection rules.
+By default the workflow waits for all required status checks to pass and then merges with admin privileges (`gh pr merge --admin`). This bypasses only the code-owner review requirement — CI checks still gate the merge. This default is required for repositories subject to the org-wide "Required CODEOWNERS" ruleset, because GitHub's standard auto-merge does not honor the ruleset's bypass actors and would otherwise wait indefinitely for a human code-owner approval. Make sure the app has admin permissions (or is an allowed bypass actor) on the target repository.
+
+To fall back to GitHub's standard auto-merge (`gh pr merge --auto`) — which waits for **all** branch protection requirements including a human code-owner approval — set `force: false`. This is useful for repos excluded from the CODEOWNERS rule (e.g. `backend`, `frontend`) where a human approval flow is acceptable. Note that `force: false` requires "Allow auto-merge" to be enabled in the repository settings.
 
 ```yml
 name: Enable Dependabot Auto-Merge
@@ -45,13 +45,13 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@963c984dde02b0a8711f0d098aa9f8a7f2e50bca # v12.0.1
     permissions: {}
     with:
-      # optional: ⚠️ only enable the force merge if you want to do the merge just now
-      force: true
-      # optional: choose strategy when merging (default: squash)
-      strategy: rebase, merge
-      # optional: choose which types of update you want to allow (default: minor,patch)
+      # optional: set to false to use GitHub's standard auto-merge instead of admin merge (default: true)
+      force: false
+      # optional: merge strategy (accepted values: rebase, merge, squash. default: squash)
+      strategy: squash
+      # optional: comma-separated list of updates to accept (available types: major, minor, patch. default: minor,patch)
       update-types: major,minor,patch
-      # optional: choose if you want to allow versions with semver 0.X.X (default: false)
+      # optional: allow versions with semver 0.X.X (default: false)
       include-pre-release: true
     secrets:
       # identifier of the GitHub App for authentication
@@ -59,6 +59,8 @@ jobs:
       # private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
+
+> ℹ️ When `force: true` (the default), the workflow waits on required status checks via `gh pr checks --watch --required --fail-fast` before performing the admin merge. If any required check fails, the job exits non-zero and the PR stays open. Checks that aren't marked "required" in branch protection / rulesets are not waited on.
 
 </details>
 
