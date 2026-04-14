@@ -25,33 +25,30 @@ In this section you can find examples of how to use template workflows. For more
 ### Auto-Merge Dependabot
 
 <details>
-<summary>The action can be used to auto-merge a dependabot PR with minor and patch updates.</summary>
+<summary>The action can be used to auto-merge a dependabot PR.</summary>
 
-The action is called by creating a PR. It is necessary that the repository is enabled for auto-merge.
-Afterward the PR will be merged with the help of the merge queue if all required conditions of the repository are fulfilled.
+This workflow triggers when dependabot creates a PR. It uses the provided GitHub App (e.g. the [staffbase-actions](https://github.com/apps/staffbase-actions) app) to approve the PR and enables auto-merge (`gh pr merge --auto`). The PR merges automatically once all required status checks pass.
 
-⚠️ You can also force a merge of a PR. This means that the PR will immediately be merged.
-If you want to enable the force merge, make sure that the app can bypass any protection rules.
+The GitHub App must be configured as an `exempt` bypass actor in the applicable ruleset. With `exempt`, the bot's approval satisfies the code-owner review requirement and the repo-level "Allow auto-merge" setting is not required.
+
+> **`force` input (default: `false`):** Setting `force: true` switches from `--auto` to `--admin`, which bypasses all branch protection rules. This is a legacy escape hatch. Most repos should **not** set it.
 
 ```yml
 name: Enable Dependabot Auto-Merge
 
 on:
   pull_request:
-    types: [opened]
 
 jobs:
   dependabot:
     uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@963c984dde02b0a8711f0d098aa9f8a7f2e50bca # v12.0.1
     permissions: {}
     with:
-      # optional: ⚠️ only enable the force merge if you want to do the merge just now
-      force: true
-      # optional: choose strategy when merging (default: squash)
-      strategy: rebase, merge
-      # optional: choose which types of update you want to allow (default: minor,patch)
+      # optional: merge strategy (accepted values: rebase, merge, squash. default: squash)
+      strategy: squash
+      # optional: comma-separated list of updates to accept (available types: major, minor, patch. default: minor,patch)
       update-types: major,minor,patch
-      # optional: choose if you want to allow versions with semver 0.X.X (default: false)
+      # optional: allow versions with semver 0.X.X (default: false)
       include-pre-release: true
     secrets:
       # identifier of the GitHub App for authentication
