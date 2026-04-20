@@ -25,11 +25,13 @@ In this section you can find examples of how to use template workflows. For more
 ### Auto-Merge Dependabot
 
 <details>
-<summary>The action can be used to auto-merge a dependabot PR.</summary>
+<summary>The action can be used to auto-merge dependabot PRs.</summary>
 
-This workflow triggers when dependabot creates a PR. It uses the provided GitHub App (e.g. the [staffbase-actions](https://github.com/apps/staffbase-actions) app) to approve the PR and enables auto-merge (`gh pr merge --auto`). The PR merges automatically once all required status checks pass.
+This workflow triggers on PRs created by dependabot. It uses the provided GitHub App (e.g. the [staffbase-actions](https://github.com/apps/staffbase-actions) app) to approve the PR and enables auto-merge (`gh pr merge --auto`). The PR merges automatically once all required status checks pass.
 
 The GitHub App must be configured as an `exempt` bypass actor in the applicable ruleset. With `exempt`, the bot's approval satisfies the code-owner review requirement and the repo-level "Allow auto-merge" setting is not required.
+
+At Staffbase, [staffbase-actions](https://github.com/apps/staffbase-actions) is configured as `exempt` bypass actor org-wide.
 
 > **`force` input (default: `false`):** Setting `force: true` switches from `--auto` to `--admin`, which bypasses all branch protection rules. This is a legacy escape hatch. Most repos should **not** set it.
 
