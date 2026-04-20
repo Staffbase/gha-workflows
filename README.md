@@ -9,6 +9,8 @@ You can find all possible template workflows in the directory `.github/workflows
 ```yml
 name: <your name>
 
+permissions: {}
+
 on: ...
 
 jobs:
@@ -37,6 +39,8 @@ At Staffbase, [staffbase-actions](https://github.com/apps/staffbase-actions) is 
 
 ```yml
 name: Enable Dependabot Auto-Merge
+
+permissions: {}
 
 on:
   pull_request:
@@ -68,6 +72,9 @@ jobs:
 
 ```yml
 name: Autodev
+
+permissions: {}
+
 on:
   push:
     branches-ignore:
@@ -117,6 +124,9 @@ jobs:
 
 ```yml
 name: Changeset Check
+
+permissions: {}
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -140,6 +150,8 @@ jobs:
 
 ```yml
 name: Release Changesets
+
+permissions: {}
 
 on:
   push:
@@ -181,6 +193,8 @@ jobs:
 ```yml
 name: Find flaky tests
 
+permissions: {}
+
 on:
   # At 05:00 on Monday.
   schedule:
@@ -221,6 +235,9 @@ jobs:
 
 ```yml
 name: GitOps
+
+permissions: {}
+
 on: [push]
 
 jobs:
@@ -308,6 +325,9 @@ Then the jira issues will be updated with a release date and the labels will be 
 
 ```yml
 name: Annotate Jira Issues
+
+permissions: {}
+
 on:
   push:
     tags: ['**']
@@ -342,6 +362,9 @@ The action can be used to collect and push code references for LaunchDarkly feat
 
 ```yml
 name: Find LaunchDarkly flag code references
+
+permissions: {}
+
 on:
   push:
     branches:
@@ -369,6 +392,8 @@ jobs:
 
 ```yml
 name: Merge Block
+
+permissions: {}
 
 on:
   pull_request:
@@ -398,6 +423,8 @@ More information on how to configure this file can be found [here](https://githu
 
 ```yml
 name: Release Drafter
+
+permissions: {}
 
 on:
   push:
@@ -447,6 +474,8 @@ You can remove all other version resolver from your configuration.
 ```yml
 name: Release Version Detector
 
+permissions: {}
+
 on:
   push:
     branches:
@@ -487,13 +516,15 @@ on:
 ```yml
 name: Secret Scan
 
+permissions: {}
+
 on: [pull_request]
 
 jobs:
   trufflehog:
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@963c984dde02b0a8711f0d098aa9f8a7f2e50bca # v12.0.1
     permissions:
       contents: read
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@963c984dde02b0a8711f0d098aa9f8a7f2e50bca # v12.0.1
 ```
 
 </details>
@@ -505,6 +536,8 @@ jobs:
 
 ```yml
 name: Stale PRs
+
+permissions: {}
 
 on:
   schedule:
@@ -542,6 +575,8 @@ jobs:
 ```yml
 name: TechDocs
 
+permissions: {}
+
 on:
   push:
     branches:
@@ -572,6 +607,8 @@ jobs:
 
 ```yml
 name: TechDocs
+
+permissions: {}
 
 on:
   push:
@@ -612,6 +649,8 @@ jobs:
 ```yml
 name: Terraform
 
+permissions: {}
+
 on: [pull_request]
 
 jobs:
@@ -642,6 +681,8 @@ jobs:
 
 ```yml
 name: YAMLlint
+
+permissions: {}
 
 on:
   push:
