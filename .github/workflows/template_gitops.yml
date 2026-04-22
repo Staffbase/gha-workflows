@@ -80,6 +80,11 @@ on:
         required: false
         type: string
         default: "."
+      create-deployment:
+        required: false
+        type: boolean
+        default: false
+        description: "Create GitHub Deployments on the source repository and write tracking annotations to the GitOps CRs"
     # waiting for: https://github.com/github-community/community/discussions/17554
     secrets:
       docker-username:
@@ -108,6 +113,7 @@ jobs:
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: read
+      deployments: write
 
     env:
       USING_APP_CREDENTIALS: ${{ secrets.app-id != '' && secrets.private-key != '' }}
@@ -127,7 +133,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@4c47a273ab3456d6615dde95784239b5f5a1f49d # v7.1
+        uses: Staffbase/gitops-github-action@2f0c03866d15503b7d1f1d4ca9929ec4bc9e7cf3 # v7.2
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
@@ -157,3 +163,5 @@ jobs:
           upwind-client-secret: ${{ secrets.upwind-client-secret }}
           upwind-organization-id: ${{ inputs.upwind-organization-id }}
           working-directory: ${{ inputs.working-directory }}
+          create-deployment: ${{ inputs.create-deployment && 'true' || 'false' }}
+          github-token: ${{ inputs.create-deployment && github.token || '' }}
