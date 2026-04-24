@@ -64,6 +64,22 @@ Every workflow declares a minimal `permissions` block. Never use broad permissio
 - `document-start: disable` (yq compatibility)
 - Truthy values: only `true`, `false`, `on` allowed
 
+## README documentation
+
+Each template has a corresponding `<details>` example block in `README.md`. When you add or modify inputs on a template:
+
+- Add the input to the `with:` block of the matching example in `README.md`.
+- Use a **non-default** value so readers can see how to override the default.
+- Prefix the line with a comment that states whether the input is optional and what the default is:
+
+```yaml
+with:
+  # optional: choose strategy when merging (default: squash)
+  strategy: rebase
+```
+
+- Do **not** manually update the SHA/version refs in the `uses:` lines -- those are managed automatically by `versions.yml`.
+
 ## Releases
 
 - PR labels `patch` / `minor` / `major` control version bumps (default: `patch`)
