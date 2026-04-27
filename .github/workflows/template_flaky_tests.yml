@@ -32,7 +32,7 @@ on:
 jobs:
   flaky-tests:
     name: Flaky-Tests
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       checks: read
       contents: read
