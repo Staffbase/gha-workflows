@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Build and Publish Site
-        uses: Staffbase/backstage-techdocs-action@050e94ff58e668123e9405a5443cc93f5378ae38 # v0.2.2
+        uses: Staffbase/backstage-techdocs-action@8767e3d6b429b73c3513aedaff3fb890111f358f # v0.2.4
         with:
           entity-kind: ${{ inputs.entity-kind }}
           entity-name: ${{ inputs.entity-name }}
