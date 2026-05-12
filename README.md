@@ -245,7 +245,6 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@4cc0088a9dc8b26090d7b943d181450829a28086 # v13.3.0
     permissions:
       contents: read
-      deployments: write # only required when create-deployment is true
     with:
       # optional: host of the docker registry, default: "registry.staffbase.com"
       docker-registry: '<your-registry>'
@@ -285,8 +284,6 @@ jobs:
       # optional: files which should be updated for prod
       gitops-prod: |-
         your files
-      # optional: create GitHub Deployments on the source repository and write tracking annotations to the GitOps CRs, default: false
-      create-deployment: true
       # optional: defines the github runner for the gitops step if (e.g. ubuntu-24.04-arm for arm builds), default: ubuntu-24.04
       runs-on: ubuntu-24.04-arm
       # optional: Upwind.io client ID
