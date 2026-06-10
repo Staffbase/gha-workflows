@@ -57,8 +57,8 @@ jobs:
       # optional: allow versions with semver 0.X.X (default: false)
       include-pre-release: true
     secrets:
-      # identifier of the GitHub App for authentication
-      app_id: ${{ <your-app-id> }}
+      # client id of the GitHub App for authentication
+      client_id: ${{ <your-client-id> }}
       # private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
@@ -109,8 +109,8 @@ jobs:
     secrets:
       # optional: access token to fetch the pull requests
       token: ${{ <your-token> }}
-      # optional: identifier of the GitHub App for authentication
-      app_id: ${{ <your-app-id> }}
+      # optional: client id of the GitHub App for authentication
+      client_id: ${{ <your-client-id> }}
       # optional: private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
@@ -175,12 +175,12 @@ jobs:
       # optional: The scope to use for Node.js packages.
       node-registry-scope: '@staffbase'
     secrets:
-      # identifier of the GitHub App for authentication
-      app-id: ${{ <your-app-id> }}
+      # client id of the GitHub App for authentication
+      client_id: ${{ <your-client-id> }}
       # private key of the GitHub App
-      private-key: ${{ <your-private-key> }}
+      private_key: ${{ <your-private-key> }}
       # needs write:packages rights
-      npm-token ${{ <your-npm-token> }}
+      npm-token: ${{ <your-npm-token> }}
 ```
 
 </details>
@@ -305,8 +305,8 @@ jobs:
       gitops-token: ${{ <your-gitops-token> }}
       # optional: gonosumdb environment variable
       gonosumdb: ${{ <your-gonosumdb> }}
-      # optional: identifier of the GitHub App for authentication
-      app-id: ${{ <your-app-id> }}
+      # optional: client id of the GitHub App for authentication
+      client-id: ${{ <your-client-id> }}
       # optional: private key of the GitHub App
       private-key: ${{ <your-private-key> }}
       # optional: Upwind client secret
@@ -455,8 +455,8 @@ jobs:
     secrets:
       # optional: access token for the release drafter
       token: ${{ <your-token> }}
-      # optional: identifier of the GitHub App for authentication
-      app_id: ${{ <your-app-id> }}
+      # optional: client id of the GitHub App for authentication
+      client_id: ${{ <your-client-id> }}
       # optional: private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
@@ -668,7 +668,7 @@ jobs:
       committer-email: staffbase-actions[bot]@users.noreply.github.com
     secrets:
       # GitHub App is required because GITHUB_TOKEN will not trigger new actions
-      app-id: ${{ <your-app-id> }}
+      client-id: ${{ <your-client-id> }}
       private-key: ${{ <your-private-key> }}
 ```
 

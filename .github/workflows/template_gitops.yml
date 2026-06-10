@@ -99,7 +99,7 @@ on:
         required: false
       gonosumdb:
         required: false
-      app-id:
+      client-id:
         required: false
       private-key:
         required: false
@@ -116,7 +116,7 @@ jobs:
       deployments: write
 
     env:
-      USING_APP_CREDENTIALS: ${{ secrets.app-id != '' && secrets.private-key != '' }}
+      USING_APP_CREDENTIALS: ${{ secrets.client-id != '' && secrets.private-key != '' }}
 
     steps:
       - name: Checkout
@@ -127,7 +127,7 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: get_token
         with:
-          app-id: ${{ secrets.app-id }}
+          client-id: ${{ secrets.client-id }}
           private-key: ${{ secrets.private-key }}
           owner: ${{inputs.gitops-organization }}
 
