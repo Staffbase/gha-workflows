@@ -53,7 +53,7 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: get_token
         with:
-          app-id: ${{ secrets.app_id }}
+          client-id: ${{ secrets.app_id }}
           private-key: ${{ secrets.private_key }}
 
       - name: Update Release
