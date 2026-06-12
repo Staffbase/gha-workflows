@@ -31,7 +31,7 @@ on:
     secrets:
       token:
         required: false
-      app_id:
+      client_id:
         required: false
       private_key:
         required: false
@@ -45,7 +45,7 @@ jobs:
       pull-requests: read
 
     env:
-      USING_APP_CREDENTIALS: ${{ secrets.app_id != '' && secrets.private_key != '' }}
+      USING_APP_CREDENTIALS: ${{ secrets.client_id != '' && secrets.private_key != '' }}
 
     steps:
       - name: Get App Token
@@ -53,7 +53,7 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: get_token
         with:
-          app-id: ${{ secrets.app_id }}
+          client-id: ${{ secrets.client_id }}
           private-key: ${{ secrets.private_key }}
 
       - name: Update Release
