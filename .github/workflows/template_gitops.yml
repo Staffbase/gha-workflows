@@ -41,6 +41,11 @@ on:
       docker-custom-tag:
         required: false
         type: string
+      docker-tag-timestamp:
+        required: false
+        type: string
+        default: "false"
+        description: "Insert a UTC timestamp into dev/main/master branch tags (e.g. dev-20260602143055-<short-sha>) to make them sortable for Flux image automation. Opt-in; defaults to the legacy <prefix>-<short-sha> format."
       gitops-dev:
         required: false
         type: string
@@ -151,6 +156,7 @@ jobs:
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
           docker-custom-tag: ${{ inputs.docker-custom-tag }}
+          docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
           gitops-organization: ${{ inputs.gitops-organization }}
           gitops-repository: ${{ inputs.gitops-repository }}
           gitops-user: ${{ inputs.gitops-user }}
