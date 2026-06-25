@@ -45,7 +45,7 @@ on:
         required: false
         type: string
         default: "true"
-        description: "Insert a UTC timestamp into dev/main/master branch tags (e.g. dev-20260602143055-<short-sha>) to make them sortable for Flux image automation. Opt-in; defaults to the legacy <prefix>-<short-sha> format."
+        description: "Insert a UTC timestamp into dev/main/master branch tags (e.g. dev-20260602143055-<short-sha>) to make them sortable for Flux image automation. Enabled by default; set to 'false' to use the legacy <prefix>-<short-sha> format."
       gitops-dev:
         required: false
         type: string
