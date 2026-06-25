@@ -44,8 +44,8 @@ on:
       docker-tag-timestamp:
         required: false
         type: string
-        default: "false"
-        description: "Insert a UTC timestamp into dev/main/master branch tags (e.g. dev-20260602143055-<short-sha>) to make them sortable for Flux image automation. Opt-in; defaults to the legacy <prefix>-<short-sha> format."
+        default: "true"
+        description: "Insert a UTC timestamp into dev/main/master branch tags (e.g. dev-20260602143055-<short-sha>) to make them sortable for Flux image automation. Enabled by default; set to 'false' to use the legacy <prefix>-<short-sha> format."
       gitops-dev:
         required: false
         type: string
@@ -138,7 +138,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@94f65be0c21894563edb9d592b84e7470318fb6c # v7.7.0
+        uses: Staffbase/gitops-github-action@2ac9c02df157d909c62470ad1dfb7aa2c319df62 # v8.0.0
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
