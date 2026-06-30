@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup Node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -37,50 +37,6 @@ jobs:
 
       - name: Generate and Publish TechDocs
         run: |
-          # Determine which components changed in this push. We default to a full
-          # publish and only narrow to the changed components when we can reliably
-          # compute the diff. This keeps the job runtime proportional to the change
-          # set instead of the (ever growing) number of components in the repo.
-          INCREMENTAL=0
-          CHANGED=""
-          BEFORE="${{ github.event.before }}"
-          AFTER="${{ github.sha }}"
-
-          if [ "${{ github.event_name }}" = "push" ] \
-            && [ -n "$BEFORE" ] \
-            && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-            if git fetch --no-tags --depth=1 origin "$BEFORE" >/dev/null 2>&1; then
-              CHANGED=$(git diff --name-only "$BEFORE" "$AFTER")
-              INCREMENTAL=1
-            else
-              echo "⚠️  Could not fetch base commit $BEFORE - publishing all components"
-            fi
-          else
-            echo "ℹ️  Non-incremental trigger (${{ github.event_name }}) - publishing all components"
-          fi
-
-          # A change to the workflow or to the repo-root mkdocs.yml can affect every
-          # component, so fall back to a full publish in those cases.
-          if [ "$INCREMENTAL" = "1" ] \
-            && printf '%s\n' "$CHANGED" | grep -qE '^[.]github/|^mkdocs[.]yml$'; then
-            echo "ℹ️  Global change detected (workflow or root mkdocs.yml) - publishing all components"
-            INCREMENTAL=0
-          fi
-
-          if [ "$INCREMENTAL" = "1" ]; then
-            echo "🔎 Incremental publish - changed files:"
-            printf '%s\n' "$CHANGED" | sed 's/^/    /'
-          fi
-
-          # Returns success when a changed file lives inside the given directory.
-          dir_changed() {
-            local dir="$1" f
-            while IFS= read -r f; do
-              case "$f" in "$dir"/*) return 0 ;; esac
-            done <<< "$CHANGED"
-            return 1
-          }
-
           find . -name "catalog-info.yaml" -print0 | while read -r -d $'\0' file
           do
             echo ""
@@ -104,16 +60,9 @@ jobs:
                   continue
               fi
 
-              fileDir=$(find "$file" -printf '%h' -quit)
-
-              # On incremental runs, only (re)publish components whose directory changed.
-              if [ "$INCREMENTAL" = "1" ] && ! dir_changed "${fileDir#./}"; then
-                echo "  ⏭️  Skip $kind/$name - no documentation changes"
-                continue
-              fi
-
               echo "  📝 Publish TechDocs for $kind/$name"
 
+              fileDir=$(find "$file" -printf '%h' -quit)
               techdocs-cli generate \
                 --no-docker \
                 --verbose \
