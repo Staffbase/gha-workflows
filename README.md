@@ -565,6 +565,10 @@ jobs:
       stale-pr-label: staling
       # optional: comment on the staled pull request, default: This PR has been automatically marked as stale because there has been no recent activity in the last 60 days. It will be closed in 7 days if no further activity occurs such as removing the label.
       stale-pr-message: your message
+      # optional: also delete branches with no commits for days-before-branch-stale, regardless of whether they have a PR, default: false
+      cleanup-stale-branches: true
+      # optional: idle number of days before deleting a branch with no PR, default: 14
+      days-before-branch-stale: 21
 ```
 
 </details>

@@ -27,6 +27,14 @@ on:
         default: 'stale'
         required: false
         type: string
+      cleanup-stale-branches:
+        default: false
+        required: false
+        type: boolean
+      days-before-branch-stale:
+        default: 14
+        required: false
+        type: number
 
 jobs:
   stale:
@@ -48,3 +56,42 @@ jobs:
           exempt-pr-labels: ${{ inputs.exempt-pr-labels }}
           stale-pr-label: ${{ inputs.stale-pr-label }}
           stale-pr-message: ${{ inputs.stale-pr-message }}
+
+  # actions/stale (above) only deletes a branch when it closes a PR attached
+  # to it. Repos that also accumulate branches with no PR at all (e.g. pushed
+  # and abandoned) need this separate sweep.
+  delete-stale-branches:
+    name: delete stale branches
+    if: inputs.cleanup-stale-branches
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Delete branches with no commits for N days
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          DAYS_BEFORE_BRANCH_STALE: ${{ inputs.days-before-branch-stale }}
+        run: |
+          default_branch=$(gh api "repos/$REPO" --jq .default_branch)
+          cutoff=$(date -u -d "$DAYS_BEFORE_BRANCH_STALE days ago" +%s)
+
+          gh api "repos/$REPO/branches" --paginate --jq '.[].name' | while read -r branch; do
+            [ "$branch" = "$default_branch" ] && continue
+
+            protected=$(gh api "repos/$REPO/branches/$branch" --jq .protected)
+            [ "$protected" = "true" ] && continue
+
+            open_prs=$(gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$branch" --jq 'length')
+            [ "$open_prs" != "0" ] && continue
+
+            last_commit_date=$(gh api "repos/$REPO/commits/$branch" --jq .commit.committer.date)
+            last_commit_epoch=$(date -u -d "$last_commit_date" +%s)
+
+            if [ "$last_commit_epoch" -lt "$cutoff" ]; then
+              echo "Deleting stale branch: $branch (last commit $last_commit_date)"
+              gh api -X DELETE "repos/$REPO/git/refs/heads/$branch"
+            fi
+          done
