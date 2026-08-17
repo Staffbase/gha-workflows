@@ -62,6 +62,14 @@ jobs:
     # check to not trigger if dependabot did something or PR was closed or label is not the configured dev label
     if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed')
 
+    # This job rebuilds `branch` from scratch (base + all labeled PRs) and force-pushes it, so
+    # overlapping runs race on which force-push lands last, not which reflects the newest `base`.
+    # Serialize per base/branch and drop stale in-flight runs so a late-finishing run built from
+    # an older `base` snapshot can't overwrite a newer one.
+    concurrency:
+      group: autodev-${{ inputs.base }}-${{ inputs.branch }}
+      cancel-in-progress: true
+
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client_id != '' && secrets.private_key != '' }}
 
