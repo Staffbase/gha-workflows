@@ -71,16 +71,10 @@ on:
         required: false
         type: string
         default: "staffbase-actions[bot]@users.noreply.github.com"
-      upwind-client-id:
-        required: false
-        type: string
       runs-on:
         required: false
         type: string
         default: "ubuntu-24.04"
-      upwind-organization-id:
-        required: false
-        type: string
       working-directory:
         required: false
         type: string
@@ -107,8 +101,6 @@ on:
       client-id:
         required: false
       private-key:
-        required: false
-      upwind-client-secret:
         required: false
 
 jobs:
@@ -138,7 +130,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@662552ca51c41530c0acb11ece85faa24394eba2 # v8.1.0
+        uses: Staffbase/gitops-github-action@3285f5b14440491ab0dd2d493f9825c1f3d4d975 # v8.1.1
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
@@ -165,7 +157,4 @@ jobs:
           gitops-dev: ${{ inputs.gitops-dev }}
           gitops-stage: ${{ inputs.gitops-stage }}
           gitops-prod: ${{ inputs.gitops-prod }}
-          upwind-client-id: ${{ inputs.upwind-client-id }}
-          upwind-client-secret: ${{ secrets.upwind-client-secret }}
-          upwind-organization-id: ${{ inputs.upwind-organization-id }}
           working-directory: ${{ inputs.working-directory }}
