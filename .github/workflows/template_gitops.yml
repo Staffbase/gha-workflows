@@ -200,8 +200,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: GitOps (build and push by digest)
-        # pending https://github.com/Staffbase/gitops-github-action/pull/159, pin to a release once merged
-        uses: Staffbase/gitops-github-action@8c26511aec8f9ca0d2f4337aa8164d918e3a5445 # CORE-4981-multi-arch-builds
+        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
         with:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
@@ -249,8 +248,7 @@ jobs:
 
       - name: GitOps (merge manifests and deploy)
         id: gitops
-        # pending https://github.com/Staffbase/gitops-github-action/pull/159, pin to a release once merged
-        uses: Staffbase/gitops-github-action@8c26511aec8f9ca0d2f4337aa8164d918e3a5445 # CORE-4981-multi-arch-builds
+        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
         with:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
