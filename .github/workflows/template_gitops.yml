@@ -90,6 +90,16 @@ on:
         type: boolean
         default: false
         description: "Create GitHub Deployments on the source repository and write tracking annotations to the GitOps CRs"
+      multi-arch:
+        required: false
+        type: boolean
+        default: false
+        description: "Build linux/amd64 and linux/arm64 natively via a job matrix and merge them into one multi-arch image. Disabled by default (single-arch build using docker-build-platform). See gitops-github-action README 'Multi-Arch Images'."
+      multiarch-artifact-name:
+        required: false
+        type: string
+        default: "docker-digests"
+        description: "Base name of the artifact carrying the per-architecture digests between the build and merge jobs. Only needs changing when a workflow builds more than one multi-arch image, otherwise the digests get mixed up."
     # waiting for: https://github.com/github-community/community/discussions/17554
     secrets:
       docker-username:
@@ -115,7 +125,7 @@ jobs:
   gitops:
     name: GitOps
     runs-on: ${{ inputs.runs-on }}
-    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+    if: inputs.multi-arch != true && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
     permissions:
       contents: read
       deployments: write
@@ -151,6 +161,107 @@ jobs:
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-outputs: ${{ inputs.docker-build-outputs }}
           docker-build-platforms: ${{ inputs.docker-build-platform }}
+          docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
+          docker-file: ${{ inputs.docker-file }}
+          docker-image: ${{ inputs.docker-image }}
+          docker-custom-tag: ${{ inputs.docker-custom-tag }}
+          docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
+          gitops-organization: ${{ inputs.gitops-organization }}
+          gitops-repository: ${{ inputs.gitops-repository }}
+          gitops-user: ${{ inputs.gitops-user }}
+          gitops-email: ${{ inputs.gitops-email }}
+          gitops-token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.gitops-token }}
+          gitops-dev: ${{ inputs.gitops-dev }}
+          gitops-stage: ${{ inputs.gitops-stage }}
+          gitops-prod: ${{ inputs.gitops-prod }}
+          upwind-client-id: ${{ inputs.upwind-client-id }}
+          upwind-client-secret: ${{ secrets.upwind-client-secret }}
+          upwind-organization-id: ${{ inputs.upwind-organization-id }}
+          working-directory: ${{ inputs.working-directory }}
+
+  gitops-build:
+    name: Build (${{ matrix.arch }})
+    runs-on: ${{ matrix.runs-on }}
+    if: inputs.multi-arch == true && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runs-on: ubuntu-24.04
+          - arch: arm64
+            runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: GitOps (build and push by digest)
+        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        with:
+          multiarch-mode: build
+          multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
+          docker-registry: ${{ inputs.docker-registry }}
+          docker-username: ${{ secrets.docker-username }}
+          docker-password: ${{ secrets.docker-password }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            GONOSUMDB=${{ vars.gonosumdb }}
+          docker-build-secrets: ${{ secrets.docker-build-secrets }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
+          docker-build-target: ${{ inputs.docker-build-target }}
+          docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
+          docker-file: ${{ inputs.docker-file }}
+          docker-image: ${{ inputs.docker-image }}
+          docker-custom-tag: ${{ inputs.docker-custom-tag }}
+          docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
+          working-directory: ${{ inputs.working-directory }}
+
+  gitops-merge:
+    name: Merge and Deploy
+    needs: gitops-build
+    runs-on: ${{ inputs.runs-on }}
+    if: inputs.multi-arch == true && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+    permissions:
+      contents: read
+      deployments: write
+
+    env:
+      USING_APP_CREDENTIALS: ${{ secrets.client-id != '' && secrets.private-key != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Get App Token
+        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: get_token
+        with:
+          client-id: ${{ secrets.client-id }}
+          private-key: ${{ secrets.private-key }}
+          owner: ${{inputs.gitops-organization }}
+
+      - name: GitOps (merge manifests and deploy)
+        id: gitops
+        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        with:
+          multiarch-mode: merge
+          multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
+          docker-registry: ${{ inputs.docker-registry }}
+          docker-username: ${{ secrets.docker-username }}
+          docker-password: ${{ secrets.docker-password }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            GONOSUMDB=${{ vars.gonosumdb }}
+          docker-build-secrets: ${{ secrets.docker-build-secrets }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
+          docker-build-target: ${{ inputs.docker-build-target }}
+          docker-build-outputs: ${{ inputs.docker-build-outputs }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}

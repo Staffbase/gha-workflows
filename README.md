@@ -288,6 +288,10 @@ jobs:
         your files
       # optional: defines the github runner for the gitops step if (e.g. ubuntu-24.04-arm for arm builds), default: ubuntu-24.04
       runs-on: ubuntu-24.04-arm
+      # optional: build linux/amd64 and linux/arm64 natively via a job matrix and merge them into one multi-arch image, default: false
+      multi-arch: true
+      # optional: base name of the artifact carrying the per-arch digests, only change it when building more than one multi-arch image in a workflow, default: docker-digests
+      multiarch-artifact-name: docker-digests-my-service
       # optional: Upwind.io client ID
       upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
       # optional: Upwind.io organization ID
