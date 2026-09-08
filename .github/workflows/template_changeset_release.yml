@@ -72,6 +72,7 @@ jobs:
           commit-message: 'chore(release): Bump package version'
           pr-title: '📦 Release New Version'
           create-github-releases: true
+          push-with-git-cli: true
           version-script: ${{ inputs.version-script }}
           publish-script: ${{ inputs.publish-script }}
         env:
