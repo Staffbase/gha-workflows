@@ -66,13 +66,15 @@ jobs:
 
       - name: Create Release Pull Request
         id: changesets
-        uses: changesets/action@e4156907cdd269dcaa37f03263be504a3570994d # v1.6.0
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          commit: 'chore(release): Bump package version'
-          title: '📦 Release New Version'
-          createGithubReleases: true
-          version: ${{ inputs.version-script }}
-          publish: ${{ inputs.publish-script }}
+          github-token: ${{ steps.get_token.outputs.token }}
+          commit-message: 'chore(release): Bump package version'
+          pr-title: '📦 Release New Version'
+          create-github-releases: true
+          push-with-git-cli: true
+          version-script: ${{ inputs.version-script }}
+          publish-script: ${{ inputs.publish-script }}
         env:
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
           HOME: ${{ github.workspace }}
