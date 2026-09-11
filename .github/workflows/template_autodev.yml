@@ -64,11 +64,15 @@ jobs:
 
     # This job rebuilds `branch` from scratch (base + all labeled PRs) and force-pushes it, so
     # overlapping runs race on which force-push lands last, not which reflects the newest `base`.
-    # Serialize per base/branch and drop stale in-flight runs so a late-finishing run built from
-    # an older `base` snapshot can't overwrite a newer one.
+    # Serialize per base/branch so runs never overlap. Do NOT cancel-in-progress: callers whose
+    # `base` gets frequent automated commits (e.g. Flux image automation pushing to `main` every
+    # few seconds) would otherwise cancel every run before it finishes, so `branch` never gets
+    # rebuilt at all. Queuing (instead of cancelling) still fixes the original race, since a
+    # queued run re-checks out `base` fresh once it actually starts; GitHub also collapses a
+    # backlog of queued runs down to just the latest one, so the queue can't grow unbounded.
     concurrency:
       group: autodev-${{ inputs.base }}-${{ inputs.branch }}
-      cancel-in-progress: true
+      cancel-in-progress: false
 
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client_id != '' && secrets.private_key != '' }}
