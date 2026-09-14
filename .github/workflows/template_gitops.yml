@@ -148,7 +148,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@662552ca51c41530c0acb11ece85faa24394eba2 # v8.1.0
+        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
         with:
           docker-registry: ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
