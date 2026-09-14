@@ -424,7 +424,7 @@ jobs:
 <details>
 <summary>The action can be used to automatically publish a draft release once it is only a patch-level bump over the latest published release.</summary>
 
-Pair this with the reusable [Release Drafter](#release-drafter) workflow. Schedule it however often you want the check to run (e.g. monthly); it only publishes when the newest draft release differs from the latest published release by patch version alone -- a major or minor bump, or no draft at all, is skipped.
+Pair this with the reusable [Release Drafter](#release-drafter) workflow (same `config-name`, and it must run on `push` to `main` so the draft stays up to date). Schedule this workflow however often you want the check to run (e.g. monthly); it resolves the current draft's version with release-drafter itself (`dry-run: true`, no changes made) and only publishes when that resolved version is a patch bump over the latest published release -- a major or minor bump, or no draft at all, is skipped.
 
 Publishing must go through a GitHub App so the resulting `release: published` event triggers downstream workflows (the default `GITHUB_TOKEN` does not).
 
@@ -444,9 +444,11 @@ jobs:
     permissions:
       contents: write
     with:
-      # optional: prefix of the tag in order to find the releases; this is useful for multi artifact/service repositories, default: 'v'
+      # optional: name of the release drafter configuration file, must match the one used to draft the release, default: release-drafter.yml
+      config-name: release-drafter-test.yml
+      # optional: prefix of the tag in order to find the latest published release; this is useful for multi artifact/service repositories, default: 'v'
       tag-prefix: 'app-v'
-      # optional: suffix of the tag in order to find the releases; this is useful for multi artifact/service repositories, default: '' (empty string)
+      # optional: suffix of the tag in order to find the latest published release; this is useful for multi artifact/service repositories, default: '' (empty string)
       tag-suffix: '-native'
     secrets:
       # required: client id of the GitHub App used to publish the release
@@ -464,6 +466,8 @@ jobs:
 
 If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
 More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
+
+The workflow exposes the resolved release as outputs: `tag_name`, `resolved_version`, `major_version`, `minor_version`, `patch_version`.
 
 ```yml
 name: Release Drafter

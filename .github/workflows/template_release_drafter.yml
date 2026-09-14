@@ -36,6 +36,18 @@ on:
       private_key:
         required: false
 
+    outputs:
+      tag_name:
+        value: ${{ jobs.update_release_draft.outputs.tag_name }}
+      resolved_version:
+        value: ${{ jobs.update_release_draft.outputs.resolved_version }}
+      major_version:
+        value: ${{ jobs.update_release_draft.outputs.major_version }}
+      minor_version:
+        value: ${{ jobs.update_release_draft.outputs.minor_version }}
+      patch_version:
+        value: ${{ jobs.update_release_draft.outputs.patch_version }}
+
 jobs:
   update_release_draft:
     name: update release draft
@@ -47,6 +59,13 @@ jobs:
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client_id != '' && secrets.private_key != '' }}
 
+    outputs:
+      tag_name: ${{ steps.update_release.outputs.tag_name }}
+      resolved_version: ${{ steps.update_release.outputs.resolved_version }}
+      major_version: ${{ steps.update_release.outputs.major_version }}
+      minor_version: ${{ steps.update_release.outputs.minor_version }}
+      patch_version: ${{ steps.update_release.outputs.patch_version }}
+
     steps:
       - name: Get App Token
         if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
@@ -57,6 +76,7 @@ jobs:
           private-key: ${{ secrets.private_key }}
 
       - name: Update Release
+        id: update_release
         uses: release-drafter/release-drafter@34d80673e067bdc0c24568d3af899c216adcfaa9 # v7.7.0
         with:
           config-name: ${{ inputs.config-name }}

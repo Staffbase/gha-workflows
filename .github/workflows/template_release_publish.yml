@@ -3,6 +3,10 @@ name: Release Auto Publish
 on:
   workflow_call:
     inputs:
+      config-name:
+        required: false
+        type: string
+        default: 'release-drafter.yml'
       tag-prefix:
         required: false
         type: string
@@ -41,10 +45,25 @@ jobs:
           client-id: ${{ secrets.client_id }}
           private-key: ${{ secrets.private_key }}
 
+      # dry-run only: resolves the current draft's version without touching it,
+      # so we get major/minor/patch/tag_name straight from release-drafter's own
+      # version-resolver instead of re-parsing tag strings ourselves.
+      - name: Resolve draft release version
+        id: resolve
+        uses: release-drafter/release-drafter@34d80673e067bdc0c24568d3af899c216adcfaa9 # v7.7.0
+        with:
+          config-name: ${{ inputs.config-name }}
+          dry-run: true
+        env:
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+
       - name: Publish draft release if patch-only
         id: publish
         env:
           GH_TOKEN: ${{ steps.get_token.outputs.token }}
+          TAG_NAME: ${{ steps.resolve.outputs.tag_name }}
+          DRAFT_MAJOR: ${{ steps.resolve.outputs.major_version }}
+          DRAFT_MINOR: ${{ steps.resolve.outputs.minor_version }}
         run: |
           set -euo pipefail
 
@@ -52,24 +71,28 @@ jobs:
           TAG_SUFFIX="${{ inputs.tag-suffix }}"
           REPO="${{ github.repository }}"
 
-          strip_version() {
-            local v="${1#${TAG_PREFIX}}"
-            echo "${v%${TAG_SUFFIX}}"
-          }
-
-          # newest draft release matching prefix/suffix
-          DRAFT_TAG=$(gh release list -R "$REPO" --limit 100 --json tagName,isDraft,createdAt \
-            --jq "[.[] | select(.isDraft and (.tagName | startswith(\"${TAG_PREFIX}\") and endswith(\"${TAG_SUFFIX}\")))] | sort_by(.createdAt) | reverse | .[0].tagName // empty")
-
-          if [ -z "$DRAFT_TAG" ]; then
-            echo "No draft release found, nothing to publish."
+          if [ -z "$TAG_NAME" ]; then
+            echo "release-drafter could not resolve a draft version, nothing to publish."
             echo "published=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          echo "Newest draft release: ${DRAFT_TAG}"
+          # confirm an actual draft release exists for the resolved tag
+          IS_DRAFT=$(gh release view "$TAG_NAME" -R "$REPO" --json isDraft --jq .isDraft 2>/dev/null || echo "")
 
-          # latest published (non-draft, non-prerelease) release
+          if [ -z "$IS_DRAFT" ]; then
+            echo "No release found for resolved tag ${TAG_NAME}, nothing to publish."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$IS_DRAFT" != "true" ]; then
+            echo "Release ${TAG_NAME} is already published, nothing to do."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # latest published (non-draft, non-prerelease) release, to compare major/minor against
           LATEST_TAG=$(gh release list -R "$REPO" --limit 100 --exclude-drafts --exclude-pre-releases --json tagName \
             --jq "[.[] | select(.tagName | startswith(\"${TAG_PREFIX}\") and endswith(\"${TAG_SUFFIX}\"))] | .[0].tagName // empty")
 
@@ -80,35 +103,29 @@ jobs:
           fi
 
           echo "Latest published release: ${LATEST_TAG}"
+          echo "Resolved draft release: ${TAG_NAME} (major=${DRAFT_MAJOR}, minor=${DRAFT_MINOR})"
 
-          DRAFT_VERSION=$(strip_version "$DRAFT_TAG")
-          LATEST_VERSION=$(strip_version "$LATEST_TAG")
+          LATEST_VERSION="${LATEST_TAG#${TAG_PREFIX}}"
+          LATEST_VERSION="${LATEST_VERSION%${TAG_SUFFIX}}"
 
           pattern="^[0-9]+\.[0-9]+\.[0-9]+$"
-          if ! [[ "$DRAFT_VERSION" =~ $pattern ]] || ! [[ "$LATEST_VERSION" =~ $pattern ]]; then
-            echo "Could not parse semantic version from '${DRAFT_TAG}' / '${LATEST_TAG}', skipping."
+          if ! [[ "$LATEST_VERSION" =~ $pattern ]]; then
+            echo "Could not parse semantic version from '${LATEST_TAG}', skipping."
             echo "published=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          IFS=. read -r D_MAJOR D_MINOR D_PATCH <<< "$DRAFT_VERSION"
-          IFS=. read -r L_MAJOR L_MINOR L_PATCH <<< "$LATEST_VERSION"
+          IFS=. read -r LATEST_MAJOR LATEST_MINOR _ <<< "$LATEST_VERSION"
 
-          if [ "$D_MAJOR" != "$L_MAJOR" ] || [ "$D_MINOR" != "$L_MINOR" ]; then
-            echo "Draft release ${DRAFT_TAG} is a major/minor bump over ${LATEST_TAG}, skipping automatic publish."
+          if [ "$DRAFT_MAJOR" != "$LATEST_MAJOR" ] || [ "$DRAFT_MINOR" != "$LATEST_MINOR" ]; then
+            echo "Draft release ${TAG_NAME} is a major/minor bump over ${LATEST_TAG}, skipping automatic publish."
             echo "published=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          if [ "$D_PATCH" -le "$L_PATCH" ]; then
-            echo "Draft release ${DRAFT_TAG} is not newer than ${LATEST_TAG}, skipping automatic publish."
-            echo "published=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Publishing patch release ${DRAFT_TAG} (previous: ${LATEST_TAG})"
-          gh release edit "$DRAFT_TAG" -R "$REPO" --draft=false
+          echo "Publishing patch release ${TAG_NAME} (previous: ${LATEST_TAG})"
+          gh release edit "$TAG_NAME" -R "$REPO" --draft=false
 
           echo "published=true" >> "$GITHUB_OUTPUT"
-          echo "tag=${DRAFT_TAG}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG_NAME}" >> "$GITHUB_OUTPUT"
         shell: bash
