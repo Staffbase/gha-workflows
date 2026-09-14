@@ -321,6 +321,23 @@ jobs:
 
 </details>
 
+#### Pushing to Google Artifact Registry
+
+Set `artifact-registry: true` and pass the `GCP_ARTIFACT_PUBLISHER_KEY` organization secret. The
+registry becomes `europe-docker.pkg.dev` and `docker-image` is prefixed with the publish
+repository, so `sb-images/my-service` is pushed as
+`europe-docker.pkg.dev/staffbase-artifacts/images-publish/sb-images/my-service`.
+
+```yaml
+    with:
+      artifact-registry: true
+    secrets:
+      gcp-service-account-key: ${{ secrets.GCP_ARTIFACT_PUBLISHER_KEY }}
+```
+
+Drop `docker-username` and `docker-password`: they are ignored when `artifact-registry` is set.
+Pulls are unaffected either way, because the `images` repository serves Harbor as an upstream.
+
 ### Jira Ticket Tagging
 
 <details>

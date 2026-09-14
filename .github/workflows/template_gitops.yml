@@ -90,6 +90,11 @@ on:
         type: boolean
         default: false
         description: "Create GitHub Deployments on the source repository and write tracking annotations to the GitOps CRs"
+      artifact-registry:
+        required: false
+        type: boolean
+        default: false
+        description: "Push to Google Artifact Registry instead of Harbor. Overrides docker-registry and prefixes docker-image with the publish repository. Pass the gcp-service-account-key secret alongside it."
       multi-arch:
         required: false
         type: boolean
@@ -105,6 +110,8 @@ on:
       docker-username:
         required: false
       docker-password:
+        required: false
+      gcp-service-account-key:
         required: false
       docker-build-secrets:
         required: false
@@ -148,11 +155,14 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        uses: Staffbase/gitops-github-action@2c7f44d08b1e3e03357a10cfd703bea1c55051c9 # UNRELEASED - re-pin to the release tag before merging
         with:
-          docker-registry: ${{ inputs.docker-registry }}
-          docker-username: ${{ secrets.docker-username }}
-          docker-password: ${{ secrets.docker-password }}
+          # Empty is falsy in an expression, so the condition is negated rather than
+          # selecting '' on the true branch, which would fall through to the Harbor value.
+          docker-registry: ${{ inputs.artifact-registry && 'europe-docker.pkg.dev' || inputs.docker-registry }}
+          docker-username: ${{ !inputs.artifact-registry && secrets.docker-username || '' }}
+          docker-password: ${{ !inputs.artifact-registry && secrets.docker-password || '' }}
+          gcp-service-account-key: ${{ secrets.gcp-service-account-key }}
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             GONOSUMDB=${{ vars.gonosumdb }}
@@ -164,7 +174,7 @@ jobs:
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
-          docker-image: ${{ inputs.docker-image }}
+          docker-image: ${{ inputs.artifact-registry && format('staffbase-artifacts/images-publish/{0}', inputs.docker-image) || inputs.docker-image }}
           docker-custom-tag: ${{ inputs.docker-custom-tag }}
           docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
           gitops-organization: ${{ inputs.gitops-organization }}
@@ -200,13 +210,16 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: GitOps (build and push by digest)
-        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        uses: Staffbase/gitops-github-action@2c7f44d08b1e3e03357a10cfd703bea1c55051c9 # UNRELEASED - re-pin to the release tag before merging
         with:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
-          docker-registry: ${{ inputs.docker-registry }}
-          docker-username: ${{ secrets.docker-username }}
-          docker-password: ${{ secrets.docker-password }}
+          # Empty is falsy in an expression, so the condition is negated rather than
+          # selecting '' on the true branch, which would fall through to the Harbor value.
+          docker-registry: ${{ inputs.artifact-registry && 'europe-docker.pkg.dev' || inputs.docker-registry }}
+          docker-username: ${{ !inputs.artifact-registry && secrets.docker-username || '' }}
+          docker-password: ${{ !inputs.artifact-registry && secrets.docker-password || '' }}
+          gcp-service-account-key: ${{ secrets.gcp-service-account-key }}
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             GONOSUMDB=${{ vars.gonosumdb }}
@@ -216,7 +229,7 @@ jobs:
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
-          docker-image: ${{ inputs.docker-image }}
+          docker-image: ${{ inputs.artifact-registry && format('staffbase-artifacts/images-publish/{0}', inputs.docker-image) || inputs.docker-image }}
           docker-custom-tag: ${{ inputs.docker-custom-tag }}
           docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
           working-directory: ${{ inputs.working-directory }}
@@ -248,13 +261,16 @@ jobs:
 
       - name: GitOps (merge manifests and deploy)
         id: gitops
-        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        uses: Staffbase/gitops-github-action@2c7f44d08b1e3e03357a10cfd703bea1c55051c9 # UNRELEASED - re-pin to the release tag before merging
         with:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
-          docker-registry: ${{ inputs.docker-registry }}
-          docker-username: ${{ secrets.docker-username }}
-          docker-password: ${{ secrets.docker-password }}
+          # Empty is falsy in an expression, so the condition is negated rather than
+          # selecting '' on the true branch, which would fall through to the Harbor value.
+          docker-registry: ${{ inputs.artifact-registry && 'europe-docker.pkg.dev' || inputs.docker-registry }}
+          docker-username: ${{ !inputs.artifact-registry && secrets.docker-username || '' }}
+          docker-password: ${{ !inputs.artifact-registry && secrets.docker-password || '' }}
+          gcp-service-account-key: ${{ secrets.gcp-service-account-key }}
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             GONOSUMDB=${{ vars.gonosumdb }}
@@ -265,7 +281,7 @@ jobs:
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
-          docker-image: ${{ inputs.docker-image }}
+          docker-image: ${{ inputs.artifact-registry && format('staffbase-artifacts/images-publish/{0}', inputs.docker-image) || inputs.docker-image }}
           docker-custom-tag: ${{ inputs.docker-custom-tag }}
           docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
           gitops-organization: ${{ inputs.gitops-organization }}
