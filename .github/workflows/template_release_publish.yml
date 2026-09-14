@@ -1,0 +1,114 @@
+name: Release Auto Publish
+
+on:
+  workflow_call:
+    inputs:
+      tag-prefix:
+        required: false
+        type: string
+        default: 'v'
+      tag-suffix:
+        required: false
+        type: string
+        default: ''
+    secrets:
+      client_id:
+        required: true
+      private_key:
+        required: true
+    outputs:
+      published:
+        value: ${{ jobs.publish_patch_release.outputs.published }}
+      tag:
+        value: ${{ jobs.publish_patch_release.outputs.tag }}
+
+jobs:
+  publish_patch_release:
+    name: publish patch-only draft release
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+
+    outputs:
+      published: ${{ steps.publish.outputs.published }}
+      tag: ${{ steps.publish.outputs.tag }}
+
+    steps:
+      - name: Get App Token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: get_token
+        with:
+          client-id: ${{ secrets.client_id }}
+          private-key: ${{ secrets.private_key }}
+
+      - name: Publish draft release if patch-only
+        id: publish
+        env:
+          GH_TOKEN: ${{ steps.get_token.outputs.token }}
+        run: |
+          set -euo pipefail
+
+          TAG_PREFIX="${{ inputs.tag-prefix }}"
+          TAG_SUFFIX="${{ inputs.tag-suffix }}"
+          REPO="${{ github.repository }}"
+
+          strip_version() {
+            local v="${1#${TAG_PREFIX}}"
+            echo "${v%${TAG_SUFFIX}}"
+          }
+
+          # newest draft release matching prefix/suffix
+          DRAFT_TAG=$(gh release list -R "$REPO" --limit 100 --json tagName,isDraft,createdAt \
+            --jq "[.[] | select(.isDraft and (.tagName | startswith(\"${TAG_PREFIX}\") and endswith(\"${TAG_SUFFIX}\")))] | sort_by(.createdAt) | reverse | .[0].tagName // empty")
+
+          if [ -z "$DRAFT_TAG" ]; then
+            echo "No draft release found, nothing to publish."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Newest draft release: ${DRAFT_TAG}"
+
+          # latest published (non-draft, non-prerelease) release
+          LATEST_TAG=$(gh release list -R "$REPO" --limit 100 --exclude-drafts --exclude-pre-releases --json tagName \
+            --jq "[.[] | select(.tagName | startswith(\"${TAG_PREFIX}\") and endswith(\"${TAG_SUFFIX}\"))] | .[0].tagName // empty")
+
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No previous published release found, skipping automatic publish."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Latest published release: ${LATEST_TAG}"
+
+          DRAFT_VERSION=$(strip_version "$DRAFT_TAG")
+          LATEST_VERSION=$(strip_version "$LATEST_TAG")
+
+          pattern="^[0-9]+\.[0-9]+\.[0-9]+$"
+          if ! [[ "$DRAFT_VERSION" =~ $pattern ]] || ! [[ "$LATEST_VERSION" =~ $pattern ]]; then
+            echo "Could not parse semantic version from '${DRAFT_TAG}' / '${LATEST_TAG}', skipping."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          IFS=. read -r D_MAJOR D_MINOR D_PATCH <<< "$DRAFT_VERSION"
+          IFS=. read -r L_MAJOR L_MINOR L_PATCH <<< "$LATEST_VERSION"
+
+          if [ "$D_MAJOR" != "$L_MAJOR" ] || [ "$D_MINOR" != "$L_MINOR" ]; then
+            echo "Draft release ${DRAFT_TAG} is a major/minor bump over ${LATEST_TAG}, skipping automatic publish."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$D_PATCH" -le "$L_PATCH" ]; then
+            echo "Draft release ${DRAFT_TAG} is not newer than ${LATEST_TAG}, skipping automatic publish."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Publishing patch release ${DRAFT_TAG} (previous: ${LATEST_TAG})"
+          gh release edit "$DRAFT_TAG" -R "$REPO" --draft=false
+
+          echo "published=true" >> "$GITHUB_OUTPUT"
+          echo "tag=${DRAFT_TAG}" >> "$GITHUB_OUTPUT"
+        shell: bash
