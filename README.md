@@ -321,6 +321,39 @@ jobs:
 
 </details>
 
+### GitOps (Artifact Registry)
+
+Publishes to Google Artifact Registry with Workload Identity Federation. The Harbor equivalent is
+[GitOps](#gitops), which this replaces; migrate a service by switching the `uses:` line and adding
+`id-token: write`.
+
+```yaml
+jobs:
+  gitops:
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops_gar.yml@v15
+    permissions:
+      contents: read
+      deployments: write
+      id-token: write
+    with:
+      gitops-dev: |-
+        clusters/dev/my-service/my-service-helm.yaml spec.values.image.tag
+    secrets:
+      gitops-token: ${{ secrets.GITOPS_TOKEN }}
+```
+
+**The `permissions` block is required.** A called workflow cannot raise the caller's permissions,
+so without `id-token: write` on the calling job the token exchange fails before the build starts.
+The other two entries are needed because an explicit block replaces the default set: omitting
+`contents: read` breaks the checkout.
+
+No registry credentials are passed. The service account is reached by federation, and the
+`gcp-workload-identity-provider` and `gcp-service-account` defaults point at the Staffbase pool.
+
+Images land at `europe-docker.pkg.dev/staffbase-artifacts/images-publish/sb-images/<repo>`. Pulls
+are unaffected while a service has not migrated, because the `images` repository serves Harbor as
+an upstream.
+
 ### Jira Ticket Tagging
 
 <details>
