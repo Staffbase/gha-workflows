@@ -1,0 +1,100 @@
+name: 'Setup Artifact Registry'
+description: 'Federates into Google Artifact Registry and configures Docker, npm and Maven to use it.'
+author: 'Staffbase SE'
+
+inputs:
+  configure:
+    description: 'Comma-separated list of clients to configure: docker, npm, maven. The access token is produced regardless, so a build that passes it on itself can leave this empty.'
+    required: false
+    default: 'docker'
+  workload-identity-provider:
+    description: 'Workload Identity Provider to federate through. The default is the Staffbase pool; overriding it is for testing only.'
+    required: false
+    default: 'projects/753004700074/locations/global/workloadIdentityPools/github/providers/github'
+  service-account:
+    description: 'Service account to impersonate. The default holds artifactregistry.writer on the publish repositories and reader on the project.'
+    required: false
+    default: 'github-artifact-publisher@global-iam-436113.iam.gserviceaccount.com'
+  docker-registry:
+    description: 'Docker registry host to log in to.'
+    required: false
+    default: 'europe-docker.pkg.dev'
+  npm-registry:
+    description: 'npm endpoint the credential is written for. Must match the registry the project resolves from.'
+    required: false
+    default: 'https://europe-npm.pkg.dev/staffbase-artifacts/npm/'
+  maven-registry:
+    description: 'Maven endpoint written into the generated settings.xml.'
+    required: false
+    default: 'https://europe-maven.pkg.dev/staffbase-artifacts/maven'
+
+outputs:
+  access-token:
+    description: 'Short-lived Google access token. Pass it to a build that authenticates itself, such as a Docker build secret for an npm install inside the image. Masked in logs, and valid for the length of the job.'
+    value: ${{ steps.auth.outputs.access_token }}
+
+runs:
+  using: 'composite'
+  steps:
+    # The calling job must grant id-token: write. A composite action cannot request
+    # a permission for itself, so without it this fails before anything is written.
+    - name: Authenticate to Google Cloud
+      id: auth
+      uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+      with:
+        workload_identity_provider: ${{ inputs.workload-identity-provider }}
+        service_account: ${{ inputs.service-account }}
+        token_format: access_token
+
+    - name: Login to Artifact Registry
+      if: contains(inputs.configure, 'docker')
+      uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+      with:
+        registry: ${{ inputs.docker-registry }}
+        username: oauth2accesstoken
+        password: ${{ steps.auth.outputs.access_token }}
+
+    # The credential only. Which registry a project resolves from stays in its own
+    # .npmrc, so this does not silently repoint a build.
+    - name: Configure npm
+      if: contains(inputs.configure, 'npm')
+      shell: bash
+      env:
+        NPM_REGISTRY: ${{ inputs.npm-registry }}
+        ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+      run: |
+        set -euo pipefail
+        # npm keys an entry by the registry URL without its scheme.
+        key="${NPM_REGISTRY#https:}"
+        {
+          echo "${key}:_authToken=${ACCESS_TOKEN}"
+          echo "${key}:always-auth=true"
+        } >> "${HOME}/.npmrc"
+        echo "::notice::Configured npm credentials for ${NPM_REGISTRY}"
+
+    - name: Configure Maven
+      if: contains(inputs.configure, 'maven')
+      shell: bash
+      env:
+        MAVEN_REGISTRY: ${{ inputs.maven-registry }}
+        ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+      run: |
+        set -euo pipefail
+        settings="${HOME}/.m2/settings.xml"
+        if [[ -f "$settings" ]]; then
+          echo "::error::${settings} already exists. This action would overwrite it; configure Maven in the project instead."
+          exit 1
+        fi
+        mkdir -p "${HOME}/.m2"
+        cat > "$settings" <<XML
+        <settings>
+          <servers>
+            <server>
+              <id>artifact-registry</id>
+              <username>oauth2accesstoken</username>
+              <password>${ACCESS_TOKEN}</password>
+            </server>
+          </servers>
+        </settings>
+        XML
+        echo "::notice::Wrote Maven credentials for ${MAVEN_REGISTRY} to ${settings} under the server id 'artifact-registry'"

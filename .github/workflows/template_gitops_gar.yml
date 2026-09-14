@@ -1,0 +1,357 @@
+# Publishes to Google Artifact Registry.
+#
+# The calling job must grant id-token: write. A called workflow cannot raise the
+# caller's permissions, so that grant has to come from the caller or the token
+# exchange fails before the build starts.
+#
+# gitops-github-action is unchanged and unaware of Google: setup-artifact-registry
+# mints a token, and Artifact Registry accepts it as a basic-auth password under
+# the fixed username oauth2accesstoken.
+#
+# template_gitops.yml is the Harbor equivalent and is retired once every service
+# has moved here.
+
+name: GitOps (Artifact Registry)
+
+on:
+  workflow_call:
+    inputs:
+      docker-registry:
+        required: false
+        type: string
+        default: "europe-docker.pkg.dev"
+      docker-registry-api:
+        required: false
+        type: string
+        default: "https://europe-docker.pkg.dev/v2/"
+        description: "Registry v2 API, used to retag a release without rebuilding. Must match docker-registry."
+      docker-build-args:
+        required: false
+        type: string
+      docker-build-target:
+        required: false
+        type: string
+      docker-build-outputs:
+        required: false
+        type: string
+        description: "Custom output destinations for docker build (e.g., type=registry,push=true,compression=gzip,force-compression=true). Required for DHI images."
+      docker-build-platform:
+        required: false
+        type: string
+        description: "A build platform (e.g., linux/amd64, linux/arm64). If multiple platforms are specified, the action will fail as it does not support cross-compilation."
+        default: "linux/amd64"
+      docker-build-provenance:
+        required: false
+        type: string
+        default: "false"
+      docker-disable-retagging:
+        required: false
+        type: string
+        default: "false"
+      docker-file:
+        required: false
+        type: string
+        default: "./Dockerfile"
+      docker-image:
+        required: false
+        type: string
+        default: sb-images/${{ github.event.repository.name }}
+        description: "Image path within the project, without the publish or pull repository in front of it. Both are composed from it."
+      docker-custom-tag:
+        required: false
+        type: string
+      docker-tag-timestamp:
+        required: false
+        type: string
+        default: "true"
+        description: "Insert a UTC timestamp into dev/main/master branch tags (e.g. dev-20260602143055-<short-sha>) to make them sortable for Flux image automation. Enabled by default; set to 'false' to use the legacy <prefix>-<short-sha> format."
+      gitops-dev:
+        required: false
+        type: string
+      gitops-stage:
+        required: false
+        type: string
+      gitops-prod:
+        required: false
+        type: string
+      gitops-organization:
+        required: false
+        type: string
+        default: ${{ github.repository_owner }}
+      gitops-repository:
+        required: false
+        type: string
+        default: "mops"
+      gitops-user:
+        required: false
+        type: string
+        default: "staffbase-actions"
+      gitops-email:
+        required: false
+        type: string
+        default: "staffbase-actions[bot]@users.noreply.github.com"
+      upwind-client-id:
+        required: false
+        type: string
+      runs-on:
+        required: false
+        type: string
+        default: "ubuntu-24.04"
+      upwind-organization-id:
+        required: false
+        type: string
+      working-directory:
+        required: false
+        type: string
+        default: "."
+      create-deployment:
+        required: false
+        type: boolean
+        default: false
+        description: "Create GitHub Deployments on the source repository and write tracking annotations to the GitOps CRs"
+      multi-arch:
+        required: false
+        type: boolean
+        default: false
+        description: "Build linux/amd64 and linux/arm64 natively via a job matrix and merge them into one multi-arch image. Disabled by default (single-arch build using docker-build-platform). See gitops-github-action README 'Multi-Arch Images'."
+      multiarch-artifact-name:
+        required: false
+        type: string
+        default: "docker-digests"
+        description: "Base name of the artifact carrying the per-architecture digests between the build and merge jobs. Only needs changing when a workflow builds more than one multi-arch image, otherwise the digests get mixed up."
+    # waiting for: https://github.com/github-community/community/discussions/17554
+    secrets:
+      docker-build-secrets:
+        required: false
+      docker-build-secret-files:
+        required: false
+      gitops-token:
+        required: false
+      gonosumdb:
+        required: false
+      client-id:
+        required: false
+      private-key:
+        required: false
+      upwind-client-secret:
+        required: false
+
+jobs:
+  gitops:
+    name: GitOps
+    runs-on: ${{ inputs.runs-on }}
+    if: inputs.multi-arch != true && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+    permissions:
+      contents: read
+      deployments: write
+      # Federation needs this, and it cannot be granted from here: the calling job
+      # must grant it too, or the run fails before the build starts.
+      id-token: write
+
+    env:
+      USING_APP_CREDENTIALS: ${{ secrets.client-id != '' && secrets.private-key != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Get App Token
+        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: get_token
+        with:
+          client-id: ${{ secrets.client-id }}
+          private-key: ${{ secrets.private-key }}
+          owner: ${{inputs.gitops-organization }}
+
+      # configure is empty: gitops-github-action performs the registry login itself
+      # with the token passed below.
+      - name: Setup Artifact Registry
+        id: gar
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@UNRELEASED
+        with:
+          configure: ""
+
+      - name: GitOps (build, push and deploy a new Docker image)
+        id: gitops
+        uses: Staffbase/gitops-github-action@UNRELEASED # needs gitops-docker-image
+        with:
+          docker-registry: ${{ inputs.docker-registry }}
+          docker-registry-api: ${{ inputs.docker-registry-api }}
+          docker-username: oauth2accesstoken
+          docker-password: ${{ steps.gar.outputs.access-token }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            GONOSUMDB=${{ vars.gonosumdb }}
+          # The token is always offered to the build as the secret "gar", so a
+          # Dockerfile installing npm or Maven dependencies from Artifact Registry
+          # can mount it. A build secret is only readable if the Dockerfile mounts
+          # it, so this costs nothing when unused.
+          docker-build-secrets: |
+            ${{ secrets.docker-build-secrets }}
+            gar=${{ steps.gar.outputs.access-token }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
+          docker-build-target: ${{ inputs.docker-build-target }}
+          docker-build-outputs: ${{ inputs.docker-build-outputs }}
+          docker-build-platforms: ${{ inputs.docker-build-platform }}
+          docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
+          docker-file: ${{ inputs.docker-file }}
+          # Pushed into images-publish, which is the only one of the two that accepts a
+          # push; referenced from images, so the upstream behind it can change without
+          # editing every manifest.
+          docker-image: staffbase-artifacts/images-publish/${{ inputs.docker-image }}
+          gitops-docker-image: staffbase-artifacts/images/${{ inputs.docker-image }}
+          docker-custom-tag: ${{ inputs.docker-custom-tag }}
+          docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
+          gitops-organization: ${{ inputs.gitops-organization }}
+          gitops-repository: ${{ inputs.gitops-repository }}
+          gitops-user: ${{ inputs.gitops-user }}
+          gitops-email: ${{ inputs.gitops-email }}
+          gitops-token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.gitops-token }}
+          gitops-dev: ${{ inputs.gitops-dev }}
+          gitops-stage: ${{ inputs.gitops-stage }}
+          gitops-prod: ${{ inputs.gitops-prod }}
+          upwind-client-id: ${{ inputs.upwind-client-id }}
+          upwind-client-secret: ${{ secrets.upwind-client-secret }}
+          upwind-organization-id: ${{ inputs.upwind-organization-id }}
+          working-directory: ${{ inputs.working-directory }}
+
+  gitops-build:
+    name: Build (${{ matrix.arch }})
+    runs-on: ${{ matrix.runs-on }}
+    if: inputs.multi-arch == true && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runs-on: ubuntu-24.04
+          - arch: arm64
+            runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Setup Artifact Registry
+        id: gar
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@UNRELEASED
+        with:
+          configure: ""
+
+      - name: GitOps (build and push by digest)
+        uses: Staffbase/gitops-github-action@UNRELEASED # needs gitops-docker-image
+        with:
+          multiarch-mode: build
+          multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
+          docker-registry: ${{ inputs.docker-registry }}
+          docker-registry-api: ${{ inputs.docker-registry-api }}
+          docker-username: oauth2accesstoken
+          docker-password: ${{ steps.gar.outputs.access-token }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            GONOSUMDB=${{ vars.gonosumdb }}
+          # The token is always offered to the build as the secret "gar", so a
+          # Dockerfile installing npm or Maven dependencies from Artifact Registry
+          # can mount it. A build secret is only readable if the Dockerfile mounts
+          # it, so this costs nothing when unused.
+          docker-build-secrets: |
+            ${{ secrets.docker-build-secrets }}
+            gar=${{ steps.gar.outputs.access-token }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
+          docker-build-target: ${{ inputs.docker-build-target }}
+          docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
+          docker-file: ${{ inputs.docker-file }}
+          # Pushed into images-publish, which is the only one of the two that accepts a
+          # push; referenced from images, so the upstream behind it can change without
+          # editing every manifest.
+          docker-image: staffbase-artifacts/images-publish/${{ inputs.docker-image }}
+          gitops-docker-image: staffbase-artifacts/images/${{ inputs.docker-image }}
+          docker-custom-tag: ${{ inputs.docker-custom-tag }}
+          docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
+          working-directory: ${{ inputs.working-directory }}
+
+  gitops-merge:
+    name: Merge and Deploy
+    needs: gitops-build
+    runs-on: ${{ inputs.runs-on }}
+    if: inputs.multi-arch == true && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+    permissions:
+      contents: read
+      deployments: write
+      # Federation needs this, and it cannot be granted from here: the calling job
+      # must grant it too, or the run fails before the build starts.
+      id-token: write
+
+    env:
+      USING_APP_CREDENTIALS: ${{ secrets.client-id != '' && secrets.private-key != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Get App Token
+        if: ${{ env.USING_APP_CREDENTIALS == 'true' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: get_token
+        with:
+          client-id: ${{ secrets.client-id }}
+          private-key: ${{ secrets.private-key }}
+          owner: ${{inputs.gitops-organization }}
+
+      - name: Setup Artifact Registry
+        id: gar
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@UNRELEASED
+        with:
+          configure: ""
+
+      - name: GitOps (merge manifests and deploy)
+        id: gitops
+        uses: Staffbase/gitops-github-action@UNRELEASED # needs gitops-docker-image
+        with:
+          multiarch-mode: merge
+          multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
+          docker-registry: ${{ inputs.docker-registry }}
+          docker-registry-api: ${{ inputs.docker-registry-api }}
+          docker-username: oauth2accesstoken
+          docker-password: ${{ steps.gar.outputs.access-token }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            GONOSUMDB=${{ vars.gonosumdb }}
+          # The token is always offered to the build as the secret "gar", so a
+          # Dockerfile installing npm or Maven dependencies from Artifact Registry
+          # can mount it. A build secret is only readable if the Dockerfile mounts
+          # it, so this costs nothing when unused.
+          docker-build-secrets: |
+            ${{ secrets.docker-build-secrets }}
+            gar=${{ steps.gar.outputs.access-token }}
+          docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
+          docker-build-target: ${{ inputs.docker-build-target }}
+          docker-build-outputs: ${{ inputs.docker-build-outputs }}
+          docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
+          docker-file: ${{ inputs.docker-file }}
+          # Pushed into images-publish, which is the only one of the two that accepts a
+          # push; referenced from images, so the upstream behind it can change without
+          # editing every manifest.
+          docker-image: staffbase-artifacts/images-publish/${{ inputs.docker-image }}
+          gitops-docker-image: staffbase-artifacts/images/${{ inputs.docker-image }}
+          docker-custom-tag: ${{ inputs.docker-custom-tag }}
+          docker-tag-timestamp: ${{ inputs.docker-tag-timestamp }}
+          gitops-organization: ${{ inputs.gitops-organization }}
+          gitops-repository: ${{ inputs.gitops-repository }}
+          gitops-user: ${{ inputs.gitops-user }}
+          gitops-email: ${{ inputs.gitops-email }}
+          gitops-token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.gitops-token }}
+          gitops-dev: ${{ inputs.gitops-dev }}
+          gitops-stage: ${{ inputs.gitops-stage }}
+          gitops-prod: ${{ inputs.gitops-prod }}
+          upwind-client-id: ${{ inputs.upwind-client-id }}
+          upwind-client-secret: ${{ secrets.upwind-client-secret }}
+          upwind-organization-id: ${{ inputs.upwind-organization-id }}
+          working-directory: ${{ inputs.working-directory }}

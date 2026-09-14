@@ -321,6 +321,56 @@ jobs:
 
 </details>
 
+### GitOps (Artifact Registry)
+
+Publishes to Google Artifact Registry. The Harbor equivalent is [GitOps](#gitops), which this
+replaces; migrate a service by switching the `uses:` line and adding `id-token: write`.
+
+```yaml
+jobs:
+  gitops:
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops_gar.yml@1ad4ec63950c1dd36695bc073bc101f816dd8c06 # v17.0.2
+    permissions:
+      contents: read
+      deployments: write
+      id-token: write
+    with:
+      gitops-dev: |-
+        clusters/dev/my-service/my-service-helm.yaml spec.values.image.tag
+    secrets:
+      gitops-token: ${{ secrets.GITOPS_TOKEN }}
+```
+
+**The `permissions` block is required.** A called workflow cannot raise the caller's permissions,
+so without `id-token: write` on the calling job the token exchange fails before the build starts.
+The other two entries are needed because an explicit block replaces the default set: omitting
+`contents: read` breaks the checkout.
+
+No registry credentials are passed. [`setup-artifact-registry`](actions/setup-artifact-registry)
+mints a token per job, and Artifact Registry accepts it as a basic-auth password.
+
+Images are pushed to `images-publish`, which is the only one of the two repositories that accepts a
+push, and the GitOps manifest references `images`, so the upstream behind it can change without
+editing every manifest. Both paths are composed from `docker-image`, which stays the short form:
+`sb-images/<repo>`.
+
+Pulls are unaffected while a service has not migrated, because the `images` repository serves
+Harbor as an upstream.
+
+#### Installing dependencies during the build
+
+The token is always offered to the build as the secret `gar`, so a Dockerfile that installs npm or
+Maven dependencies from Artifact Registry can mount it without the workflow passing anything:
+
+```dockerfile
+RUN --mount=type=secret,id=gar,env=NODE_AUTH_TOKEN npm ci
+```
+
+with the project's `.npmrc` reading that variable. See
+[`setup-artifact-registry`](actions/setup-artifact-registry) for the endpoint and the `.npmrc`
+entries. A build secret is only readable if the Dockerfile mounts it, so this costs nothing when
+unused.
+
 ### Jira Ticket Tagging
 
 <details>
@@ -711,6 +761,14 @@ jobs:
 ```
 
 </details>
+
+## Actions 🧩
+
+Composite actions in [`actions/`](actions), used from a job's `steps` rather than as a workflow.
+
+| Action | Purpose |
+| ------ | ------- |
+| [`setup-artifact-registry`](actions/setup-artifact-registry) | Federate into Google Artifact Registry and configure Docker, npm and Maven |
 
 ## Limitations 🚧
 
