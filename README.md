@@ -72,6 +72,8 @@ jobs:
 
 AutoDev installs Mergiraf through mise in an isolated temporary configuration and uses it by default for supported file types. Conflicts Mergiraf cannot resolve still fail that pull request's merge attempt as usual.
 
+Set the optional `mergiraf` input to `false` to disable it for a caller; it defaults to `true`.
+
 ```yml
 name: Autodev
 
