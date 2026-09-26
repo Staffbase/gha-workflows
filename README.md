@@ -70,9 +70,7 @@ jobs:
 <details>
 <summary>The action can be used to merge labeled pull requests into a branch.</summary>
 
-AutoDev installs Mergiraf through mise in an isolated temporary configuration and uses it by default for supported file types. Conflicts Mergiraf cannot resolve still fail that pull request's merge attempt as usual.
-
-Set the optional `mergiraf` input to `false` to disable it for a caller; it defaults to `true`.
+AutoDev enables Mergiraf by default for supported file types. The action installs its pinned, checksum-verified release; set the optional `mergiraf` input to `false` to use Git's normal merge behavior. Conflicts Mergiraf cannot resolve still fail that pull request's merge attempt as usual.
 
 ```yml
 name: Autodev

@@ -86,35 +86,8 @@ jobs:
           fetch-tags: false
           filter: blob:none
 
-      - name: Prepare isolated Mergiraf mise config
-        if: inputs.mergiraf
-        run: |
-          mkdir -p "${RUNNER_TEMP}/autodev-mise"
-          cat > "${RUNNER_TEMP}/autodev-mise/mise.toml" <<'EOF'
-          [tools]
-          "aqua:codeberg.org/mergiraf/mergiraf" = "0.19.1"
-          EOF
-
-      - name: Install Mergiraf
-        if: inputs.mergiraf
-        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
-        with:
-          version: 2026.9.13
-          working_directory: ${{ runner.temp }}/autodev-mise
-          cache: true
-          cache_key: autodev-mergiraf-v1-2026.9.13-0.19.1-{{platform}}
-
-      - name: Configure Mergiraf
-        if: inputs.mergiraf
-        run: |
-          mergiraf languages --gitattributes > "${RUNNER_TEMP}/autodev-mise/attributes"
-          git config --local merge.mergiraf.name Mergiraf
-          git config --local merge.mergiraf.driver 'mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L'
-          git config --local merge.conflictStyle diff3
-          git config --local core.attributesFile "${RUNNER_TEMP}/autodev-mise/attributes"
-
       - name: Autodev
-        uses: Staffbase/autodev-action@7cce23249487eeb677775f272a9c6d923d9a1621 # v2.10.1
+        uses: Staffbase/autodev-action@2c8a8ca2b9b7ac593814464be123625d18c3355c # Mergiraf support and cache
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
@@ -124,6 +97,7 @@ jobs:
           failure_label: ${{ inputs.failure_label }}
           label: ${{ inputs.label }}
           labels: ${{ inputs.labels }}
+          mergiraf: ${{ inputs.mergiraf }}
           success_comment: ${{ inputs.success_comment }}
           success_label: ${{ inputs.success_label }}
           token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
