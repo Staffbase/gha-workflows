@@ -87,7 +87,7 @@ jobs:
           filter: blob:none
 
       - name: Autodev
-        uses: Staffbase/autodev-action@2c8a8ca2b9b7ac593814464be123625d18c3355c # Mergiraf support and cache
+        uses: Staffbase/autodev-action@33ab54dd5dc5b3e8daeaffb48767cdea68700e80 # Mergiraf release updater
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
