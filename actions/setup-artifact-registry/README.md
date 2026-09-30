@@ -4,7 +4,8 @@ Federates into Google Artifact Registry and configures the clients that need it.
 its OIDC token for a Google access token and writes it into the selected clients' credential files
 (a Docker login, `.npmrc`, a Maven `settings.xml`); no long-lived credential is stored anywhere.
 That access token expires after one hour by default, so a job that publishes later than that must
-re-run this action to re-authenticate.
+re-run this action to re-authenticate. `maven` in `configure` requires `python3` on the runner
+(present by default on GitHub-hosted runners) to merge Maven credentials into `settings.xml`.
 
 ## Usage
 
@@ -38,6 +39,7 @@ so without `id-token: write` on the calling job the token exchange fails.
 | `npm-registry` | Endpoint the npm credential is written for | `https://europe-npm.pkg.dev/staffbase-artifacts/npm/` |
 | `maven-registry` | Endpoint the generated `settings.xml` mirrors all repository requests to | `https://europe-maven.pkg.dev/staffbase-artifacts/maven` |
 | `maven-server-id` | Server ID the Maven credential is registered under; set it to the project's `distributionManagement.repository` ID if that differs | `artifact-registry` |
+| `maven-snapshot-server-id` | Additional server ID for the same credential, if `distributionManagement.snapshotRepository` uses a different ID | none |
 
 ## Outputs
 
@@ -50,17 +52,20 @@ so without `id-token: write` on the calling job the token exchange fails.
 
 **docker** logs in to `docker-registry`, so `docker build`, `docker push` and Jib all work.
 
-**npm** copies the caller's existing `~/.npmrc`, if any, into a job-scoped copy under
-`RUNNER_TEMP`, appends credentials for `npm-registry` to it, and points npm at that copy via
+**npm** starts from the caller's active user config — `NPM_CONFIG_USERCONFIG` if already set (for
+example by `actions/setup-node`), otherwise `~/.npmrc` — copies it into a job-scoped file under
+`RUNNER_TEMP`, appends credentials for `npm-registry`, and points npm at that copy via
 `NPM_CONFIG_USERCONFIG`. It writes the credential only: which registry a project resolves from
 stays in the project's own `.npmrc`, so this never silently repoints a build.
 
-**maven** writes a job-scoped `settings.xml` under `RUNNER_TEMP` (path in the `maven-settings-path`
-output) with a mirror that sends all repository *downloads* to `maven-registry`, authenticated
-under the server id `artifact-registry`. A `deploy` is authenticated separately, by the ID in the
-project's `distributionManagement.repository`, not by the mirror: if that ID is not
-`artifact-registry`, set `maven-server-id` to it so a second `server` entry is added for deploys.
-Pass the settings path explicitly, e.g. `mvn --settings "${{ steps.gar.outputs.maven-settings-path }}"`.
+**maven** merges into a job-scoped copy of the caller's `~/.m2/settings.xml` (if present, other
+servers/profiles/proxies survive) under `RUNNER_TEMP` (path in the `maven-settings-path` output): a
+mirror that sends all repository *downloads* to `maven-registry`, authenticated under the server id
+`artifact-registry`, plus a `server` entry for `maven-server-id` and, if set,
+`maven-snapshot-server-id`. A `deploy` is authenticated separately from downloads, by the ID in the
+project's `distributionManagement.repository` (or `.snapshotRepository`), not by the mirror — set
+those inputs to match when they are not `artifact-registry`. Pass the settings path explicitly,
+e.g. `mvn --settings "${{ steps.gar.outputs.maven-settings-path }}"`.
 
 Both credential files are written with `600` permissions and live under `RUNNER_TEMP`, which the
 runner empties at the end of the job — nothing is left behind for a later job on the same runner

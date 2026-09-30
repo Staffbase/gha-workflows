@@ -31,6 +31,10 @@ inputs:
     description: 'Server ID the generated settings.xml credential is registered under. Maven picks deploy credentials by the ID in the project pom.xml `distributionManagement.repository`, not by the mirror, so set this to match that repository ID if it is not the default.'
     required: false
     default: 'artifact-registry'
+  maven-snapshot-server-id:
+    description: 'Additional server ID to register the same credential under, for a project whose `distributionManagement.snapshotRepository` uses a different ID than `maven-server-id`. Leave empty if snapshots and releases share one ID.'
+    required: false
+    default: ''
 
 outputs:
   access-token:
@@ -102,10 +106,14 @@ runs:
         set -euo pipefail
         npmrc="${RUNNER_TEMP}/.npmrc"
         umask 077
-        # Start from the caller's existing user config (e.g. other registries or scopes),
-        # if any, instead of discarding it.
-        if [[ -f "${HOME}/.npmrc" ]]; then
-          cp "${HOME}/.npmrc" "${npmrc}"
+        # npm reads NPM_CONFIG_USERCONFIG when the caller has already set one (e.g.
+        # actions/setup-node with registry-url), and ~/.npmrc otherwise. Start from
+        # whichever is active, instead of discarding it, unless it is already this file.
+        active_config="${NPM_CONFIG_USERCONFIG:-${HOME}/.npmrc}"
+        if [[ "${active_config}" == "${npmrc}" ]]; then
+          :
+        elif [[ -f "${active_config}" ]]; then
+          cp "${active_config}" "${npmrc}"
         else
           : > "${npmrc}"
         fi
@@ -129,6 +137,7 @@ runs:
       env:
         MAVEN_REGISTRY: ${{ inputs.maven-registry }}
         MAVEN_SERVER_ID: ${{ inputs.maven-server-id }}
+        MAVEN_SNAPSHOT_SERVER_ID: ${{ inputs.maven-snapshot-server-id }}
         ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
       run: |
         set -euo pipefail
@@ -136,48 +145,65 @@ runs:
         settings="${m2_dir}/settings.xml"
         mkdir -p "${m2_dir}"
         umask 077
-        xml_escape() {
-          local s="$1"
-          # Bash's ${var//pattern/replacement} treats a literal & in replacement as the match,
-          # like sed, so it must be escaped too or &lt;/&gt; become <lt;/>gt;.
-          s="${s//&/\&amp;}"
-          s="${s//</\&lt;}"
-          s="${s//>/\&gt;}"
-          printf '%s' "${s}"
-        }
-        registry_xml="$(xml_escape "${MAVEN_REGISTRY}")"
-        server_id_xml="$(xml_escape "${MAVEN_SERVER_ID}")"
-        token_xml="$(xml_escape "${ACCESS_TOKEN}")"
-        # Maven authenticates a mirrored download by the mirror's own id ("artifact-registry"),
-        # but a deploy is authenticated by distributionManagement.repository's id instead, so a
-        # server entry is needed for each unless the caller's deploy repository id already matches.
-        deploy_server_entry=""
-        if [[ "${MAVEN_SERVER_ID}" != "artifact-registry" ]]; then
-          deploy_server_entry="
-            <server>
-              <id>${server_id_xml}</id>
-              <username>oauth2accesstoken</username>
-              <password>${token_xml}</password>
-            </server>"
-        fi
-        cat > "${settings}" <<XML
-        <settings>
-          <servers>
-            <server>
-              <id>artifact-registry</id>
-              <username>oauth2accesstoken</username>
-              <password>${token_xml}</password>
-            </server>${deploy_server_entry}
-          </servers>
-          <mirrors>
-            <mirror>
-              <id>artifact-registry</id>
-              <mirrorOf>*</mirrorOf>
-              <url>${registry_xml}</url>
-            </mirror>
-          </mirrors>
-        </settings>
-        XML
+        # Building this by string concatenation was fragile (an unescaped `&`, `<` or `>` in a
+        # registry URL or server ID produced invalid XML); an XML library both escapes correctly
+        # and lets the caller's own ~/.m2/settings.xml (proxies, profiles, other servers) survive
+        # instead of being replaced outright.
+        python3 - <<'PY'
+        import os
+        import xml.etree.ElementTree as ET
+
+        registry = os.environ["MAVEN_REGISTRY"]
+        server_id = os.environ["MAVEN_SERVER_ID"]
+        snapshot_server_id = os.environ.get("MAVEN_SNAPSHOT_SERVER_ID", "").strip()
+        token = os.environ["ACCESS_TOKEN"]
+        out_path = os.path.join(os.environ["RUNNER_TEMP"], "m2", "settings.xml")
+
+        existing = os.path.expanduser("~/.m2/settings.xml")
+        if os.path.isfile(existing):
+            tree = ET.parse(existing)
+            root = tree.getroot()
+        else:
+            root = ET.Element("settings")
+            tree = ET.ElementTree(root)
+
+
+        def get_or_create(parent, tag):
+            el = parent.find(tag)
+            if el is None:
+                el = ET.SubElement(parent, tag)
+            return el
+
+
+        def upsert_server(servers, server_id):
+            for s in servers.findall("server"):
+                if s.findtext("id") == server_id:
+                    servers.remove(s)
+            s = ET.SubElement(servers, "server")
+            ET.SubElement(s, "id").text = server_id
+            ET.SubElement(s, "username").text = "oauth2accesstoken"
+            ET.SubElement(s, "password").text = token
+
+
+        servers = get_or_create(root, "servers")
+        seen = set()
+        for sid in ("artifact-registry", server_id, snapshot_server_id):
+            if sid and sid not in seen:
+                upsert_server(servers, sid)
+                seen.add(sid)
+
+        mirrors = get_or_create(root, "mirrors")
+        for m in mirrors.findall("mirror"):
+            if m.findtext("id") == "artifact-registry":
+                mirrors.remove(m)
+        mirror = ET.SubElement(mirrors, "mirror")
+        ET.SubElement(mirror, "id").text = "artifact-registry"
+        ET.SubElement(mirror, "mirrorOf").text = "*"
+        ET.SubElement(mirror, "url").text = registry
+
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        tree.write(out_path, encoding="unicode", xml_declaration=False)
+        PY
         chmod 600 "${settings}"
         echo "settings-path=${settings}" >> "${GITHUB_OUTPUT}"
-        echo "::notice::Wrote Maven credentials for ${MAVEN_REGISTRY} to a job-scoped ${settings} under server id(s) 'artifact-registry'${deploy_server_entry:+, '${MAVEN_SERVER_ID}'}, cleared automatically at the end of the job. Pass it to Maven with: mvn --settings ${settings}"
+        echo "::notice::Wrote Maven credentials for ${MAVEN_REGISTRY} to a job-scoped ${settings} under server id(s) 'artifact-registry', '${MAVEN_SERVER_ID}'${MAVEN_SNAPSHOT_SERVER_ID:+, '${MAVEN_SNAPSHOT_SERVER_ID}'}, cleared automatically at the end of the job. Pass it to Maven with: mvn --settings ${settings}"
