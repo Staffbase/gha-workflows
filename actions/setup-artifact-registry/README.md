@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b7e741b8d55f490ee1f5e3094175175b260b1d25 # unreleased
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@a6c359d77d50c58598cdb90146eb0a50cf858a97 # unreleased
         id: gar
         with:
           configure: docker,npm
@@ -59,13 +59,19 @@ example by `actions/setup-node`), otherwise `~/.npmrc` — copies it into a job-
 stays in the project's own `.npmrc`, so this never silently repoints a build.
 
 **maven** merges into a job-scoped copy of the caller's `~/.m2/settings.xml` (if present, other
-servers/profiles/proxies survive) under `RUNNER_TEMP` (path in the `maven-settings-path` output): a
-mirror that sends all repository *downloads* to `maven-registry`, authenticated under the server id
-`artifact-registry`, plus a `server` entry for `maven-server-id` and, if set,
-`maven-snapshot-server-id`. A `deploy` is authenticated separately from downloads, by the ID in the
-project's `distributionManagement.repository` (or `.snapshotRepository`), not by the mirror — set
-those inputs to match when they are not `artifact-registry`. Pass the settings path explicitly,
-e.g. `mvn --settings "${{ steps.gar.outputs.maven-settings-path }}"`.
+servers/profiles/proxies survive, and its Maven Settings namespace is respected) under
+`RUNNER_TEMP` (path in the `maven-settings-path` output): a mirror that sends all repository
+*downloads* to `maven-registry`, authenticated under the server id `artifact-registry`, plus a
+`server` entry for `maven-server-id` and, if set, `maven-snapshot-server-id`. A `deploy` is
+authenticated separately from downloads, by the ID in the project's
+`distributionManagement.repository` (or `.snapshotRepository`), not by the mirror — set those
+inputs to match when they are not `artifact-registry`. Pass the settings path explicitly, e.g.
+`mvn --settings "${{ steps.gar.outputs.maven-settings-path }}"`.
+
+The action fails rather than guess if the caller's `~/.m2/settings.xml` already defines another
+mirror: Maven picks whichever mirror matches a repository first by document order, not by
+specificity, so silently adding ours could leave either mirror shadowed. Remove the conflicting
+mirror, or don't use `maven` from this action, if that happens.
 
 Both credential files are written with `600` permissions and live under `RUNNER_TEMP`, which the
 runner empties at the end of the job — nothing is left behind for a later job on the same runner
@@ -77,7 +83,7 @@ An `npm install` that runs in a `RUN` layer cannot see the runner's npm credenti
 as a build secret instead:
 
 ```yaml
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b7e741b8d55f490ee1f5e3094175175b260b1d25 # unreleased
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@a6c359d77d50c58598cdb90146eb0a50cf858a97 # unreleased
         id: gar
 
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0

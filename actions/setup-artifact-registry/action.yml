@@ -151,6 +151,8 @@ runs:
         # instead of being replaced outright.
         python3 - <<'PY'
         import os
+        import re
+        import sys
         import xml.etree.ElementTree as ET
 
         registry = os.environ["MAVEN_REGISTRY"]
@@ -167,22 +169,31 @@ runs:
             root = ET.Element("settings")
             tree = ET.ElementTree(root)
 
+        # A standard settings.xml declares the Maven Settings namespace on <settings>, which
+        # qualifies every child tag ElementTree parses. Bare tag names would then miss the
+        # caller's existing <servers>/<mirrors> and add unnamespaced duplicates instead.
+        ns_match = re.match(r"\{(.*)\}", root.tag)
+        ns_uri = ns_match.group(1) if ns_match else ""
+        ns = f"{{{ns_uri}}}" if ns_uri else ""
+        if ns_uri:
+            ET.register_namespace("", ns_uri)
+
 
         def get_or_create(parent, tag):
-            el = parent.find(tag)
+            el = parent.find(ns + tag)
             if el is None:
-                el = ET.SubElement(parent, tag)
+                el = ET.SubElement(parent, ns + tag)
             return el
 
 
         def upsert_server(servers, server_id):
-            for s in servers.findall("server"):
-                if s.findtext("id") == server_id:
+            for s in servers.findall(ns + "server"):
+                if s.findtext(ns + "id") == server_id:
                     servers.remove(s)
-            s = ET.SubElement(servers, "server")
-            ET.SubElement(s, "id").text = server_id
-            ET.SubElement(s, "username").text = "oauth2accesstoken"
-            ET.SubElement(s, "password").text = token
+            s = ET.SubElement(servers, ns + "server")
+            ET.SubElement(s, ns + "id").text = server_id
+            ET.SubElement(s, ns + "username").text = "oauth2accesstoken"
+            ET.SubElement(s, ns + "password").text = token
 
 
         servers = get_or_create(root, "servers")
@@ -193,13 +204,25 @@ runs:
                 seen.add(sid)
 
         mirrors = get_or_create(root, "mirrors")
-        for m in mirrors.findall("mirror"):
-            if m.findtext("id") == "artifact-registry":
-                mirrors.remove(m)
-        mirror = ET.SubElement(mirrors, "mirror")
-        ET.SubElement(mirror, "id").text = "artifact-registry"
-        ET.SubElement(mirror, "mirrorOf").text = "*"
-        ET.SubElement(mirror, "url").text = registry
+        others = [m for m in mirrors.findall(ns + "mirror") if m.findtext(ns + "id") != "artifact-registry"]
+        if others:
+            # Maven picks the first mirror whose mirrorOf pattern matches, purely by document
+            # order, so an existing mirror here could silently outrank (or be shadowed by) ours
+            # depending on where we inserted it. Safer to stop than guess at precedence.
+            ids = ", ".join(m.findtext(ns + "id") or "?" for m in others)
+            print(
+                f"::error::~/.m2/settings.xml already defines mirror(s) {ids}, which this action "
+                "does not know how to reconcile with its own mirrorOf '*' entry. "
+                "Remove the conflicting mirror(s) or configure Maven without this action's mirror.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        for m in mirrors.findall(ns + "mirror"):
+            mirrors.remove(m)
+        mirror = ET.SubElement(mirrors, ns + "mirror")
+        ET.SubElement(mirror, ns + "id").text = "artifact-registry"
+        ET.SubElement(mirror, ns + "mirrorOf").text = "*"
+        ET.SubElement(mirror, ns + "url").text = registry
 
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
         tree.write(out_path, encoding="unicode", xml_declaration=False)
