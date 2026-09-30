@@ -27,6 +27,10 @@ inputs:
     description: 'Maven endpoint the generated settings.xml mirrors all repository requests to.'
     required: false
     default: 'https://europe-maven.pkg.dev/staffbase-artifacts/maven'
+  maven-server-id:
+    description: 'Server ID the generated settings.xml credential is registered under. Maven picks deploy credentials by the ID in the project pom.xml `distributionManagement.repository`, not by the mirror, so set this to match that repository ID if it is not the default.'
+    required: false
+    default: 'artifact-registry'
 
 outputs:
   access-token:
@@ -115,6 +119,7 @@ runs:
       shell: bash
       env:
         MAVEN_REGISTRY: ${{ inputs.maven-registry }}
+        MAVEN_SERVER_ID: ${{ inputs.maven-server-id }}
         ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
       run: |
         set -euo pipefail
@@ -122,6 +127,18 @@ runs:
         settings="${m2_dir}/settings.xml"
         mkdir -p "${m2_dir}"
         umask 077
+        # Maven authenticates a mirrored download by the mirror's own id ("artifact-registry"),
+        # but a deploy is authenticated by distributionManagement.repository's id instead, so a
+        # server entry is needed for each unless the caller's deploy repository id already matches.
+        deploy_server_entry=""
+        if [[ "${MAVEN_SERVER_ID}" != "artifact-registry" ]]; then
+          deploy_server_entry="
+            <server>
+              <id>${MAVEN_SERVER_ID}</id>
+              <username>oauth2accesstoken</username>
+              <password>${ACCESS_TOKEN}</password>
+            </server>"
+        fi
         cat > "${settings}" <<XML
         <settings>
           <servers>
@@ -129,7 +146,7 @@ runs:
               <id>artifact-registry</id>
               <username>oauth2accesstoken</username>
               <password>${ACCESS_TOKEN}</password>
-            </server>
+            </server>${deploy_server_entry}
           </servers>
           <mirrors>
             <mirror>
@@ -142,4 +159,4 @@ runs:
         XML
         chmod 600 "${settings}"
         echo "settings-path=${settings}" >> "${GITHUB_OUTPUT}"
-        echo "::notice::Wrote Maven credentials for ${MAVEN_REGISTRY} to a job-scoped ${settings}, cleared automatically at the end of the job. Pass it to Maven with: mvn --settings ${settings}"
+        echo "::notice::Wrote Maven credentials for ${MAVEN_REGISTRY} to a job-scoped ${settings} under server id(s) 'artifact-registry'${deploy_server_entry:+, '${MAVEN_SERVER_ID}'}, cleared automatically at the end of the job. Pass it to Maven with: mvn --settings ${settings}"

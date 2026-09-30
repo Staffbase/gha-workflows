@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@80c6d3ebfeab93ddf58a09e0041135de640b949d # unreleased
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b7e741b8d55f490ee1f5e3094175175b260b1d25 # unreleased
         id: gar
         with:
           configure: docker,npm
@@ -37,6 +37,7 @@ so without `id-token: write` on the calling job the token exchange fails.
 | `docker-registry` | Registry host to log in to | `europe-docker.pkg.dev` |
 | `npm-registry` | Endpoint the npm credential is written for | `https://europe-npm.pkg.dev/staffbase-artifacts/npm/` |
 | `maven-registry` | Endpoint the generated `settings.xml` mirrors all repository requests to | `https://europe-maven.pkg.dev/staffbase-artifacts/maven` |
+| `maven-server-id` | Server ID the Maven credential is registered under; set it to the project's `distributionManagement.repository` ID if that differs | `artifact-registry` |
 
 ## Outputs
 
@@ -55,8 +56,11 @@ project resolves from stays in the project's own `.npmrc`, so this never silentl
 build.
 
 **maven** writes a job-scoped `settings.xml` under `RUNNER_TEMP` (path in the `maven-settings-path`
-output) with a `server` entry and a mirror that sends all repository requests to `maven-registry`.
-Pass the path explicitly, e.g. `mvn --settings "${{ steps.gar.outputs.maven-settings-path }}"`.
+output) with a mirror that sends all repository *downloads* to `maven-registry`, authenticated
+under the server id `artifact-registry`. A `deploy` is authenticated separately, by the ID in the
+project's `distributionManagement.repository`, not by the mirror: if that ID is not
+`artifact-registry`, set `maven-server-id` to it so a second `server` entry is added for deploys.
+Pass the settings path explicitly, e.g. `mvn --settings "${{ steps.gar.outputs.maven-settings-path }}"`.
 
 Both credential files are written with `600` permissions and live under `RUNNER_TEMP`, which the
 runner empties at the end of the job — nothing is left behind for a later job on the same runner
@@ -68,7 +72,7 @@ An `npm install` that runs in a `RUN` layer cannot see the runner's npm credenti
 as a build secret instead:
 
 ```yaml
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@80c6d3ebfeab93ddf58a09e0041135de640b949d # unreleased
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b7e741b8d55f490ee1f5e3094175175b260b1d25 # unreleased
         id: gar
 
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
