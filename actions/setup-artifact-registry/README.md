@@ -1,8 +1,10 @@
 # Setup Artifact Registry
 
-Federates into Google Artifact Registry and configures the clients that need it. No long-lived
-credential is stored anywhere: the job exchanges its OIDC token for a Google access token that
-expires after one hour by default. A job that publishes later than that must re-run this action.
+Federates into Google Artifact Registry and configures the clients that need it. The job exchanges
+its OIDC token for a Google access token and writes it into the selected clients' credential files
+(a Docker login, `.npmrc`, a Maven `settings.xml`); no long-lived credential is stored anywhere.
+That access token expires after one hour by default, so a job that publishes later than that must
+re-run this action to re-authenticate.
 
 ## Usage
 
@@ -14,7 +16,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@80c6d3ebfeab93ddf58a09e0041135de640b949d # unreleased
         id: gar
@@ -69,7 +71,7 @@ as a build secret instead:
       - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@80c6d3ebfeab93ddf58a09e0041135de640b949d # unreleased
         id: gar
 
-      - uses: docker/build-push-action@v7
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           secrets: |
             gar=${{ steps.gar.outputs.access-token }}
