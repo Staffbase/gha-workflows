@@ -233,6 +233,11 @@ jobs:
 <details>
 <summary>The action can be used to build and publish a docker image.</summary>
 
+Every image is pushed to both Harbor (`docker-registry`) and Google Artifact Registry
+(`gar-registry`) by default. GAR authenticates via Workload Identity Federation
+([`setup-artifact-registry`](actions/setup-artifact-registry)), not a stored credential, so the
+calling job must grant `id-token: write`.
+
 ```yml
 name: GitOps
 
@@ -245,9 +250,12 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
     permissions:
       contents: read
+      id-token: write
     with:
       # optional: host of the docker registry, default: "registry.staffbase.com"
       docker-registry: '<your-registry>'
+      # optional: Google Artifact Registry path pushed to alongside docker-registry, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
+      gar-registry: '<your-gar-path>'
       # optional: list of build-time variables
       docker-build-args: |
         "any important args"

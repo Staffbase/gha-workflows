@@ -7,6 +7,11 @@ on:
         required: false
         type: string
         default: "registry.staffbase.com"
+      gar-registry:
+        required: false
+        type: string
+        default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
+        description: "Google Artifact Registry path pushed to alongside docker-registry. The calling job must grant 'id-token: write' for the Workload Identity Federation this requires."
       docker-build-args:
         required: false
         type: string
@@ -129,6 +134,7 @@ jobs:
     permissions:
       contents: read
       deployments: write
+      id-token: write
 
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client-id != '' && secrets.private-key != '' }}
@@ -146,11 +152,19 @@ jobs:
           private-key: ${{ secrets.private-key }}
           owner: ${{inputs.gitops-organization }}
 
+      - name: Setup Artifact Registry
+        id: gar
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+        with:
+          configure: ''
+
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        uses: Staffbase/gitops-github-action@bf3edfa25f4d08fd793ed9fa9096f6c85513f244 # v9.0.0
         with:
-          docker-registry: ${{ inputs.docker-registry }}
+          docker-registries: |
+            ${{ inputs.docker-registry }}
+            ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
@@ -186,6 +200,7 @@ jobs:
     if: inputs.multi-arch == true && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
     permissions:
       contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -199,12 +214,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
+      - name: Setup Artifact Registry
+        id: gar
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+        with:
+          configure: ''
+
       - name: GitOps (build and push by digest)
-        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        uses: Staffbase/gitops-github-action@bf3edfa25f4d08fd793ed9fa9096f6c85513f244 # v9.0.0
         with:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
-          docker-registry: ${{ inputs.docker-registry }}
+          docker-registries: |
+            ${{ inputs.docker-registry }}
+            ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
@@ -229,6 +252,7 @@ jobs:
     permissions:
       contents: read
       deployments: write
+      id-token: write
 
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client-id != '' && secrets.private-key != '' }}
@@ -246,13 +270,21 @@ jobs:
           private-key: ${{ secrets.private-key }}
           owner: ${{inputs.gitops-organization }}
 
+      - name: Setup Artifact Registry
+        id: gar
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+        with:
+          configure: ''
+
       - name: GitOps (merge manifests and deploy)
         id: gitops
-        uses: Staffbase/gitops-github-action@158275454d56fd8fa923995220ee1b9eb1030032 # v8.2.1
+        uses: Staffbase/gitops-github-action@bf3edfa25f4d08fd793ed9fa9096f6c85513f244 # v9.0.0
         with:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
-          docker-registry: ${{ inputs.docker-registry }}
+          docker-registries: |
+            ${{ inputs.docker-registry }}
+            ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
