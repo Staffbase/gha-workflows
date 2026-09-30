@@ -1,8 +1,8 @@
 # Setup Artifact Registry
 
-Federates into Google Artifact Registry and configures the clients that need it. No credential is
-stored anywhere: the job exchanges its OIDC token for a Google access token that lasts as long as
-the run.
+Federates into Google Artifact Registry and configures the clients that need it. No long-lived
+credential is stored anywhere: the job exchanges its OIDC token for a Google access token that
+expires after one hour by default. A job that publishes later than that must re-run this action.
 
 ## Usage
 
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@1ad4ec63950c1dd36695bc073bc101f816dd8c06 # v17.0.2
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@80c6d3ebfeab93ddf58a09e0041135de640b949d # unreleased
         id: gar
         with:
           configure: docker,npm
@@ -34,33 +34,39 @@ so without `id-token: write` on the calling job the token exchange fails.
 | `service-account` | Account to impersonate | `github-artifact-publisher@global-iam-436113` |
 | `docker-registry` | Registry host to log in to | `europe-docker.pkg.dev` |
 | `npm-registry` | Endpoint the npm credential is written for | `https://europe-npm.pkg.dev/staffbase-artifacts/npm/` |
-| `maven-registry` | Endpoint written into the generated `settings.xml` | `https://europe-maven.pkg.dev/staffbase-artifacts/maven` |
+| `maven-registry` | Endpoint the generated `settings.xml` mirrors all repository requests to | `https://europe-maven.pkg.dev/staffbase-artifacts/maven` |
 
 ## Outputs
 
 | Name | Description |
 | ---- | ----------- |
-| `access-token` | The access token, masked in logs. Pass it to a build that authenticates itself. |
+| `access-token` | The access token, masked in logs. Pass it to a build that authenticates itself. Expires after one hour by default. |
+| `maven-settings-path` | Path to the job-scoped `settings.xml` written when `maven` is configured. Pass it to Maven with `--settings`. |
 
 ## What each client does
 
 **docker** logs in to `docker-registry`, so `docker build`, `docker push` and Jib all work.
 
-**npm** appends credentials for `npm-registry` to `~/.npmrc`. It writes the credential only: which
-registry a project resolves from stays in the project's own `.npmrc`, so this never silently
-repoints a build.
+**npm** writes credentials for `npm-registry` to a job-scoped `.npmrc` under `RUNNER_TEMP`, and
+points npm at it via `NPM_CONFIG_USERCONFIG`. It writes the credential only: which registry a
+project resolves from stays in the project's own `.npmrc`, so this never silently repoints a
+build.
 
-**maven** writes `~/.m2/settings.xml` with a `server` entry under the id `artifact-registry`.
-Reference that id from the project's `repository` definition. The step fails rather than
-overwriting an existing `settings.xml`.
+**maven** writes a job-scoped `settings.xml` under `RUNNER_TEMP` (path in the `maven-settings-path`
+output) with a `server` entry and a mirror that sends all repository requests to `maven-registry`.
+Pass the path explicitly, e.g. `mvn --settings "${{ steps.gar.outputs.maven-settings-path }}"`.
+
+Both credential files are written with `600` permissions and live under `RUNNER_TEMP`, which the
+runner empties at the end of the job — nothing is left behind for a later job on the same runner
+to read.
 
 ## Installing inside a Docker build
 
-An `npm install` that runs in a `RUN` layer cannot see the runner's `~/.npmrc`. Pass the token as a
-build secret instead:
+An `npm install` that runs in a `RUN` layer cannot see the runner's npm credentials. Pass the token
+as a build secret instead:
 
 ```yaml
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@1ad4ec63950c1dd36695bc073bc101f816dd8c06 # v17.0.2
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@80c6d3ebfeab93ddf58a09e0041135de640b949d # unreleased
         id: gar
 
       - uses: docker/build-push-action@v7
