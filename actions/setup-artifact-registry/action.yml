@@ -1,0 +1,232 @@
+name: 'Setup Artifact Registry'
+description: 'Federates into Google Artifact Registry and configures Docker, npm and Maven to use it.'
+author: 'Staffbase SE'
+
+inputs:
+  configure:
+    description: 'Comma-separated list of clients to configure: docker, npm, maven. The access token is produced regardless, so a build that passes it on itself can leave this empty.'
+    required: false
+    default: 'docker'
+  workload-identity-provider:
+    description: 'Workload Identity Provider to federate through. The default is the Staffbase pool; overriding it is for testing only.'
+    required: false
+    default: 'projects/753004700074/locations/global/workloadIdentityPools/github/providers/github'
+  service-account:
+    description: 'Service account to impersonate. The default holds artifactregistry.writer on the publish repositories and reader on the project.'
+    required: false
+    default: 'github-artifact-publisher@global-iam-436113.iam.gserviceaccount.com'
+  docker-registry:
+    description: 'Docker registry host to log in to.'
+    required: false
+    default: 'europe-docker.pkg.dev'
+  npm-registry:
+    description: 'npm endpoint the credential is written for. Must match the registry the project resolves from.'
+    required: false
+    default: 'https://europe-npm.pkg.dev/staffbase-artifacts/npm/'
+  maven-registry:
+    description: 'Maven endpoint the generated settings.xml mirrors all repository requests to.'
+    required: false
+    default: 'https://europe-maven.pkg.dev/staffbase-artifacts/maven'
+  maven-server-id:
+    description: 'Server ID the generated settings.xml credential is registered under. Maven picks deploy credentials by the ID in the project pom.xml `distributionManagement.repository`, not by the mirror, so set this to match that repository ID if it is not the default.'
+    required: false
+    default: 'artifact-registry'
+  maven-snapshot-server-id:
+    description: 'Additional server ID to register the same credential under, for a project whose `distributionManagement.snapshotRepository` uses a different ID than `maven-server-id`. Leave empty if snapshots and releases share one ID.'
+    required: false
+    default: ''
+
+outputs:
+  access-token:
+    description: 'Short-lived Google access token. Pass it to a build that authenticates itself, such as a Docker build secret for an npm install inside the image. Masked in logs, and expires after one hour by default; re-run this action to re-authenticate a job that outlives that.'
+    value: ${{ steps.auth.outputs.access_token }}
+  maven-settings-path:
+    description: 'Path to the job-scoped settings.xml written when `maven` is in `configure`. Pass it to Maven with `--settings`.'
+    value: ${{ steps.maven.outputs.settings-path }}
+
+runs:
+  using: 'composite'
+  steps:
+    # The calling job must grant id-token: write. A composite action cannot request
+    # a permission for itself, so without it this fails before anything is written.
+    - name: Authenticate to Google Cloud
+      id: auth
+      uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+      with:
+        workload_identity_provider: ${{ inputs.workload-identity-provider }}
+        service_account: ${{ inputs.service-account }}
+        token_format: access_token
+        create_credentials_file: false
+
+    - name: Parse configure list
+      id: configure
+      shell: bash
+      env:
+        CONFIGURE: ${{ inputs.configure }}
+      run: |
+        set -euo pipefail
+        docker=false; npm=false; maven=false
+        IFS=',' read -ra clients <<< "${CONFIGURE}"
+        for client in "${clients[@]}"; do
+          client="$(echo -n "${client}" | xargs)"
+          [[ -z "${client}" ]] && continue
+          case "${client}" in
+            docker) docker=true ;;
+            npm) npm=true ;;
+            maven) maven=true ;;
+            *)
+              echo "::error::Unknown client '${client}' in 'configure'. Valid values: docker, npm, maven."
+              exit 1
+              ;;
+          esac
+        done
+        {
+          echo "docker=${docker}"
+          echo "npm=${npm}"
+          echo "maven=${maven}"
+        } >> "${GITHUB_OUTPUT}"
+
+    - name: Login to Artifact Registry
+      if: steps.configure.outputs.docker == 'true'
+      uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+      with:
+        registry: ${{ inputs.docker-registry }}
+        username: oauth2accesstoken
+        password: ${{ steps.auth.outputs.access_token }}
+
+    # The credential only. Which registry a project resolves from stays in its own
+    # .npmrc, so this does not silently repoint a build.
+    - name: Configure npm
+      if: steps.configure.outputs.npm == 'true'
+      shell: bash
+      env:
+        NPM_REGISTRY: ${{ inputs.npm-registry }}
+        ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+      run: |
+        set -euo pipefail
+        npmrc="${RUNNER_TEMP}/.npmrc"
+        umask 077
+        # npm reads NPM_CONFIG_USERCONFIG when the caller has already set one (e.g.
+        # actions/setup-node with registry-url), and ~/.npmrc otherwise. Start from
+        # whichever is active, instead of discarding it, unless it is already this file.
+        active_config="${NPM_CONFIG_USERCONFIG:-${HOME}/.npmrc}"
+        if [[ "${active_config}" == "${npmrc}" ]]; then
+          :
+        elif [[ -f "${active_config}" ]]; then
+          cp "${active_config}" "${npmrc}"
+        else
+          : > "${npmrc}"
+        fi
+        # npm keys an entry by the registry URL without its scheme, and requires a trailing slash.
+        registry="${NPM_REGISTRY%/}/"
+        key="${registry#https:}"
+        # A copied file without a trailing newline would otherwise join this to its last line.
+        printf '\n' >> "${npmrc}"
+        {
+          echo "${key}:_authToken=${ACCESS_TOKEN}"
+          echo "${key}:always-auth=true"
+        } >> "${npmrc}"
+        chmod 600 "${npmrc}"
+        echo "NPM_CONFIG_USERCONFIG=${npmrc}" >> "${GITHUB_ENV}"
+        echo "::notice::Configured npm credentials for ${NPM_REGISTRY} in a job-scoped ${npmrc}, cleared automatically at the end of the job"
+
+    - name: Configure Maven
+      if: steps.configure.outputs.maven == 'true'
+      id: maven
+      shell: bash
+      env:
+        MAVEN_REGISTRY: ${{ inputs.maven-registry }}
+        MAVEN_SERVER_ID: ${{ inputs.maven-server-id }}
+        MAVEN_SNAPSHOT_SERVER_ID: ${{ inputs.maven-snapshot-server-id }}
+        ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+      run: |
+        set -euo pipefail
+        m2_dir="${RUNNER_TEMP}/m2"
+        settings="${m2_dir}/settings.xml"
+        mkdir -p "${m2_dir}"
+        umask 077
+        # Building this by string concatenation was fragile (an unescaped `&`, `<` or `>` in a
+        # registry URL or server ID produced invalid XML); an XML library both escapes correctly
+        # and lets the caller's own ~/.m2/settings.xml (proxies, profiles, other servers) survive
+        # instead of being replaced outright.
+        python3 - <<'PY'
+        import os
+        import re
+        import sys
+        import xml.etree.ElementTree as ET
+
+        registry = os.environ["MAVEN_REGISTRY"]
+        server_id = os.environ["MAVEN_SERVER_ID"]
+        snapshot_server_id = os.environ.get("MAVEN_SNAPSHOT_SERVER_ID", "").strip()
+        token = os.environ["ACCESS_TOKEN"]
+        out_path = os.path.join(os.environ["RUNNER_TEMP"], "m2", "settings.xml")
+
+        existing = os.path.expanduser("~/.m2/settings.xml")
+        if os.path.isfile(existing):
+            tree = ET.parse(existing)
+            root = tree.getroot()
+        else:
+            root = ET.Element("settings")
+            tree = ET.ElementTree(root)
+
+        # A standard settings.xml declares the Maven Settings namespace on <settings>, which
+        # qualifies every child tag ElementTree parses. Bare tag names would then miss the
+        # caller's existing <servers>/<mirrors> and add unnamespaced duplicates instead.
+        ns_match = re.match(r"\{(.*)\}", root.tag)
+        ns_uri = ns_match.group(1) if ns_match else ""
+        ns = f"{{{ns_uri}}}" if ns_uri else ""
+        if ns_uri:
+            ET.register_namespace("", ns_uri)
+
+
+        def get_or_create(parent, tag):
+            el = parent.find(ns + tag)
+            if el is None:
+                el = ET.SubElement(parent, ns + tag)
+            return el
+
+
+        def upsert_server(servers, server_id):
+            for s in servers.findall(ns + "server"):
+                if s.findtext(ns + "id") == server_id:
+                    servers.remove(s)
+            s = ET.SubElement(servers, ns + "server")
+            ET.SubElement(s, ns + "id").text = server_id
+            ET.SubElement(s, ns + "username").text = "oauth2accesstoken"
+            ET.SubElement(s, ns + "password").text = token
+
+
+        servers = get_or_create(root, "servers")
+        seen = set()
+        for sid in ("artifact-registry", server_id, snapshot_server_id):
+            if sid and sid not in seen:
+                upsert_server(servers, sid)
+                seen.add(sid)
+
+        mirrors = get_or_create(root, "mirrors")
+        others = [m for m in mirrors.findall(ns + "mirror") if m.findtext(ns + "id") != "artifact-registry"]
+        if others:
+            # Maven picks the first mirror whose mirrorOf pattern matches, purely by document
+            # order, so an existing mirror here could silently outrank (or be shadowed by) ours
+            # depending on where we inserted it. Safer to stop than guess at precedence.
+            ids = ", ".join(m.findtext(ns + "id") or "?" for m in others)
+            print(
+                f"::error::~/.m2/settings.xml already defines mirror(s) {ids}, which this action "
+                "does not know how to reconcile with its own mirrorOf '*' entry. "
+                "Remove the conflicting mirror(s) or configure Maven without this action's mirror.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        for m in mirrors.findall(ns + "mirror"):
+            mirrors.remove(m)
+        mirror = ET.SubElement(mirrors, ns + "mirror")
+        ET.SubElement(mirror, ns + "id").text = "artifact-registry"
+        ET.SubElement(mirror, ns + "mirrorOf").text = "*"
+        ET.SubElement(mirror, ns + "url").text = registry
+
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        tree.write(out_path, encoding="unicode", xml_declaration=False)
+        PY
+        chmod 600 "${settings}"
+        echo "settings-path=${settings}" >> "${GITHUB_OUTPUT}"
+        echo "::notice::Wrote Maven credentials for ${MAVEN_REGISTRY} to a job-scoped ${settings} under server id(s) 'artifact-registry', '${MAVEN_SERVER_ID}'${MAVEN_SNAPSHOT_SERVER_ID:+, '${MAVEN_SNAPSHOT_SERVER_ID}'}, cleared automatically at the end of the job. Pass it to Maven with: mvn --settings ${settings}"
