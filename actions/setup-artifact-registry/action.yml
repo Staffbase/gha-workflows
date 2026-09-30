@@ -112,6 +112,8 @@ runs:
         # npm keys an entry by the registry URL without its scheme, and requires a trailing slash.
         registry="${NPM_REGISTRY%/}/"
         key="${registry#https:}"
+        # A copied file without a trailing newline would otherwise join this to its last line.
+        printf '\n' >> "${npmrc}"
         {
           echo "${key}:_authToken=${ACCESS_TOKEN}"
           echo "${key}:always-auth=true"
@@ -136,9 +138,11 @@ runs:
         umask 077
         xml_escape() {
           local s="$1"
-          s="${s//&/&amp;}"
-          s="${s//</&lt;}"
-          s="${s//>/&gt;}"
+          # Bash's ${var//pattern/replacement} treats a literal & in replacement as the match,
+          # like sed, so it must be escaped too or &lt;/&gt; become <lt;/>gt;.
+          s="${s//&/\&amp;}"
+          s="${s//</\&lt;}"
+          s="${s//>/\&gt;}"
           printf '%s' "${s}"
         }
         registry_xml="$(xml_escape "${MAVEN_REGISTRY}")"
