@@ -33,7 +33,7 @@ so without `id-token: write` on the calling job the token exchange fails.
 | ---- | ----------- | ------- |
 | `configure` | Clients to configure: `docker`, `npm`, `maven`, comma-separated | `docker` |
 | `workload-identity-provider` | Provider to federate through | the Staffbase pool |
-| `service-account` | Account to impersonate | `github-artifact-publisher@global-iam-436113` |
+| `service-account` | Account to impersonate | `github-artifact-publisher@global-iam-436113.iam.gserviceaccount.com` |
 | `docker-registry` | Registry host to log in to | `europe-docker.pkg.dev` |
 | `npm-registry` | Endpoint the npm credential is written for | `https://europe-npm.pkg.dev/staffbase-artifacts/npm/` |
 | `maven-registry` | Endpoint the generated `settings.xml` mirrors all repository requests to | `https://europe-maven.pkg.dev/staffbase-artifacts/maven` |
@@ -50,10 +50,10 @@ so without `id-token: write` on the calling job the token exchange fails.
 
 **docker** logs in to `docker-registry`, so `docker build`, `docker push` and Jib all work.
 
-**npm** writes credentials for `npm-registry` to a job-scoped `.npmrc` under `RUNNER_TEMP`, and
-points npm at it via `NPM_CONFIG_USERCONFIG`. It writes the credential only: which registry a
-project resolves from stays in the project's own `.npmrc`, so this never silently repoints a
-build.
+**npm** copies the caller's existing `~/.npmrc`, if any, into a job-scoped copy under
+`RUNNER_TEMP`, appends credentials for `npm-registry` to it, and points npm at that copy via
+`NPM_CONFIG_USERCONFIG`. It writes the credential only: which registry a project resolves from
+stays in the project's own `.npmrc`, so this never silently repoints a build.
 
 **maven** writes a job-scoped `settings.xml` under `RUNNER_TEMP` (path in the `maven-settings-path`
 output) with a mirror that sends all repository *downloads* to `maven-registry`, authenticated
@@ -96,3 +96,9 @@ registry=https://europe-npm.pkg.dev/staffbase-artifacts/npm/
 One endpoint serves public packages, Staffbase packages and the `@staffbase` scope, so a project
 that migrates drops its `registry.npmjs.org` and `npm.pkg.github.com` entries and the GitHub token
 behind them.
+
+A project-level `_authToken` entry like this one takes precedence over the job-scoped `.npmrc`
+this action writes when `configure` includes `npm`. If the same job also runs `npm ci` directly on
+the runner (not just inside the Docker build), either export `NODE_AUTH_TOKEN` from the action's
+`access-token` output for that step too, or keep the `_authToken` entry in a Docker-specific
+`.npmrc` that the runner-side install never reads.

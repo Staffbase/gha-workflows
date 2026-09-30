@@ -101,14 +101,21 @@ runs:
       run: |
         set -euo pipefail
         npmrc="${RUNNER_TEMP}/.npmrc"
+        umask 077
+        # Start from the caller's existing user config (e.g. other registries or scopes),
+        # if any, instead of discarding it.
+        if [[ -f "${HOME}/.npmrc" ]]; then
+          cp "${HOME}/.npmrc" "${npmrc}"
+        else
+          : > "${npmrc}"
+        fi
         # npm keys an entry by the registry URL without its scheme, and requires a trailing slash.
         registry="${NPM_REGISTRY%/}/"
         key="${registry#https:}"
-        umask 077
         {
           echo "${key}:_authToken=${ACCESS_TOKEN}"
           echo "${key}:always-auth=true"
-        } > "${npmrc}"
+        } >> "${npmrc}"
         chmod 600 "${npmrc}"
         echo "NPM_CONFIG_USERCONFIG=${npmrc}" >> "${GITHUB_ENV}"
         echo "::notice::Configured npm credentials for ${NPM_REGISTRY} in a job-scoped ${npmrc}, cleared automatically at the end of the job"
@@ -127,6 +134,16 @@ runs:
         settings="${m2_dir}/settings.xml"
         mkdir -p "${m2_dir}"
         umask 077
+        xml_escape() {
+          local s="$1"
+          s="${s//&/&amp;}"
+          s="${s//</&lt;}"
+          s="${s//>/&gt;}"
+          printf '%s' "${s}"
+        }
+        registry_xml="$(xml_escape "${MAVEN_REGISTRY}")"
+        server_id_xml="$(xml_escape "${MAVEN_SERVER_ID}")"
+        token_xml="$(xml_escape "${ACCESS_TOKEN}")"
         # Maven authenticates a mirrored download by the mirror's own id ("artifact-registry"),
         # but a deploy is authenticated by distributionManagement.repository's id instead, so a
         # server entry is needed for each unless the caller's deploy repository id already matches.
@@ -134,9 +151,9 @@ runs:
         if [[ "${MAVEN_SERVER_ID}" != "artifact-registry" ]]; then
           deploy_server_entry="
             <server>
-              <id>${MAVEN_SERVER_ID}</id>
+              <id>${server_id_xml}</id>
               <username>oauth2accesstoken</username>
-              <password>${ACCESS_TOKEN}</password>
+              <password>${token_xml}</password>
             </server>"
         fi
         cat > "${settings}" <<XML
@@ -145,14 +162,14 @@ runs:
             <server>
               <id>artifact-registry</id>
               <username>oauth2accesstoken</username>
-              <password>${ACCESS_TOKEN}</password>
+              <password>${token_xml}</password>
             </server>${deploy_server_entry}
           </servers>
           <mirrors>
             <mirror>
               <id>artifact-registry</id>
               <mirrorOf>*</mirrorOf>
-              <url>${MAVEN_REGISTRY}</url>
+              <url>${registry_xml}</url>
             </mirror>
           </mirrors>
         </settings>
