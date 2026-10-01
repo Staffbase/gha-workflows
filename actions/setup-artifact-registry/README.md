@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@f0a58baf96137353f94e573f749398581db05ddd # v18.0.0
         id: gar
         with:
           configure: docker,npm
@@ -83,7 +83,7 @@ An `npm install` that runs in a `RUN` layer cannot see the runner's npm credenti
 as a build secret instead:
 
 ```yaml
-      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@f0a58baf96137353f94e573f749398581db05ddd # v18.0.0
         id: gar
 
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
