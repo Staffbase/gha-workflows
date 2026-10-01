@@ -236,7 +236,10 @@ jobs:
 Every image is pushed to both Harbor (`docker-registry`) and Google Artifact Registry
 (`gar-registry`) by default. GAR authenticates via Workload Identity Federation
 ([`setup-artifact-registry`](actions/setup-artifact-registry)), not a stored credential, so the
-calling job must grant `id-token: write`.
+calling job must grant `id-token: write`. The job also writes GitOps deployment tracking
+annotations, which needs `deployments: write`. A reusable workflow's job can only use a
+permission the caller also grants, so missing either one fails the whole run at the planning
+stage (`startup_failure`, no jobs created) rather than just the affected step.
 
 ```yml
 name: GitOps
@@ -250,6 +253,7 @@ jobs:
     uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
     permissions:
       contents: read
+      deployments: write
       id-token: write
     with:
       # optional: host of the docker registry, default: "registry.staffbase.com"
