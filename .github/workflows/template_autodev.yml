@@ -33,6 +33,10 @@ on:
         default: false
         required: false
         type: boolean
+      mergiraf:
+        default: true
+        required: false
+        type: boolean
       success_comment:
         required: false
         type: string
@@ -83,7 +87,7 @@ jobs:
           filter: blob:none
 
       - name: Autodev
-        uses: Staffbase/autodev-action@7cce23249487eeb677775f272a9c6d923d9a1621 # v2.10.1
+        uses: Staffbase/autodev-action@33ab54dd5dc5b3e8daeaffb48767cdea68700e80 # Mergiraf release updater
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
@@ -93,6 +97,7 @@ jobs:
           failure_label: ${{ inputs.failure_label }}
           label: ${{ inputs.label }}
           labels: ${{ inputs.labels }}
+          mergiraf: ${{ inputs.mergiraf }}
           success_comment: ${{ inputs.success_comment }}
           success_label: ${{ inputs.success_label }}
           token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
