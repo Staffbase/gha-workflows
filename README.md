@@ -265,12 +265,14 @@ jobs:
         "any important args"
       # optional: set the target stage to build
       docker-build-target: 'any target'
-      # optional: custom output destinations for docker build (e.g., type=registry,push=true,compression=gzip,force-compression=true). Required for DHI images.
+      # optional: single-arch custom output destinations; multi-arch uses default compression
       docker-build-outputs: '<your-output-settings>'
       # optional: set the target platforms for build (e.g., linux/arm64), default: "linux/amd64"
       docker-build-platform: "linux/arm64"
       # optional: set the provenance level of the docker build, default: "false"
       docker-build-provenance: '<your-provenance-level>'
+      # optional: re-execute Dockerfile steps without external cache import/export, default: false
+      docker-build-no-cache: true
       # optional: should the last stage image be retagged for the release image, default: false
       docker-disable-retagging: true
       # optional: path to the Dockerfile, default: ./Dockerfile
