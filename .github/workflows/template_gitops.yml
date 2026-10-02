@@ -21,7 +21,7 @@ on:
       docker-build-outputs:
         required: false
         type: string
-        description: "Custom output destinations for docker build (e.g., type=registry,push=true,compression=gzip,force-compression=true). Required for DHI images."
+        description: "Single-arch only: custom build output destinations (e.g., type=registry,push=true,compression=gzip,force-compression=true). Multi-arch builds use the action's digest exporter and default compression."
       docker-build-platform:
         required: false
         type: string
@@ -31,6 +31,11 @@ on:
         required: false
         type: string
         default: "false"
+      docker-build-no-cache:
+        required: false
+        type: boolean
+        default: false
+        description: "Re-execute Dockerfile steps and skip external cache import/export. Base images are always checked for updates."
       docker-disable-retagging:
         required: false
         type: string
@@ -160,7 +165,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@bf3edfa25f4d08fd793ed9fa9096f6c85513f244 # v9.0.0
+        uses: Staffbase/gitops-github-action@58aa5ca22d90fe1a44dc86b1497a522051951e28 # CORE-5013; pending release
         with:
           docker-registries: |
             ${{ inputs.docker-registry }}
@@ -176,6 +181,7 @@ jobs:
           docker-build-outputs: ${{ inputs.docker-build-outputs }}
           docker-build-platforms: ${{ inputs.docker-build-platform }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -221,7 +227,7 @@ jobs:
           configure: ''
 
       - name: GitOps (build and push by digest)
-        uses: Staffbase/gitops-github-action@bf3edfa25f4d08fd793ed9fa9096f6c85513f244 # v9.0.0
+        uses: Staffbase/gitops-github-action@58aa5ca22d90fe1a44dc86b1497a522051951e28 # CORE-5013; pending release
         with:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
@@ -237,6 +243,7 @@ jobs:
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -278,7 +285,7 @@ jobs:
 
       - name: GitOps (merge manifests and deploy)
         id: gitops
-        uses: Staffbase/gitops-github-action@bf3edfa25f4d08fd793ed9fa9096f6c85513f244 # v9.0.0
+        uses: Staffbase/gitops-github-action@58aa5ca22d90fe1a44dc86b1497a522051951e28 # CORE-5013; pending release
         with:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
