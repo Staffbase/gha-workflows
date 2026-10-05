@@ -41,7 +41,7 @@ jobs:
           cat .launchdarkly/coderefs.yml
           cat .launchdarkly/flag-alias.sh
       - name: LaunchDarkly Code References
-        uses: launchdarkly/find-code-references@088563c86407b01ad1bc8d9594661b228ed4324d # v2.17.0
+        uses: launchdarkly/find-code-references@3f782158d0ee6aec19291b232147e2f6c714f9ee # v2.18.0
         with:
           accessToken: ${{ secrets.access-token }}
           projKey: ${{ inputs.project-key }}
