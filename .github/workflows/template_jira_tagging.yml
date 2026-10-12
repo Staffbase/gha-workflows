@@ -39,7 +39,7 @@ jobs:
           TAG_MATCHER: ${{ inputs.tag-matcher }}
 
       - name: Add release notes to JIRA tickets
-        uses: Staffbase/github-action-jira-release-tagging@6415d3f0dbaba53113f1269884d72bc36ab179d9 # v1.7.3
+        uses: Staffbase/github-action-jira-release-tagging@829d833a32fdaee73d6a396a9219ca916e12a77e # v1.9.0
         env:
           JIRA_BASEURL: ${{ secrets.jira-url }}
           JIRA_TOKEN: ${{ secrets.jira-token }}
