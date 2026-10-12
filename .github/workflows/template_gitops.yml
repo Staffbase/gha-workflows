@@ -154,7 +154,7 @@ jobs:
 
       - name: Setup Artifact Registry
         id: gar
-        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@f0a58baf96137353f94e573f749398581db05ddd # v18.0.0
         with:
           configure: ''
 
@@ -216,7 +216,7 @@ jobs:
 
       - name: Setup Artifact Registry
         id: gar
-        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@f0a58baf96137353f94e573f749398581db05ddd # v18.0.0
         with:
           configure: ''
 
@@ -272,7 +272,7 @@ jobs:
 
       - name: Setup Artifact Registry
         id: gar
-        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@b33aec6ee6d058c287820ad2fac4874f45d12227 # v17.2.0
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@f0a58baf96137353f94e573f749398581db05ddd # v18.0.0
         with:
           configure: ''
 
