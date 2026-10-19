@@ -165,7 +165,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@58aa5ca22d90fe1a44dc86b1497a522051951e28 # CORE-5013; pending release
+        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
         with:
           docker-registries: |
             ${{ inputs.docker-registry }}
@@ -227,7 +227,7 @@ jobs:
           configure: ''
 
       - name: GitOps (build and push by digest)
-        uses: Staffbase/gitops-github-action@58aa5ca22d90fe1a44dc86b1497a522051951e28 # CORE-5013; pending release
+        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
         with:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
@@ -285,7 +285,7 @@ jobs:
 
       - name: GitOps (merge manifests and deploy)
         id: gitops
-        uses: Staffbase/gitops-github-action@58aa5ca22d90fe1a44dc86b1497a522051951e28 # CORE-5013; pending release
+        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
         with:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
