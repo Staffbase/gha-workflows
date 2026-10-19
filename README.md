@@ -265,8 +265,6 @@ jobs:
         "any important args"
       # optional: set the target stage to build
       docker-build-target: 'any target'
-      # optional: single-arch custom output destinations; multi-arch uses default compression
-      docker-build-outputs: '<your-output-settings>'
       # optional: set the target platforms for build (e.g., linux/arm64), default: "linux/amd64"
       docker-build-platform: "linux/arm64"
       # optional: set the provenance level of the docker build, default: "false"
@@ -332,6 +330,17 @@ jobs:
       # optional: Upwind client secret
       upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
+
+For single-architecture builds only, custom output destinations can be configured
+with `docker-build-outputs` (unset by default). For example:
+
+```yaml
+with:
+  multi-arch: false
+  docker-build-outputs: 'type=registry,push=true,compression=gzip,force-compression=true'
+```
+
+Multi-architecture builds use the action's digest exporter and default compression.
 
 </details>
 
