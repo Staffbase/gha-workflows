@@ -233,8 +233,10 @@ jobs:
 <details>
 <summary>The action can be used to build and publish a docker image.</summary>
 
-Every image is pushed to both Harbor (`docker-registry`) and Google Artifact Registry
-(`gar-registry`) by default. GAR authenticates via Workload Identity Federation
+Every image is pushed to Google Artifact Registry (`gar-registry`) only. Set `docker-registry`
+(together with the `docker-username`/`docker-password` secrets) to additionally push to another
+registry such as the legacy Harbor. GAR is the primary registry, used for release-retag lookups,
+and authenticates via Workload Identity Federation
 ([`setup-artifact-registry`](actions/setup-artifact-registry)), not a stored credential, so the
 calling job must grant `id-token: write`. The job also writes GitOps deployment tracking
 annotations, which needs `deployments: write`. A reusable workflow's job can only use a
@@ -256,9 +258,9 @@ jobs:
       deployments: write
       id-token: write
     with:
-      # optional: host of the docker registry, default: "registry.staffbase.com"
+      # optional: additional registry to push to besides GAR (e.g. a legacy Harbor), default: "" (GAR only)
       docker-registry: '<your-registry>'
-      # optional: Google Artifact Registry path pushed to alongside docker-registry, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
+      # optional: Google Artifact Registry path images are pushed to, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
       gar-registry: '<your-gar-path>'
       # optional: list of build-time variables
       docker-build-args: |
