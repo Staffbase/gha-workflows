@@ -80,7 +80,7 @@ on:
     branches-ignore:
       - dev
   pull_request:
-    types: [labeled, unlabeled, closed]
+    types: [labeled, unlabeled, closed, reopened]
 
 jobs:
   autodev:

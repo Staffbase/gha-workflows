@@ -59,8 +59,9 @@ jobs:
     permissions:
       contents: read
 
-    # check to not trigger if dependabot did something or PR was closed or label is not the configured dev label
-    if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed')
+    # check to not trigger if dependabot did something or label is not the configured dev label;
+    # closed PRs and reopened PRs that carry the dev label also trigger a rebuild
+    if: github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.label.name == inputs.label || github.event.action == 'closed' || (github.event.action == 'reopened' && contains(github.event.pull_request.labels.*.name, inputs.label)))
 
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client_id != '' && secrets.private_key != '' }}
