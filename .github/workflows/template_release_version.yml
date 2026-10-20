@@ -41,13 +41,16 @@ jobs:
           TAG_PREFIX=${{ inputs['tag-prefix'] }}
           TAG_SUFFIX=${{ inputs['tag-suffix'] }}
           DATE=$(date +"%Y%m%d")
-          YEAR=$(date +"%Y")
           WEEK=$(date +"%-V")
           QUARTER=$(date "+%q")
 
           if [ ${{ inputs.format }} == 'quarterly' ] ; then
+            YEAR=$(date +"%Y")
             MINOR=$QUARTER
           else
+            # The ISO week needs its ISO week-based year (%G), not the calendar year (%Y): 1 January 2027
+            # is in week 53 of 2026, and YEAR.53 with %Y would sort above every later release that year.
+            YEAR=$(date +"%G")
             MINOR=$WEEK
           fi
 
