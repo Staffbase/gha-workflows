@@ -9,7 +9,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@main
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@65e117170c1783df9e7d7490c32ea814e5f97649 # v19.0.0
     permissions:
       contents: read
       checks: write
