@@ -176,7 +176,9 @@ jobs:
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             GONOSUMDB=${{ vars.gonosumdb }}
-          docker-build-secrets: ${{ secrets.docker-build-secrets }}
+          docker-build-secrets: |
+            ${{ secrets.docker-build-secrets }}
+            gar_token=${{ steps.gar.outputs.access-token }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-outputs: ${{ inputs.docker-build-outputs }}
@@ -240,7 +242,9 @@ jobs:
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             GONOSUMDB=${{ vars.gonosumdb }}
-          docker-build-secrets: ${{ secrets.docker-build-secrets }}
+          docker-build-secrets: |
+            ${{ secrets.docker-build-secrets }}
+            gar_token=${{ steps.gar.outputs.access-token }}
           docker-build-secret-files: ${{ secrets.docker-build-secret-files }}
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
