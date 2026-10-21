@@ -6,12 +6,13 @@ on:
       docker-registry:
         required: false
         type: string
-        default: "registry.staffbase.com"
+        default: ""
+        description: "Optional additional registry to push to besides Google Artifact Registry (e.g. a legacy Harbor). Empty by default: images are only pushed to gar-registry. Needs docker-username and docker-password."
       gar-registry:
         required: false
         type: string
         default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
-        description: "Google Artifact Registry path pushed to alongside docker-registry. The calling job must grant 'id-token: write' for the Workload Identity Federation this requires."
+        description: "Google Artifact Registry path images are pushed to. It is the primary registry, used for release-retag lookups. The calling job must grant 'id-token: write' for the Workload Identity Federation this requires."
       docker-build-args:
         required: false
         type: string
@@ -168,8 +169,8 @@ jobs:
         uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
         with:
           docker-registries: |
-            ${{ inputs.docker-registry }}
             ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
+            ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
@@ -232,8 +233,8 @@ jobs:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
           docker-registries: |
-            ${{ inputs.docker-registry }}
             ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
+            ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
@@ -290,8 +291,8 @@ jobs:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
           docker-registries: |
-            ${{ inputs.docker-registry }}
             ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
+            ${{ inputs.docker-registry }}
           docker-username: ${{ secrets.docker-username }}
           docker-password: ${{ secrets.docker-password }}
           docker-build-args: |
