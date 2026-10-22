@@ -507,7 +507,7 @@ jobs:
 <details>
 <summary>The action can be used to get the next version for a service.</summary>
 
-The new version is in the format `YEAR.WEEK.COUNTER`. You will get the version as output with the key `new_version` and the new tag with the key `new_tag`.
+The new version is in the format `YEAR.WEEK.COUNTER` (weekly, with the ISO week-based year, so 1 January 2027 is `2026.53`) or `YEAR.QUARTER.COUNTER` (quarterly, calendar year). You will get the version as output with the key `new_version` and the new tag with the key `new_tag`.
 You can remove all other version resolver from your configuration.
 
 ```yml
