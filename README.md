@@ -243,6 +243,14 @@ annotations, which needs `deployments: write`. A reusable workflow's job can onl
 permission the caller also grants, so missing either one fails the whole run at the planning
 stage (`startup_failure`, no jobs created) rather than just the affected step.
 
+Both single-architecture and multi-architecture builds also expose the job's GAR access
+token as the BuildKit secret `gar_token`. Dockerfiles can mount it with
+`RUN --mount=type=secret,id=gar_token,required=true` to authenticate package downloads
+from Artifact Registry. Registry login alone does not authenticate commands inside a
+build container. The token is short-lived; do not copy it into image layers or logs.
+Caller-provided `docker-build-secrets` are preserved; `gar_token` is reserved for the
+template-generated token and must not be supplied by callers.
+
 ```yml
 name: GitOps
 
