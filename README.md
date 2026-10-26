@@ -16,7 +16,7 @@ on: ...
 jobs:
   <action name>:
     uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@4480e618bd8586edff0e0feb7001cde314df5bd3 # v19.1.0
-    permissions: ...  # see individual examples below
+    permissions: ... # see individual examples below
     with: ...
 ```
 
@@ -165,15 +165,15 @@ jobs:
       contents: read
     with:
       # optional: The file containing the Node.js version to use, defaults to .nvmrc
-      node-version-file: '.node-version'
+      node-version-file: ".node-version"
       # optional: The script to run on publish. Defaults to `pnpm release`
-      publish-script: 'pnpm publish'
+      publish-script: "pnpm publish"
       # optional: The script to run for bumping the package versions. Defaults to `pnpm changeset version`
-      version-script: 'pnpm version'
+      version-script: "pnpm version"
       # optional: The registry to use for Node.js packages.
-      node-registry: 'https://npm.pkg.github.com/'
+      node-registry: "https://npm.pkg.github.com/"
       # optional: The scope to use for Node.js packages.
-      node-registry-scope: '@staffbase'
+      node-registry-scope: "@staffbase"
     secrets:
       # client id of the GitHub App for authentication
       client_id: ${{ <your-client-id> }}
@@ -198,7 +198,7 @@ permissions: {}
 on:
   # At 05:00 on Monday.
   schedule:
-    - cron: '0 5 * * 1'
+    - cron: "0 5 * * 1"
 
 jobs:
   flaky-tests:
@@ -210,15 +210,15 @@ jobs:
       # identifier for the slack channel
       slack-channel-id: 45678787976
       # name of the slack channel
-      slack-channel-name: '#flaky-tests'
+      slack-channel-name: "#flaky-tests"
       # optional: name of the repository where it should check, default: current repository
-      repository: 'Staffbase/test-flaky'
+      repository: "Staffbase/test-flaky"
       # optional: name of the branch where it should check, default: main
-      branch: 'master'
+      branch: "master"
       # optional: file path suffixes (comma seperated) to filter the test files
-      path-suffixes: '.spec.ts,.spec.tsx,.test.ts,.test.tsx'
+      path-suffixes: ".spec.ts,.spec.tsx,.test.ts,.test.tsx"
       # prefix of the test run which should be filtered out
-      prefix: 'test-'
+      prefix: "test-"
     secrets:
       # URL of the Slack incoming webhooks
       slack-incoming-webhooks-url: ${{ secrets.SLACK_INCOMING_WEBHOOKS_URL }}
@@ -267,18 +267,18 @@ jobs:
       id-token: write
     with:
       # optional: additional registry to push to besides GAR (e.g. a legacy Harbor), default: "" (GAR only)
-      docker-registry: '<your-registry>'
+      docker-registry: "<your-registry>"
       # optional: Google Artifact Registry path images are pushed to, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
-      gar-registry: '<your-gar-path>'
+      gar-registry: "<your-gar-path>"
       # optional: list of build-time variables
       docker-build-args: |
         "any important args"
       # optional: set the target stage to build
-      docker-build-target: 'any target'
+      docker-build-target: "any target"
       # optional: set the target platforms for build (e.g., linux/arm64), default: "linux/amd64"
       docker-build-platform: "linux/arm64"
       # optional: set the provenance level of the docker build, default: "false"
-      docker-build-provenance: '<your-provenance-level>'
+      docker-build-provenance: "<your-provenance-level>"
       # optional: re-execute Dockerfile steps without external cache import/export, default: false
       docker-build-no-cache: true
       # optional: should the last stage image be retagged for the release image, default: false
@@ -294,11 +294,11 @@ jobs:
       # optional: organization of the gitops repository, default: github.repository_owner
       gitops-organization: <your-organization>
       # optional: repository where to update the files, default: mops
-      gitops-repository: '<your-repository>'
+      gitops-repository: "<your-repository>"
       # optional: user which does the commit, default: "staffbase-actions"
-      gitops-user: '<your-user>'
+      gitops-user: "<your-user>"
       # optional: email of the user which does the commit, default: "staffbase-actions[bot]@users.noreply.github.com"
-      gitops-email: '<your-email>'
+      gitops-email: "<your-email>"
       # optional: files which should be updated for dev
       gitops-dev: |-
         your files
@@ -347,7 +347,7 @@ with `docker-build-outputs` (unset by default). For example:
 ```yaml
 with:
   multi-arch: false
-  docker-build-outputs: 'type=registry,push=true,compression=gzip,force-compression=true'
+  docker-build-outputs: "type=registry,push=true,compression=gzip,force-compression=true"
 ```
 
 Multi-architecture builds use the action's digest exporter and default compression.
@@ -369,7 +369,7 @@ permissions: {}
 
 on:
   push:
-    tags: ['**']
+    tags: ["**"]
 
 jobs:
   jira_annotate:
@@ -378,7 +378,7 @@ jobs:
       contents: read
     with:
       # optional: name of the service to add as label, default: name of the repository
-      name: 'component name'
+      name: "component name"
       # optional: regex to match the tags
       tag-matcher: your regex
     secrets:
@@ -416,7 +416,7 @@ jobs:
       contents: read
     with:
       # optional: key of the LD project, default: default
-      project-key: 'my-project'
+      project-key: "my-project"
     secrets:
       # LD access token with correct access rights
       access-token: ${{ <your-access-token> }}
@@ -527,11 +527,11 @@ jobs:
       contents: read
     with:
       # optional: prefix of the tag in order to find the last release; this is useful for multi artifact/service repositories, default: 'v'
-      tag-prefix: 'app-v'
+      tag-prefix: "app-v"
       # optional: suffix of the tag in order to find the last release; this is useful for multi artifact/service repositories, default: '' (empty string)
-      tag-suffix: '-native'
+      tag-suffix: "-native"
       # optional: format of the version, default: weekly
-      format: 'quarterly'
+      format: "quarterly"
 ```
 
 You could use the action in combination with the reusable release drafter.
@@ -541,8 +541,8 @@ Make sure to add the following lines to update the week number correctly for a d
 on:
   schedule:
     # run every Monday at midnight and every new year to ensure the draft release have the correct week number
-    - cron: '0 0 * * 1'
-    - cron: '0 0 1 1 *'
+    - cron: "0 0 * * 1"
+    - cron: "0 0 1 1 *"
 ```
 
 </details>
@@ -568,6 +568,45 @@ jobs:
 
 </details>
 
+### ShiftLeft Image Publish
+
+<details>
+<summary>The action can be used to send an image publish event to Upwind. It is a replacement for the Upwind image build event emitted by the GitOps action.</summary>
+
+```yml
+name: ShiftLeft Image Publish
+
+permissions: {}
+
+on: [push]
+
+jobs:
+  gitops:
+    # ... build and push the image, e.g. with template_gitops.yml
+  shiftleft:
+    needs: gitops
+    uses: Staffbase/gha-workflows/.github/workflows/template_shiftleft_image_publish.yml
+    permissions:
+      contents: read
+    with:
+      # optional: host of the docker registry, default: "registry.staffbase.com"
+      docker-registry: "<your-registry>"
+      # optional: name of the docker image, default: sb-images/<repository_name>
+      docker-image: <your-image>
+      # required: tag of the already pushed image that the event is created for
+      docker-tag: <your-tag>
+      # optional: Upwind client id, the event is skipped if it or the secret is not set
+      upwind-client-id: <your-client-id>
+    secrets:
+      # optional: credentials to pull the image from the registry
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-password: ${{ secrets.DOCKER_PASSWORD }}
+      # optional: Upwind client secret, the event is skipped if it or the client id is not set
+      upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
+```
+
+</details>
+
 ### Stale
 
 <details>
@@ -580,7 +619,7 @@ permissions: {}
 
 on:
   schedule:
-    - cron: '0 0 * * 1-5'
+    - cron: "0 0 * * 1-5"
 
 jobs:
   stale:
@@ -619,11 +658,11 @@ permissions: {}
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - '.github/workflows/techdocs.yaml'
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/techdocs.yaml"
 
 jobs:
   techdocs:
@@ -652,11 +691,11 @@ permissions: {}
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - '.github/workflows/techdocs.yaml'
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/techdocs.yaml"
 
 jobs:
   techdocs:
@@ -726,9 +765,9 @@ permissions: {}
 on:
   push:
     branches:
-      - '**'
+      - "**"
     tags-ignore:
-      - '**'
+      - "**"
 
 jobs:
   yamllint:

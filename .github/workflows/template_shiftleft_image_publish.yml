@@ -1,0 +1,43 @@
+name: "Upwind ShiftLeft Image Publish Event"
+on:
+  workflow_call:
+    inputs:
+      docker-registry:
+        required: false
+        type: string
+        default: "registry.staffbase.com"
+      docker-image:
+        required: false
+        type: string
+        default: sb-images/${{ github.event.repository.name }}
+      docker-tag:
+        required: true
+        type: string
+      upwind-client-id:
+        required: false
+        type: string
+    secrets:
+      docker-username:
+        required: false
+      docker-password:
+        required: false
+      upwind-client-secret:
+        required: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      upwind_client_secret: ${{ secrets.upwind-client-secret }}
+    steps:
+      - name: "Upwind Security ShiftLeft Image Publish"
+        if: "${{ inputs.upwind-client-id != '' && env.upwind_client_secret != '' }}"
+        uses: upwindsecurity/shiftleft-create-image-publish-event-action@e21e33527930216fc02b6ba0aa33de864e1cd316 # v1.2.0
+        continue-on-error: true
+        with:
+          docker_user: ${{ secrets.docker-username }}
+          docker_password: ${{ secrets.docker-password }}
+          docker_image: ${{ inputs.docker-registry }}/${{ inputs.docker-image }}:${{ inputs.docker-tag }}
+          upwind_client_id: ${{ inputs.upwind-client-id }}
+          upwind_client_secret: ${{ secrets.upwind-client-secret }}
