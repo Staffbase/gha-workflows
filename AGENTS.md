@@ -2,16 +2,18 @@
 
 ## Overview
 
-Collection of reusable GitHub Actions workflows (`on: workflow_call`) consumed by other Staffbase repos. No application code, no build system, no tests -- just YAML workflow definitions.
+Collection of reusable GitHub Actions workflows (`on: workflow_call`) consumed by other Staffbase repos. No application code or build system; YAML workflow definitions have focused authentication regression tests.
 
 ## Dev commands
 
 ```bash
-# Lint all workflow YAML (the only CI check)
+# Lint workflow YAML
 yamllint .github/workflows/
+# Check Release Drafter authentication (requires PyYAML==6.0.3)
+python -m unittest discover -s tests -p 'test_release_drafter.py' -v
 ```
 
-No build, test, or typecheck steps exist.
+No build or typecheck steps exist.
 
 ## Critical conventions
 
