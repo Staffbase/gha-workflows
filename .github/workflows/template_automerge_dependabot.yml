@@ -59,9 +59,30 @@ jobs:
         with:
           github-token: ${{ steps.get_token.outputs.token }}
 
+      # Dependabot gives a digest-only update no semver update type, but so it does for a
+      # change between non-numeric tags (bookworm-20250908 to bookworm-20250929). The diff
+      # tells them apart: with the digests removed, every changed line must be unchanged.
+      - name: Detect digest-only Docker update
+        id: digest
+        if: >-
+          inputs.allow-digest-updates &&
+          startsWith(steps.metadata.outputs.package-ecosystem, 'docker') &&
+          steps.metadata.outputs.update-type == ''
+        run: |
+          diff=$(gh pr diff "$PR_URL")
+          removed=$(grep -E '^-' <<< "$diff" | grep -vE '^--- ' | sed -E 's/^-//; s/@sha256:[0-9a-f]{64}//g' || true)
+          added=$(grep -E '^\+' <<< "$diff" | grep -vE '^\+\+\+ ' | sed -E 's/^\+//; s/@sha256:[0-9a-f]{64}//g' || true)
+
+          if [ -n "$removed" ] && [ "$removed" == "$added" ]; then
+            echo "digest-only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Not a digest-only update, skipping."
+          fi
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+
       - name: Enable auto-merge for Dependabot PRs
-        # A digest-only Docker update has no semver update type and no previous version:
-        # Dependabot reports only the unchanged tag as new-version.
         if: >-
           (
             (
@@ -83,13 +104,7 @@ jobs:
               )
             )
           ) ||
-          (
-            inputs.allow-digest-updates &&
-            startsWith(steps.metadata.outputs.package-ecosystem, 'docker') &&
-            steps.metadata.outputs.update-type == '' &&
-            steps.metadata.outputs.previous-version == '' &&
-            steps.metadata.outputs.new-version != ''
-          )
+          steps.digest.outputs.digest-only == 'true'
         run: |
           gh pr review --approve "$PR_URL"
 
