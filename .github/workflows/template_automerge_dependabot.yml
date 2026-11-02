@@ -24,7 +24,7 @@ on:
         type: boolean
       allow-digest-updates:
         description: "Merge Docker updates that change only the image digest and keep the tag"
-        default: false
+        default: true
         required: false
         type: boolean
     secrets:
