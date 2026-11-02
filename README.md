@@ -56,6 +56,8 @@ jobs:
       update-types: major,minor,patch
       # optional: allow versions with semver 0.X.X (default: false)
       include-pre-release: true
+      # optional: merge Docker updates that change only the image digest and keep the tag (default: false)
+      allow-digest-updates: true
     secrets:
       # client id of the GitHub App for authentication
       client_id: ${{ <your-client-id> }}

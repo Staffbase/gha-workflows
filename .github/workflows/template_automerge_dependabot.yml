@@ -22,6 +22,11 @@ on:
         default: false
         required: false
         type: boolean
+      allow-digest-updates:
+        description: "Merge Docker updates that change only the image digest and keep the tag"
+        default: false
+        required: false
+        type: boolean
     secrets:
       client_id:
         description: "Client ID of the GitHub App."
@@ -55,24 +60,35 @@ jobs:
           github-token: ${{ steps.get_token.outputs.token }}
 
       - name: Enable auto-merge for Dependabot PRs
+        # A digest-only Docker update has no semver update type and no previous version:
+        # Dependabot reports only the unchanged tag as new-version.
         if: >-
           (
-            inputs.include-pre-release ||
-            !startsWith(steps.metadata.outputs.previous-version, '0.')
-          ) &&
-          (
             (
-              contains(inputs.update-types, 'major') &&
-              steps.metadata.outputs.update-type == 'version-update:semver-major'
-            ) ||
+              inputs.include-pre-release ||
+              !startsWith(steps.metadata.outputs.previous-version, '0.')
+            ) &&
             (
-              contains(inputs.update-types, 'minor') &&
-              steps.metadata.outputs.update-type == 'version-update:semver-minor'
-            ) ||
-            (
-              contains(inputs.update-types, 'patch') &&
-              steps.metadata.outputs.update-type == 'version-update:semver-patch'
+              (
+                contains(inputs.update-types, 'major') &&
+                steps.metadata.outputs.update-type == 'version-update:semver-major'
+              ) ||
+              (
+                contains(inputs.update-types, 'minor') &&
+                steps.metadata.outputs.update-type == 'version-update:semver-minor'
+              ) ||
+              (
+                contains(inputs.update-types, 'patch') &&
+                steps.metadata.outputs.update-type == 'version-update:semver-patch'
+              )
             )
+          ) ||
+          (
+            inputs.allow-digest-updates &&
+            startsWith(steps.metadata.outputs.package-ecosystem, 'docker') &&
+            steps.metadata.outputs.update-type == '' &&
+            steps.metadata.outputs.previous-version == '' &&
+            steps.metadata.outputs.new-version != ''
           )
         run: |
           gh pr review --approve "$PR_URL"
