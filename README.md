@@ -585,12 +585,13 @@ jobs:
     # ... build and push the image, e.g. with template_gitops.yml
   shiftleft:
     needs: gitops
-    uses: Staffbase/gha-workflows/.github/workflows/template_shiftleft_image_publish.yml
+    uses: Staffbase/gha-workflows/.github/workflows/template_shiftleft_image_publish.yml@4480e618bd8586edff0e0feb7001cde314df5bd3 # v19.1.0
     permissions:
       contents: read
+      id-token: write
     with:
-      # optional: host of the docker registry, default: "registry.staffbase.com"
-      docker-registry: "<your-registry>"
+      # optional: Google Artifact Registry path the image was pushed to, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
+      gar-registry: "europe-docker.pkg.dev/<project>/<repository>"
       # optional: name of the docker image, default: sb-images/<repository_name>
       docker-image: <your-image>
       # required: tag of the already pushed image that the event is created for
@@ -598,9 +599,6 @@ jobs:
       # optional: Upwind client id, the event is skipped if it or the secret is not set
       upwind-client-id: <your-client-id>
     secrets:
-      # optional: credentials to pull the image from the registry
-      docker-username: ${{ secrets.DOCKER_USERNAME }}
-      docker-password: ${{ secrets.DOCKER_PASSWORD }}
       # optional: Upwind client secret, the event is skipped if it or the client id is not set
       upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
