@@ -757,19 +757,6 @@ With the current implementation of the reusable workflows from GitHub, we have s
 
 There are also some [further limitations][further-limitations] if you want to use the `GITHUB_TOKEN`.
 
-## Migration 🧭
-
-### Setup Artifact Registry
-
-The `setup-artifact-registry` action moved from `actions/setup-artifact-registry` in this
-repository to its own repository, `Staffbase/setup-artifact-registry-action`, and was removed
-here. Inputs and outputs are unchanged, so only the `uses:` line changes:
-
-```diff
--      - uses: Staffbase/gha-workflows/actions/setup-artifact-registry@<sha> # v19.x
-+      - uses: Staffbase/setup-artifact-registry-action@4e433ad228e04a5c9a9a3f9a59de9c4e2e7148e1 # v1.0.0
-```
-
 ## Release 🔖
 
 To create a new release just use [this page][release-new] and publish the draft release.
