@@ -21,7 +21,7 @@ jobs:
 
       - name: Find and Replace old versions
         run: |
-          files="README.md $(find actions -mindepth 2 -maxdepth 2 -name README.md)"
+          files="README.md"
           sed -i -E "s|(Staffbase/gha-workflows/[^@]+@)[a-f0-9]{40} # v[0-9]+\.[0-9]+\.[0-9]+|\1${{ steps.get_sha.outputs.sha }} # ${{ github.ref_name }}|g" $files
           sed -i -E "s|(Staffbase/gha-workflows/[^@]+@)v[0-9]+\.[0-9]+\.[0-9]+|\1${{ steps.get_sha.outputs.sha }} # ${{ github.ref_name }}|g" $files
           sed -i -E "s|(Staffbase/gha-workflows/[^@]+@)[a-f0-9]{40} # unreleased|\1${{ steps.get_sha.outputs.sha }} # ${{ github.ref_name }}|g" $files
@@ -47,4 +47,3 @@ jobs:
           branch: update-readme
           add-paths: |
             README.md
-            actions/*/README.md
