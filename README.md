@@ -239,7 +239,7 @@ Every image is pushed to Google Artifact Registry (`gar-registry`) only. Set `do
 (together with the `docker-username`/`docker-password` secrets) to additionally push to another
 registry such as the legacy Harbor. GAR is the primary registry, used for release-retag lookups,
 and authenticates via Workload Identity Federation
-([`setup-artifact-registry`](actions/setup-artifact-registry)), not a stored credential, so the
+([`setup-artifact-registry-action`](https://github.com/Staffbase/setup-artifact-registry-action)), not a stored credential, so the
 calling job must grant `id-token: write`. The job also writes GitOps deployment tracking
 annotations, which needs `deployments: write`. A reusable workflow's job can only use a
 permission the caller also grants, so missing either one fails the whole run at the planning
