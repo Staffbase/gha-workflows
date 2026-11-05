@@ -54,7 +54,7 @@ jobs:
       strategy: squash
       # optional: comma-separated list of updates to accept (available types: major, minor, patch. default: minor,patch)
       update-types: major,minor,patch
-      # optional: allow versions with semver 0.X.X (default: false)
+      # optional: allow updates from semver 0.X.X versions; grouped updates are blocked if any dependency is 0.X.X (default: false)
       include-pre-release: true
       # optional: merge Docker updates that change only the image digest and keep the tag (default: true)
       allow-digest-updates: false
