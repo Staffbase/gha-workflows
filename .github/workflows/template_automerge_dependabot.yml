@@ -82,12 +82,27 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
 
+      # previous-version only holds the first dependency of a grouped update, so check
+      # every dependency. Fail closed: missing metadata or a previous version that is
+      # empty or not numeric (after an optional "v") means no merge.
+      - name: Check for 0.x dependencies
+        id: versions
+        if: ${{ !inputs.include-pre-release }}
+        run: |
+          if jq -e 'type == "array" and length > 0 and all(.[]; .prevVersion // "" | tostring | ltrimstr("v") | test("^[0-9]") and (test("^0([^0-9]|$)") | not))' <<< "$DEPENDENCIES_JSON" > /dev/null 2>&1; then
+            echo "stable-only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "At least one dependency is on a 0.x or unknown version, skipping."
+          fi
+        env:
+          DEPENDENCIES_JSON: ${{ steps.metadata.outputs.updated-dependencies-json }}
+
       - name: Enable auto-merge for Dependabot PRs
         if: >-
           (
             (
               inputs.include-pre-release ||
-              !startsWith(steps.metadata.outputs.previous-version, '0.')
+              steps.versions.outputs.stable-only == 'true'
             ) &&
             (
               (
