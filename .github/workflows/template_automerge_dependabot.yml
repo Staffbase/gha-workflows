@@ -89,7 +89,7 @@ jobs:
         id: versions
         if: ${{ !inputs.include-pre-release }}
         run: |
-          if jq -e 'type == "array" and length > 0 and all(.[]; .prevVersion // "" | tostring | ltrimstr("v") | test("^[0-9]") and (test("^0([.]|$)") | not))' <<< "$DEPENDENCIES_JSON" > /dev/null 2>&1; then
+          if jq -e 'type == "array" and length > 0 and all(.[]; .prevVersion // "" | tostring | ltrimstr("v") | test("^[0-9]") and (test("^0([^0-9]|$)") | not))' <<< "$DEPENDENCIES_JSON" > /dev/null 2>&1; then
             echo "stable-only=true" >> "$GITHUB_OUTPUT"
           else
             echo "At least one dependency is on a 0.x or unknown version, skipping."
