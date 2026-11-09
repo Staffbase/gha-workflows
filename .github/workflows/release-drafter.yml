@@ -7,7 +7,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@4480e618bd8586edff0e0feb7001cde314df5bd3 # v19.1.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@65f8e7987a0bc997bc2fa3469c277766a3ec7c31 # v19.2.1
     permissions:
       contents: write
       pull-requests: read
