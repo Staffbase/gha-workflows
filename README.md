@@ -102,6 +102,8 @@ jobs:
       labels: true
       # optional: label which should trigger the action, default: dev
       label: deploy
+      # optional: resolve merge conflicts with Mergiraf, set to false to use plain Git and skip its download, default: true
+      mergiraf: false
       # optional: name of the user which does the commit, default: AutoDev Action
       user: your name
       # optional: mail of the user which does the commit, default: staffbot@staffbase.com
