@@ -59,7 +59,8 @@ jobs:
         with:
           github-token: ${{ steps.get_token.outputs.token }}
 
-      # Dependabot gives a digest-only update no semver update type, but so it does for a
+      # Dependabot gives a digest-only update either no semver update type or one with an
+      # empty previous version (python:3.14 reports semver-patch), and the same happens for a
       # change between non-numeric tags (bookworm-20250908 to bookworm-20250929). The diff
       # tells them apart: with the digests removed, every changed line must be unchanged.
       - name: Detect digest-only Docker update
@@ -67,7 +68,10 @@ jobs:
         if: >-
           inputs.allow-digest-updates &&
           startsWith(steps.metadata.outputs.package-ecosystem, 'docker') &&
-          steps.metadata.outputs.update-type == ''
+          (
+            steps.metadata.outputs.update-type == '' ||
+            steps.metadata.outputs.previous-version == ''
+          )
         run: |
           diff=$(gh pr diff "$PR_URL")
           removed=$(grep -E '^-' <<< "$diff" | grep -vE '^--- ' | sed -E 's/^-//; s/@sha256:[0-9a-f]{64}//g' || true)
