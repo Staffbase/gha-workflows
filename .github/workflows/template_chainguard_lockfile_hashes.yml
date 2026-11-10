@@ -1,0 +1,103 @@
+name: Chainguard Lockfile Hashes
+
+on:
+  workflow_call:
+    inputs:
+      lockfile:
+        description: 'Lockfile to refresh. Empty lets chainctl detect it in the repository root.'
+        required: false
+        type: string
+        default: ''
+      registry-url:
+        description: 'Registry the project installs from. Its answer is what the lockfile must match.'
+        required: false
+        type: string
+        default: 'https://europe-npm.pkg.dev/staffbase-artifacts/npm/'
+      service-account:
+        description: 'Service account to impersonate. Read access to the registry is enough.'
+        required: false
+        type: string
+        default: 'github-artifact-reader@global-iam-436113.iam.gserviceaccount.com'
+      chainctl-version:
+        required: false
+        type: string
+        default: '0.2.397'
+      branch:
+        required: false
+        type: string
+        default: 'chainguard-lockfile-hashes'
+      labels:
+        description: 'Newline-separated labels for the pull request.'
+        required: false
+        type: string
+        default: ''
+    secrets:
+      client-id:
+        required: true
+      private-key:
+        required: true
+
+jobs:
+  update-hashes:
+    name: Update Hashes
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Artifact Registry
+        id: gar
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+        with:
+          configure: ''
+          service-account: ${{ inputs.service-account }}
+
+      # Install only: chainctl authenticates to the registry with the access token, not a Chainguard identity.
+      - name: Setup chainctl
+        uses: chainguard-dev/setup-chainctl@bfe7503a12660737d9d66d02d2610a399d804316 # v0.6.0
+        with:
+          version: ${{ inputs.chainctl-version }}
+
+      # The virtual registry serves a Chainguard rebuild in place of the npmjs tarball as soon as one
+      # exists, at the same URL. Without this refresh, frozen installs then fail the integrity check.
+      - name: Update lockfile hashes
+        env:
+          CHAINCTL_REGISTRY_USERNAME: oauth2accesstoken
+          CHAINCTL_REGISTRY_PASSWORD: ${{ steps.gar.outputs.access-token }}
+          REGISTRY_URL: ${{ inputs.registry-url }}
+          LOCKFILE: ${{ inputs.lockfile }}
+        run: |
+          args=(--registry-url "${REGISTRY_URL}" --replace --ignore-netrc)
+          if [[ -n "${LOCKFILE}" ]]; then
+            args+=("${LOCKFILE}")
+          fi
+          chainctl libraries update-hashes "${args[@]}"
+
+      - name: Get App Token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        id: get_token
+        with:
+          client-id: ${{ secrets.client-id }}
+          private-key: ${{ secrets.private-key }}
+
+      # The app token makes CI run on the pull request; GITHUB_TOKEN would not trigger it.
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
+        with:
+          token: ${{ steps.get_token.outputs.token }}
+          branch: ${{ inputs.branch }}
+          sign-commits: true
+          commit-message: 'chore(deps): update lockfile hashes for Chainguard rebuilds'
+          title: 'chore(deps): update lockfile hashes for Chainguard rebuilds'
+          body: |
+            Chainguard published rebuilds of packages this lockfile pins from npmjs.
+            The registry now serves the rebuilds at the same URLs, so installs fail the integrity check until the hashes are updated.
+
+            Versions are unchanged; only `integrity` values change. CI installs with the frozen lockfile and verifies them.
+          labels: ${{ inputs.labels }}
+          delete-branch: true
