@@ -511,7 +511,7 @@ jobs:
 <details>
 <summary>The action can be used to ensure a release is only published for the latest validated build.</summary>
 
-Pass the build commit SHA through the required `build-sha` input. The `publish` output is `true` when that commit is still the latest commit on `main` and does not already have a release; use it to gate the version and release jobs. Replace `YOUR_COMMIT_SHA` in the reusable-workflow references with a commit SHA that contains the referenced template; the v20.2.0 commit predates these templates.
+Pass the build commit SHA through the required `build-sha` input. The `publish` output is `true` when that commit is still the latest commit on `main` and does not already have a release; use it to gate the version and release jobs.
 
 ```yml
 name: Release
@@ -527,7 +527,7 @@ on:
 jobs:
   release_guard:
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_guard.yml@YOUR_COMMIT_SHA
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_guard.yml@b5f6cdaa9d4f87592a7ef5b08c36b2493de7692b
     permissions:
       contents: read
     with:
@@ -544,7 +544,7 @@ jobs:
   release:
     needs: [release_guard, version]
     if: needs.release_guard.outputs.publish == 'true'
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@YOUR_COMMIT_SHA
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@b5f6cdaa9d4f87592a7ef5b08c36b2493de7692b
     permissions:
       contents: write
       pull-requests: read
@@ -564,7 +564,7 @@ jobs:
 
 If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
 More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
-For this push-triggered example, set the optional `commitish` input to `github.sha` to target the commit that triggered the workflow. When using a validated `workflow_run` instead, set it to `github.event.workflow_run.head_sha`. Replace `YOUR_COMMIT_SHA` in the reusable-workflow reference with a commit SHA that contains `template_release_drafter.yml`; the v20.2.0 commit predates this template.
+For this push-triggered example, set the optional `commitish` input to `github.sha` to target the commit that triggered the workflow. When using a validated `workflow_run` instead, set it to `github.event.workflow_run.head_sha`.
 
 ```yml
 name: Release Drafter
@@ -578,7 +578,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@YOUR_COMMIT_SHA
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@b5f6cdaa9d4f87592a7ef5b08c36b2493de7692b
     permissions:
       contents: write
       pull-requests: read
