@@ -1,0 +1,73 @@
+name: Release Guard
+
+on:
+  workflow_call:
+    inputs:
+      build-sha:
+        required: true
+        type: string
+    outputs:
+      publish:
+        description: Whether the build should publish a release
+        value: ${{ jobs.release_guard.outputs.publish }}
+
+jobs:
+  release_guard:
+    name: Check whether to publish a release
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+    outputs:
+      publish: ${{ steps.guard.outputs.publish }}
+    steps:
+      - name: Check release eligibility
+        id: guard
+        env:
+          BUILD_SHA: ${{ inputs['build-sha'] }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
+          WORKFLOW_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$WORKFLOW_CONCLUSION" || -z "$WORKFLOW_EVENT" || -z "$WORKFLOW_HEAD_BRANCH" || -z "$BUILD_SHA" || -z "$DEFAULT_BRANCH" ]]; then
+            echo "::error::Missing required workflow_run field or release guard input (conclusion, event, head_branch, build SHA, or repository default branch)."
+            exit 1
+          fi
+
+          if [[ "$WORKFLOW_CONCLUSION" != "success" || "$WORKFLOW_EVENT" != "push" || "$WORKFLOW_HEAD_BRANCH" != "$DEFAULT_BRANCH" ]]; then
+            echo "Workflow run is not an eligible successful push to $DEFAULT_BRANCH; skipping release."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          encoded_default_branch=$(jq -rn --arg branch "$DEFAULT_BRANCH" '$branch | @uri')
+          default_branch_sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/$encoded_default_branch" --jq '.commit.sha')
+          if [[ "$default_branch_sha" != "$BUILD_SHA" ]]; then
+            echo "Build commit $BUILD_SHA is no longer the latest $DEFAULT_BRANCH commit ($default_branch_sha); skipping release."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if release_response=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq '.tag_name // empty' 2>&1); then
+            release_tag=$release_response
+          elif [[ "$release_response" == *"(HTTP 404)"* ]]; then
+            release_tag=
+          else
+            printf '%s\n' "$release_response" >&2
+            exit 1
+          fi
+
+          if [[ -n "$release_tag" ]]; then
+            release_sha=$(gh api "repos/$GITHUB_REPOSITORY/commits/$release_tag" --jq '.sha')
+            if [[ "$release_sha" = "$BUILD_SHA" ]]; then
+              echo "Commit $BUILD_SHA already has published release $release_tag; skipping release."
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          echo "publish=true" >> "$GITHUB_OUTPUT"
