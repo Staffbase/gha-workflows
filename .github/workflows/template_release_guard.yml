@@ -1,0 +1,57 @@
+name: Release Guard
+
+on:
+  workflow_call:
+    inputs:
+      build-sha:
+        required: true
+        type: string
+    outputs:
+      publish:
+        description: Whether the build should publish a release
+        value: ${{ jobs.release_guard.outputs.publish }}
+
+jobs:
+  release_guard:
+    name: Check whether to publish a release
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+    outputs:
+      publish: ${{ steps.guard.outputs.publish }}
+    steps:
+      - name: Check release eligibility
+        id: guard
+        env:
+          BUILD_SHA: ${{ inputs.build-sha }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          main_sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/main" --jq '.commit.sha')
+          if [[ "$main_sha" != "$BUILD_SHA" ]]; then
+            echo "Build commit $BUILD_SHA is no longer the latest main commit ($main_sha); skipping release."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if release_response=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq '.tag_name // empty' 2>&1); then
+            release_tag=$release_response
+          elif [[ "$release_response" == *"(HTTP 404)"* ]]; then
+            release_tag=
+          else
+            printf '%s\n' "$release_response" >&2
+            exit 1
+          fi
+
+          if [[ -n "$release_tag" ]]; then
+            release_sha=$(gh api "repos/$GITHUB_REPOSITORY/commits/$release_tag" --jq '.sha')
+            if [[ "$release_sha" = "$BUILD_SHA" ]]; then
+              echo "Commit $BUILD_SHA already has published release $release_tag; skipping release."
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          echo "publish=true" >> "$GITHUB_OUTPUT"
