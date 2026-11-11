@@ -23,7 +23,7 @@ jobs:
       - name: Check release eligibility
         id: guard
         env:
-          BUILD_SHA: ${{ inputs.build-sha }}
+          BUILD_SHA: ${{ inputs['build-sha'] }}
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
