@@ -511,7 +511,7 @@ jobs:
 <details>
 <summary>The action can be used to ensure a release is only published for the latest validated build.</summary>
 
-Pass the build commit SHA through the required `build-sha` input. The `publish` output is `true` when that commit is still the latest commit on `main` and does not already have a release; use it to gate the version and release jobs.
+Pass the build commit SHA through the required `build-sha` input. The shared guard checks that the workflow run was a successful push to `main`, that the commit is still the latest commit on `main`, and that it does not already have a release. The `publish` output is `true` only when all checks pass; use it to gate the version and release jobs.
 
 ```yml
 name: Release
@@ -526,7 +526,6 @@ on:
 
 jobs:
   release_guard:
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
     uses: Staffbase/gha-workflows/.github/workflows/template_release_guard.yml@b5f6cdaa9d4f87592a7ef5b08c36b2493de7692b
     permissions:
       contents: read

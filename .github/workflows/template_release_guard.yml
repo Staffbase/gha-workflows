@@ -24,10 +24,19 @@ jobs:
         id: guard
         env:
           BUILD_SHA: ${{ inputs['build-sha'] }}
+          WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
+          WORKFLOW_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
+
+          if [[ "$WORKFLOW_CONCLUSION" != "success" || "$WORKFLOW_EVENT" != "push" || "$WORKFLOW_HEAD_BRANCH" != "main" ]]; then
+            echo "Workflow run is not an eligible successful push to main; skipping release."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           main_sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/main" --jq '.commit.sha')
           if [[ "$main_sha" != "$BUILD_SHA" ]]; then
