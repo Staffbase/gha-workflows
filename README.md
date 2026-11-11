@@ -15,7 +15,7 @@ on: ...
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions: ...  # see individual examples below
     with: ...
 ```
@@ -47,7 +47,7 @@ on:
 
 jobs:
   dependabot:
-    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions: {}
     with:
       # optional: merge strategy (accepted values: rebase, merge, squash. default: squash)
@@ -86,7 +86,7 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
     with:
@@ -144,7 +144,7 @@ on:
 
 jobs:
   update-hashes:
-    uses: Staffbase/gha-workflows/.github/workflows/template_chainguard_lockfile_hashes.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # unreleased
+    uses: Staffbase/gha-workflows/.github/workflows/template_chainguard_lockfile_hashes.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
       id-token: write
@@ -187,7 +187,7 @@ on:
 
 jobs:
   changeset-check:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
       pull-requests: write
@@ -214,7 +214,7 @@ on:
 
 jobs:
   changeset-release:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
     with:
@@ -256,7 +256,7 @@ on:
 
 jobs:
   flaky-tests:
-    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       checks: read
       contents: read
@@ -314,7 +314,7 @@ on: [push]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
       deployments: write
@@ -427,7 +427,7 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
     with:
@@ -465,7 +465,7 @@ on:
 
 jobs:
   ld_code_references:
-    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
     with:
@@ -494,7 +494,7 @@ on:
 
 jobs:
   block:
-    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       pull-requests: write
     with:
@@ -526,7 +526,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: write
       pull-requests: read
@@ -576,7 +576,7 @@ on:
 
 jobs:
   new_version:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
     with:
@@ -617,7 +617,7 @@ jobs:
   trufflehog:
     permissions:
       contents: read
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
 ```
 
 </details>
@@ -638,7 +638,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: write
       pull-requests: write
@@ -681,7 +681,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
     secrets:
@@ -714,7 +714,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
     with:
@@ -748,7 +748,7 @@ on: [pull_request]
 
 jobs:
   terraform:
-    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
       pull-requests: write
@@ -786,7 +786,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
     permissions:
       contents: read
       checks: write
