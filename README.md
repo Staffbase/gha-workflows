@@ -531,7 +531,7 @@ concurrency:
 
 jobs:
   release_guard:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_guard.yml@b5f6cdaa9d4f87592a7ef5b08c36b2493de7692b
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_guard.yml@f99d162c51fac94dd1912fafe3d432410db399ff # unreleased
     permissions:
       contents: read
     with:
@@ -548,7 +548,7 @@ jobs:
   release:
     needs: [release_guard, version]
     if: needs.release_guard.outputs.publish == 'true'
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@b5f6cdaa9d4f87592a7ef5b08c36b2493de7692b
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@f99d162c51fac94dd1912fafe3d432410db399ff # unreleased
     permissions:
       contents: write
       pull-requests: read
@@ -584,7 +584,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@b5f6cdaa9d4f87592a7ef5b08c36b2493de7692b
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@f99d162c51fac94dd1912fafe3d432410db399ff # unreleased
     permissions:
       contents: write
       pull-requests: read
