@@ -121,6 +121,56 @@ jobs:
 
 </details>
 
+### Chainguard Lockfile Hashes
+
+<details>
+<summary>The action keeps lockfile hashes in sync with Chainguard rebuilds served by Artifact Registry.</summary>
+
+The Artifact Registry `npm` repository serves Chainguard's rebuild of a package where one exists and the npmjs tarball otherwise.
+When Chainguard publishes a rebuild of a version the lockfile already pins, the same URL starts serving different bytes and frozen installs fail the integrity check.
+This workflow runs `chainctl libraries update-hashes` against the registry and opens a pull request when hashes change. Versions stay the same.
+
+The calling job needs `id-token: write` to read from Artifact Registry.
+
+```yml
+name: Chainguard Lockfile Hashes
+
+permissions: {}
+
+on:
+  schedule:
+    - cron: '0 5 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  update-hashes:
+    uses: Staffbase/gha-workflows/.github/workflows/template_chainguard_lockfile_hashes.yml@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # unreleased
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      # optional: lockfile to refresh, default: detected in the repository root
+      lockfile: frontend/pnpm-lock.yaml
+      # optional: registry the project installs from, default: https://europe-npm.pkg.dev/staffbase-artifacts/npm/
+      registry-url: https://europe-npm.pkg.dev/staffbase-artifacts/npm/
+      # optional: service account to impersonate, default: github-artifact-reader@global-iam-436113.iam.gserviceaccount.com
+      service-account: github-artifact-reader@global-iam-436113.iam.gserviceaccount.com
+      # optional: chainctl version, default: 0.2.397
+      chainctl-version: 0.2.397
+      # optional: branch of the pull request, default: chainguard-lockfile-hashes
+      branch: update-lockfile-hashes
+      # optional: newline-separated pull request labels, default: none
+      labels: |
+        dependencies
+        patch
+    secrets:
+      # GitHub App is required because GITHUB_TOKEN will not trigger new actions
+      client-id: ${{ <your-client-id> }}
+      private-key: ${{ <your-private-key> }}
+```
+
+</details>
+
 ### Changeset Check
 
 <details>
