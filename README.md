@@ -599,6 +599,9 @@ jobs:
       tag: vX.Y.Z
       # optional: version to be associated with the release
       version: X.Y.Z
+      # optional: commitish to use; omit to preserve configured/default behavior.
+      # Use a SHA only when filter-by-commitish is false; otherwise use the configured branch.
+      # commitish: <branch-or-sha>
       # optional: prerelease status of the release, default: false
       prerelease: true
       # optional: prerelease identifier of the release
