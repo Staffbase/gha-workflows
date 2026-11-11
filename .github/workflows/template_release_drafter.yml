@@ -71,4 +71,4 @@ jobs:
           version: ${{ inputs.version }}
           prerelease: ${{ inputs.prerelease }}
           prerelease-identifier: ${{ inputs.prerelease-identifier }}
-          commitish: ${{ inputs.commitish || github.ref }}
+          commitish: ${{ inputs.commitish }}

@@ -24,6 +24,7 @@ jobs:
         id: guard
         env:
           BUILD_SHA: ${{ inputs['build-sha'] }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
           WORKFLOW_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
@@ -32,15 +33,21 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ "$WORKFLOW_CONCLUSION" != "success" || "$WORKFLOW_EVENT" != "push" || "$WORKFLOW_HEAD_BRANCH" != "main" ]]; then
-            echo "Workflow run is not an eligible successful push to main; skipping release."
+          if [[ -z "$WORKFLOW_CONCLUSION" || -z "$WORKFLOW_EVENT" || -z "$WORKFLOW_HEAD_BRANCH" || -z "$BUILD_SHA" || -z "$DEFAULT_BRANCH" ]]; then
+            echo "::error::Missing required workflow_run field or release guard input (conclusion, event, head_branch, build SHA, or repository default branch)."
+            exit 1
+          fi
+
+          if [[ "$WORKFLOW_CONCLUSION" != "success" || "$WORKFLOW_EVENT" != "push" || "$WORKFLOW_HEAD_BRANCH" != "$DEFAULT_BRANCH" ]]; then
+            echo "Workflow run is not an eligible successful push to $DEFAULT_BRANCH; skipping release."
             echo "publish=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          main_sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/main" --jq '.commit.sha')
-          if [[ "$main_sha" != "$BUILD_SHA" ]]; then
-            echo "Build commit $BUILD_SHA is no longer the latest main commit ($main_sha); skipping release."
+          encoded_default_branch=$(jq -rn --arg branch "$DEFAULT_BRANCH" '$branch | @uri')
+          default_branch_sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/$encoded_default_branch" --jq '.commit.sha')
+          if [[ "$default_branch_sha" != "$BUILD_SHA" ]]; then
+            echo "Build commit $BUILD_SHA is no longer the latest $DEFAULT_BRANCH commit ($default_branch_sha); skipping release."
             echo "publish=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi

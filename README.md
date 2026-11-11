@@ -511,7 +511,7 @@ jobs:
 <details>
 <summary>The action can be used to ensure a release is only published for the latest validated build.</summary>
 
-Pass the build commit SHA through the required `build-sha` input. The shared guard checks that the workflow run was a successful push to `main`, that the commit is still the latest commit on `main`, and that it does not already have a release. The `publish` output is `true` only when all checks pass; use it to gate the version and release jobs.
+Pass the build commit SHA through the required `build-sha` input. The shared guard checks that the workflow run was a successful push to the repository's default branch, that the commit is still the latest commit on that branch, and that it is not already the commit targeted by the repository's latest stable release. It checks only the latest stable release, not every published release. The `publish` output is `true` only when all checks pass; use it to gate the version and release jobs.
 
 ```yml
 name: Release
@@ -523,6 +523,11 @@ on:
     workflows: [CI]
     types: [completed]
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+  queue: max
 
 jobs:
   release_guard:
@@ -554,6 +559,8 @@ jobs:
       commitish: ${{ github.event.workflow_run.head_sha }}
 ```
 
+The Release Guard passes a build SHA as the Release Drafter `commitish`. Do not combine this SHA with `filter-by-commitish: true`; that option requires a branch-style commitish matching the release-drafter configuration.
+
 </details>
 
 ### Release Drafter
@@ -563,7 +570,7 @@ jobs:
 
 If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
 More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
-For this push-triggered example, set the optional `commitish` input to `github.sha` to target the commit that triggered the workflow. When using a validated `workflow_run` instead, set it to `github.event.workflow_run.head_sha`.
+The optional `commitish` input is left unset by default, preserving the caller's release-drafter configuration and default behavior. When `filter-by-commitish: true`, set a branch-style `commitish` that matches the branch in the configuration; do not use a build SHA.
 
 ```yml
 name: Release Drafter
@@ -592,8 +599,6 @@ jobs:
       tag: vX.Y.Z
       # optional: version to be associated with the release
       version: X.Y.Z
-      # optional: commit to target (default: github.ref)
-      commitish: ${{ github.sha }}
       # optional: prerelease status of the release, default: false
       prerelease: true
       # optional: prerelease identifier of the release
