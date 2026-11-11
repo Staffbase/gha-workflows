@@ -1,0 +1,47 @@
+name: "Upwind ShiftLeft Image Publish Event"
+on:
+  workflow_call:
+    inputs:
+      gar-registry:
+        required: false
+        type: string
+        default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
+      docker-image:
+        required: false
+        type: string
+        default: sb-images/${{ github.event.repository.name }}
+      docker-tag:
+        required: true
+        type: string
+      upwind-client-id:
+        required: false
+        type: string
+    secrets:
+      upwind-client-secret:
+        required: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      upwind_client_secret: ${{ secrets.upwind-client-secret }}
+    steps:
+      - name: "Set up Artifact Registry"
+        id: gar
+        if: "${{ inputs.upwind-client-id != '' && env.upwind_client_secret != '' }}"
+        uses: Staffbase/setup-artifact-registry-action@4e433ad228e04a5c9a9a3f9a59de9c4e2e7148e1 # v1.0.0
+        with:
+          configure: ""
+
+      - name: "Upwind Security ShiftLeft Image Publish"
+        if: "${{ inputs.upwind-client-id != '' && env.upwind_client_secret != '' }}"
+        uses: upwindsecurity/shiftleft-create-image-publish-event-action@e21e33527930216fc02b6ba0aa33de864e1cd316 # v1.2.0
+        continue-on-error: true
+        with:
+          docker_user: oauth2accesstoken
+          docker_password: ${{ steps.gar.outputs.access-token }}
+          docker_image: ${{ inputs.gar-registry }}/${{ inputs.docker-image }}:${{ inputs.docker-tag }}
+          upwind_client_id: ${{ inputs.upwind-client-id }}
+          upwind_client_secret: ${{ secrets.upwind-client-secret }}

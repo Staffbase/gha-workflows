@@ -368,9 +368,9 @@ jobs:
       multi-arch: true
       # optional: base name of the artifact carrying the per-arch digests, only change it when building more than one multi-arch image in a workflow, default: docker-digests
       multiarch-artifact-name: docker-digests-my-service
-      # optional: Upwind.io client ID
+      # optional: Upwind.io client ID (legacy image build event, remove when using the ShiftLeft Image Publish job)
       upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
-      # optional: Upwind.io organization ID
+      # optional: Upwind.io organization ID (legacy image build event, remove when using the ShiftLeft Image Publish job)
       upwind-organization-id: ${{ vars.UPWIND_ORGANIZATION_ID }}
     secrets:
       # optional: username for the docker registry
@@ -391,7 +391,7 @@ jobs:
       client-id: ${{ <your-client-id> }}
       # optional: private key of the GitHub App
       private-key: ${{ <your-private-key> }}
-      # optional: Upwind client secret
+      # optional: Upwind client secret (legacy image build event, remove when using the ShiftLeft Image Publish job)
       upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
 
@@ -618,6 +618,49 @@ jobs:
     permissions:
       contents: read
     uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+```
+
+</details>
+
+### ShiftLeft Image Publish
+
+<details>
+<summary>The action can be used to send an image publish event to Upwind. It is a replacement for the Upwind image build event emitted by the GitOps action.</summary>
+
+```yml
+name: ShiftLeft Image Publish
+
+permissions: {}
+
+on: [push]
+
+jobs:
+  gitops:
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@4480e618bd8586edff0e0feb7001cde314df5bd3 # v19.1.0
+    permissions:
+      contents: read
+      deployments: write
+      id-token: write
+    with:
+      docker-image: <your-image>
+  shiftleft:
+    needs: gitops
+    uses: Staffbase/gha-workflows/.github/workflows/template_shiftleft_image_publish.yml@<SHA> # unreleased
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      # optional: Google Artifact Registry path the image was pushed to, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
+      gar-registry: "europe-docker.pkg.dev/<project>/<repository>"
+      # optional: name of the docker image, default: sb-images/<repository_name>
+      docker-image: <your-image>
+      # required: tag of the already pushed image that the event is created for
+      docker-tag: <your-tag>
+      # optional: Upwind client id, the event is skipped if it or the secret is not set, default: "" (unset)
+      upwind-client-id: <your-client-id>
+    secrets:
+      # optional: Upwind client secret, the event is skipped if it or the client id is not set
+      upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
 
 </details>
