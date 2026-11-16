@@ -28,6 +28,10 @@ on:
         required: false
         type: string
         default: ""
+      commitish:
+        required: false
+        type: string
+        default: ""
     secrets:
       token:
         required: false
@@ -67,3 +71,4 @@ jobs:
           version: ${{ inputs.version }}
           prerelease: ${{ inputs.prerelease }}
           prerelease-identifier: ${{ inputs.prerelease-identifier }}
+          commitish: ${{ inputs.commitish }}

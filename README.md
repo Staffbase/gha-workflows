@@ -15,7 +15,7 @@ on: ...
 
 jobs:
   <action name>:
-    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions: ...  # see individual examples below
     with: ...
 ```
@@ -47,7 +47,7 @@ on:
 
 jobs:
   dependabot:
-    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_automerge_dependabot.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions: {}
     with:
       # optional: merge strategy (accepted values: rebase, merge, squash. default: squash)
@@ -86,7 +86,7 @@ on:
 
 jobs:
   autodev:
-    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_autodev.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
     with:
@@ -144,7 +144,7 @@ on:
 
 jobs:
   update-hashes:
-    uses: Staffbase/gha-workflows/.github/workflows/template_chainguard_lockfile_hashes.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_chainguard_lockfile_hashes.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
       id-token: write
@@ -187,7 +187,7 @@ on:
 
 jobs:
   changeset-check:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_check.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
       pull-requests: write
@@ -214,7 +214,7 @@ on:
 
 jobs:
   changeset-release:
-    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_changeset_release.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
     with:
@@ -256,7 +256,7 @@ on:
 
 jobs:
   flaky-tests:
-    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_flaky_tests.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       checks: read
       contents: read
@@ -314,7 +314,7 @@ on: [push]
 
 jobs:
   gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
       deployments: write
@@ -427,7 +427,7 @@ on:
 
 jobs:
   jira_annotate:
-    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_jira_tagging.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
     with:
@@ -465,7 +465,7 @@ on:
 
 jobs:
   ld_code_references:
-    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_launchdarkly_code_references.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
     with:
@@ -494,7 +494,7 @@ on:
 
 jobs:
   block:
-    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_merge_block.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       pull-requests: write
     with:
@@ -506,6 +506,63 @@ jobs:
 
 </details>
 
+### Release Guard
+
+<details>
+<summary>The action can be used to ensure a release is only published for the latest validated build.</summary>
+
+Pass the build commit SHA through the required `build-sha` input. The shared guard checks that the workflow run was a successful push to the repository's default branch, that the commit is still the latest commit on that branch, and that it is not already the commit targeted by the repository's latest stable release. It checks only the latest stable release, not every published release. The `publish` output is `true` only when all checks pass; use it to gate the version and release jobs.
+
+```yml
+name: Release
+
+permissions: {}
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  release_guard:
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_guard.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
+    permissions:
+      contents: read
+    with:
+      # commit SHA of the build to validate
+      build-sha: ${{ github.event.workflow_run.head_sha }}
+
+  version:
+    needs: release_guard
+    if: needs.release_guard.outputs.publish == 'true'
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
+    permissions:
+      contents: read
+
+  release:
+    needs: [release_guard, version]
+    if: needs.release_guard.outputs.publish == 'true'
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
+    permissions:
+      contents: write
+      pull-requests: read
+    with:
+      publish: true
+      tag: ${{ needs.version.outputs.new_tag }}
+      version: ${{ needs.version.outputs.new_version }}
+      commitish: ${{ github.event.workflow_run.head_sha }}
+```
+
+The Release Guard passes a build SHA as the Release Drafter `commitish`. Do not combine this SHA with `filter-by-commitish: true`; that option requires a branch-style commitish matching the release-drafter configuration.
+
+</details>
+
 ### Release Drafter
 
 <details>
@@ -513,6 +570,7 @@ jobs:
 
 If you want to use the template action please note that you must have the configuration file `.github/release-drafter.yml`.
 More information on how to configure this file can be found [here](https://github.com/marketplace/actions/release-drafter#configuration).
+The optional `commitish` input is left unset by default, preserving the caller's release-drafter configuration and default behavior. When `filter-by-commitish: true`, set a branch-style `commitish` that matches the branch in the configuration; do not use a build SHA.
 
 ```yml
 name: Release Drafter
@@ -526,7 +584,7 @@ on:
 
 jobs:
   update_release_draft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_drafter.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: write
       pull-requests: read
@@ -541,6 +599,9 @@ jobs:
       tag: vX.Y.Z
       # optional: version to be associated with the release
       version: X.Y.Z
+      # optional: commitish to use; omit to preserve configured/default behavior.
+      # Use a SHA only when filter-by-commitish is false; otherwise use the configured branch.
+      # commitish: <branch-or-sha>
       # optional: prerelease status of the release, default: false
       prerelease: true
       # optional: prerelease identifier of the release
@@ -576,7 +637,7 @@ on:
 
 jobs:
   new_version:
-    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_release_version.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
     with:
@@ -617,7 +678,7 @@ jobs:
   trufflehog:
     permissions:
       contents: read
-    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_secret_scan.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
 ```
 
 </details>
@@ -681,7 +742,7 @@ on:
 
 jobs:
   stale:
-    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_stale.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: write
       pull-requests: write
@@ -724,7 +785,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs_monorepo.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
     secrets:
@@ -757,7 +818,7 @@ on:
 
 jobs:
   techdocs:
-    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_techdocs.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
     with:
@@ -791,7 +852,7 @@ on: [pull_request]
 
 jobs:
   terraform:
-    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_terraform_format.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
       pull-requests: write
@@ -829,7 +890,7 @@ on:
 
 jobs:
   yamllint:
-    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@47c32d1e4bfd27b3a07eb96522d8903cad8b1314 # v20.2.0
+    uses: Staffbase/gha-workflows/.github/workflows/template_yaml.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
     permissions:
       contents: read
       checks: write
