@@ -834,7 +834,7 @@ jobs:
 <summary>The action can be used to send an image publish event to Upwind.</summary>
 
 ```yml
-name: Upwind Image Publish
+name: Image Publish Event to Upwind
 
 permissions: {}
 
@@ -862,10 +862,10 @@ jobs:
       docker-image: <your-image>
       # required: tag of the already pushed image that the event is created for
       docker-tag: ${{ needs.build.outputs.docker-tag }}
-      # optional: Upwind client id, the event is skipped if it or the secret is not set, default: "" (unset)
+      # required: Upwind client id, the workflow fails if it or the secret is empty
       upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
     secrets:
-      # optional: Upwind client secret, the event is skipped if it or the client id is not set
+      # required: Upwind client secret, the workflow fails if it or the client id is empty
       upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
 
