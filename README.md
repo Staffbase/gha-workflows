@@ -683,49 +683,6 @@ jobs:
 
 </details>
 
-### ShiftLeft Image Publish
-
-<details>
-<summary>The action can be used to send an image publish event to Upwind. It is a replacement for the Upwind image build event emitted by the GitOps action.</summary>
-
-```yml
-name: ShiftLeft Image Publish
-
-permissions: {}
-
-on: [push]
-
-jobs:
-  gitops:
-    uses: Staffbase/gha-workflows/.github/workflows/template_gitops.yml@4480e618bd8586edff0e0feb7001cde314df5bd3 # v19.1.0
-    permissions:
-      contents: read
-      deployments: write
-      id-token: write
-    with:
-      docker-image: <your-image>
-  shiftleft:
-    needs: gitops
-    uses: Staffbase/gha-workflows/.github/workflows/template_shiftleft_image_publish.yml@<SHA> # unreleased
-    permissions:
-      contents: read
-      id-token: write
-    with:
-      # optional: Google Artifact Registry path the image was pushed to, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
-      gar-registry: "europe-docker.pkg.dev/<project>/<repository>"
-      # optional: name of the docker image, default: sb-images/<repository_name>
-      docker-image: <your-image>
-      # required: tag of the already pushed image that the event is created for
-      docker-tag: <your-tag>
-      # optional: Upwind client id, the event is skipped if it or the secret is not set, default: "" (unset)
-      upwind-client-id: <your-client-id>
-    secrets:
-      # optional: Upwind client secret, the event is skipped if it or the client id is not set
-      upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
-```
-
-</details>
-
 ### Stale
 
 <details>
@@ -884,8 +841,17 @@ permissions: {}
 on: [push]
 
 jobs:
-  shiftleft:
-    uses: Staffbase/gha-workflows/.github/workflows/template_vulnerability_management.yml@<SHA> # unreleased
+  build:
+    # your job that builds and pushes the image to GAR
+    runs-on: ubuntu-24.04
+    outputs:
+      docker-tag: ${{ steps.build.outputs.docker-tag }}
+    steps:
+      - id: build
+        run: echo "docker-tag=<your-tag>" >> "$GITHUB_OUTPUT"
+  upwind-image-publish:
+    needs: build
+    uses: Staffbase/gha-workflows/.github/workflows/template_vulnerability_management.yml@29bb36728ff4c9d26c2f9b921fc181fb0f9502da # unreleased
     permissions:
       contents: read
       id-token: write
@@ -895,9 +861,9 @@ jobs:
       # optional: name of the docker image, default: sb-images/<repository_name>
       docker-image: <your-image>
       # required: tag of the already pushed image that the event is created for
-      docker-tag: <your-tag>
+      docker-tag: ${{ needs.build.outputs.docker-tag }}
       # optional: Upwind client id, the event is skipped if it or the secret is not set, default: "" (unset)
-      upwind-client-id: <your-client-id>
+      upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
     secrets:
       # optional: Upwind client secret, the event is skipped if it or the client id is not set
       upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
