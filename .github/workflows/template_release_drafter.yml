@@ -48,6 +48,11 @@ jobs:
       contents: write
       pull-requests: read
 
+    # Serialize updates to the same release draft so concurrent runs cannot create duplicates.
+    concurrency:
+      group: ${{ inputs.config-name }}-${{ inputs.tag || inputs.version || 'default' }}
+      cancel-in-progress: false
+
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client_id != '' && secrets.private_key != '' }}
 
