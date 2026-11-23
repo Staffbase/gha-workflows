@@ -52,7 +52,7 @@ jobs:
 
       - name: Setup Artifact Registry
         id: gar
-        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@54ff8b3e9fe5e8c4a11d5c770b16dd5c6be4e48b # v20.1.1
+        uses: Staffbase/gha-workflows/actions/setup-artifact-registry@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
         with:
           configure: ''
           service-account: ${{ inputs.service-account }}
