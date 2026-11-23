@@ -48,6 +48,14 @@ jobs:
       contents: write
       pull-requests: read
 
+    # Serialize updates to the repository's release draft so concurrent runs cannot create duplicates.
+    # release-drafter finds the draft by configuration, not by tag or version, so all runs for a
+    # configuration share one group. queue: max keeps queued publish runs from being replaced.
+    concurrency:
+      group: release-drafter-${{ inputs.config-name }}
+      cancel-in-progress: false
+      queue: max
+
     env:
       USING_APP_CREDENTIALS: ${{ secrets.client_id != '' && secrets.private_key != '' }}
 
