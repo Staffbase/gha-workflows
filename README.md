@@ -104,6 +104,8 @@ jobs:
       label: deploy
       # optional: resolve merge conflicts with Mergiraf, set to false to use plain Git and skip its download, default: true
       mergiraf: false
+      # optional: path relative to the repo root for the merge results JSON (default: '', disabled)
+      results_file: generated/autodev-results.json
       # optional: name of the user which does the commit, default: AutoDev Action
       user: your name
       # optional: mail of the user which does the commit, default: staffbot@staffbase.com
