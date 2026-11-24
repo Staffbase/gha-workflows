@@ -42,6 +42,11 @@ on:
         type: string
         default: ""
         description: "Rotate the layer cache so OS package layers (apt/apk upgrade) are refreshed. Empty keeps one cache; 'weekly' starts a fresh cache each ISO week. Ignored when docker-build-no-cache is true."
+      deployment-annotations:
+        required: false
+        type: string
+        default: "true"
+        description: "Stamp deploy.staffbase.com/* annotations onto updated GitOps manifests. gitops-github-action v11 defaults this to false; the template keeps true so existing callers see no change."
       docker-disable-retagging:
         required: false
         type: string
@@ -192,6 +197,7 @@ jobs:
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
           docker-build-cache-rotation: ${{ inputs.docker-build-cache-rotation }}
+          deployment-annotations: ${{ inputs.deployment-annotations }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -256,6 +262,7 @@ jobs:
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
           docker-build-cache-rotation: ${{ inputs.docker-build-cache-rotation }}
+          deployment-annotations: ${{ inputs.deployment-annotations }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -314,6 +321,7 @@ jobs:
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-outputs: ${{ inputs.docker-build-outputs }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          deployment-annotations: ${{ inputs.deployment-annotations }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
