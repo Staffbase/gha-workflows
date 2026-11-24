@@ -16,7 +16,7 @@ on: ...
 jobs:
   <action name>:
     uses: Staffbase/gha-workflows/.github/workflows/template_*.yml@e34b2accb1b680216761fee50c88cf606c9da66a # v20.3.0
-    permissions: ...  # see individual examples below
+    permissions: ... # see individual examples below
     with: ...
 ```
 
@@ -824,6 +824,49 @@ jobs:
       # GitHub App is required because GITHUB_TOKEN will not trigger new actions
       client-id: ${{ <your-client-id> }}
       private-key: ${{ <your-private-key> }}
+```
+
+</details>
+
+### Vulnerability Management
+
+<details>
+<summary>The action can be used to send an image publish event to Upwind.</summary>
+
+```yml
+name: Image Publish Event to Upwind
+
+permissions: {}
+
+on: [push]
+
+jobs:
+  build:
+    # your job that builds and pushes the image to GAR
+    runs-on: ubuntu-24.04
+    outputs:
+      docker-tag: ${{ steps.build.outputs.docker-tag }}
+    steps:
+      - id: build
+        run: echo "docker-tag=<your-tag>" >> "$GITHUB_OUTPUT"
+  upwind-image-publish:
+    needs: build
+    uses: Staffbase/gha-workflows/.github/workflows/template_vulnerability_management.yml@29bb36728ff4c9d26c2f9b921fc181fb0f9502da # unreleased
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      # optional: Google Artifact Registry path the image was pushed to, default: "europe-docker.pkg.dev/staffbase-artifacts/images-publish"
+      gar-registry: 'europe-docker.pkg.dev/<project>/<repository>'
+      # optional: name of the docker image, default: sb-images/<repository_name>
+      docker-image: <your-image>
+      # required: tag of the already pushed image that the event is created for
+      docker-tag: ${{ needs.build.outputs.docker-tag }}
+      # required: Upwind client id, the workflow fails if it or the secret is empty
+      upwind-client-id: ${{ vars.UPWIND_CLIENT_ID }}
+    secrets:
+      # required: Upwind client secret, the workflow fails if it or the client id is empty
+      upwind-client-secret: ${{ secrets.UPWIND_CLIENT_SECRET }}
 ```
 
 </details>
