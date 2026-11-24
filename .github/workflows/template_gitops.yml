@@ -97,6 +97,7 @@ on:
       upwind-organization-id:
         required: false
         type: string
+        description: "Deprecated and ignored since gitops-github-action v11. Kept so existing callers do not break."
       working-directory:
         required: false
         type: string
@@ -171,7 +172,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
+        uses: Staffbase/gitops-github-action@73841d33fbc4db3e53764d816eaaa490dd2b57ed # v11.0.0
         with:
           docker-registries: |
             ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
@@ -206,7 +207,6 @@ jobs:
           gitops-prod: ${{ inputs.gitops-prod }}
           upwind-client-id: ${{ inputs.upwind-client-id }}
           upwind-client-secret: ${{ secrets.upwind-client-secret }}
-          upwind-organization-id: ${{ inputs.upwind-organization-id }}
           working-directory: ${{ inputs.working-directory }}
 
   gitops-build:
@@ -236,7 +236,7 @@ jobs:
           configure: ''
 
       - name: GitOps (build and push by digest)
-        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
+        uses: Staffbase/gitops-github-action@73841d33fbc4db3e53764d816eaaa490dd2b57ed # v11.0.0
         with:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
@@ -297,7 +297,7 @@ jobs:
 
       - name: GitOps (merge manifests and deploy)
         id: gitops
-        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
+        uses: Staffbase/gitops-github-action@73841d33fbc4db3e53764d816eaaa490dd2b57ed # v11.0.0
         with:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
@@ -329,5 +329,4 @@ jobs:
           gitops-prod: ${{ inputs.gitops-prod }}
           upwind-client-id: ${{ inputs.upwind-client-id }}
           upwind-client-secret: ${{ secrets.upwind-client-secret }}
-          upwind-organization-id: ${{ inputs.upwind-organization-id }}
           working-directory: ${{ inputs.working-directory }}
