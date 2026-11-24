@@ -104,6 +104,8 @@ jobs:
       label: deploy
       # optional: resolve merge conflicts with Mergiraf, set to false to use plain Git and skip its download, default: true
       mergiraf: false
+      # optional: path relative to the repo root for the merge results JSON (default: '', disabled)
+      results_file: generated/autodev-results.json
       # optional: name of the user which does the commit, default: AutoDev Action
       user: your name
       # optional: mail of the user which does the commit, default: staffbot@staffbase.com
@@ -118,6 +120,8 @@ jobs:
       # optional: private key of the GitHub App
       private_key: ${{ <your-private-key> }}
 ```
+
+`results_file` requires a workflow revision that includes this input. When set, AutoDev commits a JSON array of successful merges (`{branch, sha}`) to the target branch. If nothing merges, it commits `[]`. Omit the input to leave report generation disabled.
 
 </details>
 

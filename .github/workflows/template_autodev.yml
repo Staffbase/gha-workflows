@@ -37,6 +37,11 @@ on:
         default: true
         required: false
         type: boolean
+      results_file:
+        description: Repository-relative JSON file for successful merges. Empty disables the report.
+        default: ''
+        required: false
+        type: string
       success_comment:
         required: false
         type: string
@@ -86,7 +91,7 @@ jobs:
           fetch-tags: false
 
       - name: Autodev
-        uses: Staffbase/autodev-action@e99eefc55d1896be8676315945af10d09bf502be # v2.11.0
+        uses: Staffbase/autodev-action@4d7207fa767390412b2febe6de0e9f4bc0e9c776 # unreleased
         with:
           base: ${{ inputs.base }}
           branch: ${{ inputs.branch }}
@@ -97,6 +102,7 @@ jobs:
           label: ${{ inputs.label }}
           labels: ${{ inputs.labels }}
           mergiraf: ${{ inputs.mergiraf }}
+          results_file: ${{ inputs.results_file }}
           success_comment: ${{ inputs.success_comment }}
           success_label: ${{ inputs.success_label }}
           token: ${{ env.USING_APP_CREDENTIALS == 'true' && steps.get_token.outputs.token || secrets.token }}
