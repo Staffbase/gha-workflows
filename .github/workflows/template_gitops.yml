@@ -37,6 +37,11 @@ on:
         type: boolean
         default: false
         description: "Re-execute Dockerfile steps and skip external cache import/export. Base images are always checked for updates."
+      docker-build-cache-rotation:
+        required: false
+        type: string
+        default: ""
+        description: "Rotate the layer cache so OS package layers (apt/apk upgrade) are refreshed. Empty keeps one cache; 'weekly' starts a fresh cache each ISO week. Ignored when docker-build-no-cache is true."
       docker-disable-retagging:
         required: false
         type: string
@@ -185,6 +190,7 @@ jobs:
           docker-build-platforms: ${{ inputs.docker-build-platform }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
+          docker-build-cache-rotation: ${{ inputs.docker-build-cache-rotation }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -249,6 +255,7 @@ jobs:
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
+          docker-build-cache-rotation: ${{ inputs.docker-build-cache-rotation }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
