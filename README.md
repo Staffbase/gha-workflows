@@ -336,7 +336,8 @@ jobs:
       # optional: re-execute Dockerfile steps without external cache import/export, default: false
       docker-build-no-cache: true
       # optional: refresh cached OS package layers (apt/apk upgrade) by rotating the layer cache, empty (default) or 'weekly'
-      docker-build-cache-rotation: 'weekly'
+      # (alternative to docker-build-no-cache: it has no effect when docker-build-no-cache is true)
+      # docker-build-cache-rotation: 'weekly'
       # optional: should the last stage image be retagged for the release image, default: false
       docker-disable-retagging: true
       # optional: path to the Dockerfile, default: ./Dockerfile
