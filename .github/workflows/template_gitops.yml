@@ -37,6 +37,16 @@ on:
         type: boolean
         default: false
         description: "Re-execute Dockerfile steps and skip external cache import/export. Base images are always checked for updates."
+      docker-build-cache-rotation:
+        required: false
+        type: string
+        default: ""
+        description: "Rotate the layer cache so OS package layers (apt/apk upgrade) are refreshed. Empty keeps one cache; 'weekly' starts a fresh cache each ISO week. Ignored when docker-build-no-cache is true."
+      deployment-annotations:
+        required: false
+        type: string
+        default: "true"
+        description: "Stamp deploy.staffbase.com/* annotations onto updated GitOps manifests. gitops-github-action v11 defaults this to false; the template keeps true so existing callers see no change."
       docker-disable-retagging:
         required: false
         type: string
@@ -92,6 +102,7 @@ on:
       upwind-organization-id:
         required: false
         type: string
+        description: "Deprecated and ignored since gitops-github-action v11. Kept so existing callers do not break."
       working-directory:
         required: false
         type: string
@@ -166,7 +177,7 @@ jobs:
 
       - name: GitOps (build, push and deploy a new Docker image)
         id: gitops
-        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
+        uses: Staffbase/gitops-github-action@73841d33fbc4db3e53764d816eaaa490dd2b57ed # v11.0.0
         with:
           docker-registries: |
             ${{ inputs.gar-registry }}|oauth2accesstoken|${{ steps.gar.outputs.access-token }}
@@ -185,6 +196,8 @@ jobs:
           docker-build-platforms: ${{ inputs.docker-build-platform }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
+          docker-build-cache-rotation: ${{ inputs.docker-build-cache-rotation }}
+          deployment-annotations: ${{ inputs.deployment-annotations }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -200,7 +213,6 @@ jobs:
           gitops-prod: ${{ inputs.gitops-prod }}
           upwind-client-id: ${{ inputs.upwind-client-id }}
           upwind-client-secret: ${{ secrets.upwind-client-secret }}
-          upwind-organization-id: ${{ inputs.upwind-organization-id }}
           working-directory: ${{ inputs.working-directory }}
 
   gitops-build:
@@ -230,7 +242,7 @@ jobs:
           configure: ''
 
       - name: GitOps (build and push by digest)
-        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
+        uses: Staffbase/gitops-github-action@73841d33fbc4db3e53764d816eaaa490dd2b57ed # v11.0.0
         with:
           multiarch-mode: build
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
@@ -249,6 +261,8 @@ jobs:
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
           docker-build-no-cache: ${{ inputs.docker-build-no-cache }}
+          docker-build-cache-rotation: ${{ inputs.docker-build-cache-rotation }}
+          deployment-annotations: ${{ inputs.deployment-annotations }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -290,7 +304,7 @@ jobs:
 
       - name: GitOps (merge manifests and deploy)
         id: gitops
-        uses: Staffbase/gitops-github-action@e9e7b20981f673e8f3e3427a69289efefc2a400a # v10.0.0
+        uses: Staffbase/gitops-github-action@73841d33fbc4db3e53764d816eaaa490dd2b57ed # v11.0.0
         with:
           multiarch-mode: merge
           multiarch-artifact-name: ${{ inputs.multiarch-artifact-name }}
@@ -307,6 +321,7 @@ jobs:
           docker-build-target: ${{ inputs.docker-build-target }}
           docker-build-outputs: ${{ inputs.docker-build-outputs }}
           docker-build-provenance: ${{ inputs.docker-build-provenance }}
+          deployment-annotations: ${{ inputs.deployment-annotations }}
           docker-disable-retagging: ${{ inputs.docker-disable-retagging }}
           docker-file: ${{ inputs.docker-file }}
           docker-image: ${{ inputs.docker-image }}
@@ -322,5 +337,4 @@ jobs:
           gitops-prod: ${{ inputs.gitops-prod }}
           upwind-client-id: ${{ inputs.upwind-client-id }}
           upwind-client-secret: ${{ secrets.upwind-client-secret }}
-          upwind-organization-id: ${{ inputs.upwind-organization-id }}
           working-directory: ${{ inputs.working-directory }}

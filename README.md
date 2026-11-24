@@ -335,6 +335,11 @@ jobs:
       docker-build-provenance: '<your-provenance-level>'
       # optional: re-execute Dockerfile steps without external cache import/export, default: false
       docker-build-no-cache: true
+      # optional: refresh cached OS package layers (apt/apk upgrade) by rotating the layer cache, empty (default) or 'weekly'
+      # (alternative to docker-build-no-cache: it has no effect when docker-build-no-cache is true)
+      # docker-build-cache-rotation: 'weekly'
+      # optional: set to "false" to skip stamping deploy.staffbase.com/* annotations onto updated GitOps manifests, default: "true"
+      deployment-annotations: "false"
       # optional: should the last stage image be retagged for the release image, default: false
       docker-disable-retagging: true
       # optional: path to the Dockerfile, default: ./Dockerfile
