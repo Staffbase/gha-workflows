@@ -121,8 +121,6 @@ jobs:
       private_key: ${{ <your-private-key> }}
 ```
 
-`results_file` requires a workflow revision that includes this input. When set, AutoDev commits a JSON array of successful merges (`{branch, sha}`) to the target branch. If nothing merges, it commits `[]`. Omit the input to leave report generation disabled.
-
 </details>
 
 ### Chainguard Lockfile Hashes
