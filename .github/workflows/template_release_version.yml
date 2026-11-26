@@ -43,10 +43,14 @@ jobs:
           DATE=$(date +"%Y%m%d")
           WEEK=$(date +"%-V")
           QUARTER=$(date "+%q")
+          MONTH=$(date +"%-m")
 
           if [ ${{ inputs.format }} == 'quarterly' ] ; then
             YEAR=$(date +"%Y")
             MINOR=$QUARTER
+          elif [ ${{ inputs.format }} == 'monthly' ] ; then
+            YEAR=$(date +"%Y")
+            MINOR=$MONTH
           else
             # The ISO week needs its ISO week-based year (%G), not the calendar year (%Y): 1 January 2027
             # is in week 53 of 2026, and YEAR.53 with %Y would sort above every later release that year.
@@ -79,6 +83,11 @@ jobs:
 
             # if we have a new quarter and the quarterly release we start to count from 0
             if [ ${MINOR_FROM_LAST_TAG} != ${QUARTER} ] && [ ${{ inputs.format }} == 'quarterly' ]; then
+              COUNTER=0
+            fi
+
+            # if we have a new month and the monthly release we start to count from 0
+            if [ ${MINOR_FROM_LAST_TAG} != ${MONTH} ] && [ ${{ inputs.format }} == 'monthly' ]; then
               COUNTER=0
             fi
 
