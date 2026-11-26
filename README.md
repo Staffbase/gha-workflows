@@ -629,7 +629,7 @@ jobs:
 <details>
 <summary>The action can be used to get the next version for a service.</summary>
 
-The new version is in the format `YEAR.WEEK.COUNTER` (weekly, with the ISO week-based year, so 1 January 2027 is `2026.53`) or `YEAR.QUARTER.COUNTER` (quarterly, calendar year). You will get the version as output with the key `new_version` and the new tag with the key `new_tag`.
+The new version is in the format `YEAR.WEEK.COUNTER` (weekly, with the ISO week-based year, so 1 January 2027 is `2026.53`), `YEAR.MONTH.COUNTER` (monthly, calendar year, month without a leading zero) or `YEAR.QUARTER.COUNTER` (quarterly, calendar year). You will get the version as output with the key `new_version` and the new tag with the key `new_tag`.
 You can remove all other version resolver from your configuration.
 
 ```yml
@@ -652,7 +652,7 @@ jobs:
       tag-prefix: 'app-v'
       # optional: suffix of the tag in order to find the last release; this is useful for multi artifact/service repositories, default: '' (empty string)
       tag-suffix: '-native'
-      # optional: format of the version, default: weekly
+      # optional: format of the version: 'weekly', 'monthly' or 'quarterly', default: weekly
       format: 'quarterly'
 ```
 
@@ -666,6 +666,8 @@ on:
     - cron: '0 0 * * 1'
     - cron: '0 0 1 1 *'
 ```
+
+With the monthly format, run it on the first day of every month instead: `- cron: '0 0 1 * *'`.
 
 </details>
 
